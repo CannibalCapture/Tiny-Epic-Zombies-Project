@@ -1,6 +1,7 @@
 import pygame, pygame_gui, bcrypt, sqlite3
 from pygame.locals import *
 import pygame_gui.elements.ui_image
+from TinyEpicZombies import graph
 
 def createNewUser(username, password):
     flag = True
@@ -29,14 +30,14 @@ def loginUser(username, password):
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
     SQL = "SELECT Salt FROM Users WHERE username = ?"
-    salt = cursor.execute(SQL, (username,)).fetchone()
-    password = hash(password, salt[0])
-    SQL = "SELECT ID FROM Users WHERE username = ? and password = ?"
-    result = cursor.execute(SQL, (username, password)).fetchone()
+    salt = cursor.execute(SQL, (username,)).fetchone() # fetches the salt associated with the username
+    password = hash(password, salt[0]) # using the salt, hashes the given password and stores it back in the password variable
+    SQL = "SELECT ID FROM Users WHERE username = ? and password = ?" # performs a comparison between the stored username / hashed password and the given username / hashed password.
+    result = cursor.execute(SQL, (username, password)).fetchone() # executes the above
     connection.close()
-    if result:
+    if result: # if there is a value in result, it will be the user ID of the user associated with the entered username (and password). 
         return result[0]
-    else:
+    else: # if there is NOT a value in result, the password must have been incorrect.
         return -1
 
 pygame.init()
@@ -46,23 +47,37 @@ HEIGHT = 600
 display = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
+# logged out screen elements:
+loggedOut = pygame_gui.UIManager((WIDTH, HEIGHT))
+startLoginButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2 - 120, HEIGHT/2 - 20), (100, 25)), text="Login", manager=loggedOut)
+startSignupButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2 + 20, HEIGHT/2 - 20), (100, 25)), text="Signup", manager=loggedOut)
+titleLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2-65, 0), (200, 60)),text="Tiny Epic Zombies", manager=loggedOut)
+
+# logged in screen elements
 login_page = pygame_gui.UIManager((WIDTH, HEIGHT))
-usernameInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 50), (100, 30)), manager = login_page)
-passwordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager = login_page)
-loginButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50, 150), (100, 25)), text="Login")
+usernameInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 50), (100, 30)), manager=login_page)
+passwordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager=login_page)
+loginButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50, 150), (100, 25)), text="Login", manager=login_page)
 
+# signup page elements
+signup_page = pygame_gui.UIManager((WIDTH, HEIGHT))
+signupUsernameInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 50), (100, 30)), manager = signup_page)
+signupPasswordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager = signup_page)
+signupButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50, 150), (100, 25)), text="Signup", manager=signup_page)
 
+# main menu elements
 mainMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
 welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)),text="Welcome", manager=mainMenu)
 logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((150, 150), (100, 25)), text="Logout", manager=mainMenu)
 startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2), (100, 25)), text="Start Game", manager=mainMenu)
 
+# in game menu placeholder
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
-gameboardSurf = pygame.image.load("C:\\Users\\DELL\\Desktop\\School-Note\\Computing\\Tiny-Epic-Zombies\\TinyEpicZombies-Code\\gameboard.png")
+gameboardSurf = pygame.image.load("C:\\Users\\DELL\\Desktop\\School-Note\\Computing\\Tiny-Epic-Zombies\\TinyEpicZombies-Code\\TinyEpicZombies\\gameboard.png")
 pygame_gui.elements.ui_image.UIImage(relative_rect=pygame.Rect((0, 0), (WIDTH, HEIGHT)), image_surface=gameboardSurf, manager=gameboard)
 exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Exit game", manager=gameboard)
 
-manager = login_page
+manager = loggedOut
 
 run = True
 while run:
@@ -76,13 +91,20 @@ while run:
                 id = loginUser(usernameInput.text, passwordInput.text)
                 if id > -1:
                     manager = mainMenu
-            elif event.ui_element == logoutButton: # returns to login screen
+            if event.ui_element == signupButton: # calls the add new user process
+                createNewUser(signupUsernameInput.text, signupPasswordInput.text)
                 manager = login_page
-            elif event.ui_element == startGameButton: # sends to game board screen
+            elif event.ui_element == logoutButton: # returns to login screen
+                manager = loggedOut
+            elif event.ui_element == startGameButton: # proceed to game board screen
                 manager = gameboard
             elif event.ui_element == exitGameButton: # exit game to main menu
                 manager = mainMenu
-            
+            elif event.ui_element == startLoginButton: # proceed to login page
+                manager = login_page
+            elif event.ui_element == startSignupButton: # proceed to signup page
+                manager = signup_page
+        
         manager.process_events(event)
     
     manager.update(time_delta)

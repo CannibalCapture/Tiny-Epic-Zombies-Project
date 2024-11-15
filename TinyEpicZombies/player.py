@@ -11,7 +11,8 @@ class Player():
         self.moves = moves
         self.playerID = playerID
 
-    def move(self, room):
+    def move(self, coords):
+        room = coords[1]
         self.room.removePlayer(self)
         self.room = room
         self.room.addPlayer(self)

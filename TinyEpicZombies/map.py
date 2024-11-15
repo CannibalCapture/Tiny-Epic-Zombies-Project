@@ -1,8 +1,8 @@
 from .graph import Graph
 
 class Map: # map will manage the rooms
-    def __init__(self, rooms=[]):
-        self.rooms = rooms
+    def __init__(self, stores={}):
+        self.stores = stores
 
-    def addRoom(self):
-        pass
+    def addStore(self, storeID, store):
+        self.stores[storeID] = store
