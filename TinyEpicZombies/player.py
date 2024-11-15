@@ -1,6 +1,6 @@
 class Player():
-    def __init__(self, name, playerID, colour, character, meleeWeapon=None, rangedWeapon=None, health=9, ammo=9, moves = 3):
-        self.room = None
+    def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, health=9, ammo=9, moves = 3):
+        self.coords = coords
         self.name = name
         self.colour = colour
         self.character = character
@@ -12,10 +12,7 @@ class Player():
         self.playerID = playerID
 
     def move(self, coords):
-        room = coords[1]
-        self.room.removePlayer(self)
-        self.room = room
-        self.room.addPlayer(self)
+        self.coords = coords
         
     def meleeAttack(self):
         pass
