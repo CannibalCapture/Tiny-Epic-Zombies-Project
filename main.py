@@ -1,7 +1,7 @@
 import pygame, pygame_gui, bcrypt, sqlite3
 from pygame.locals import *
 import pygame_gui.elements.ui_image
-from TinyEpicZombies import graph
+from TinyEpicZombies import adjList
 
 def createNewUser(username, password):
     flag = True

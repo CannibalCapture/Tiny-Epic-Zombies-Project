@@ -1,4 +1,6 @@
-class Player():
+from .listener import Listener
+
+class Player(Listener):
     def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, health=9, ammo=9, moves = 3):
         self.coords = coords
         self.name = name
