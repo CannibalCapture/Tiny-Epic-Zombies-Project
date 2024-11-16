@@ -1,9 +1,10 @@
 class Room:
-    def __init__(self, roomID, zombie=False, ammoRoom=False):
+    def __init__(self, roomID, coords, zombie=False, ammoRoom=False):
         self.roomID = roomID
         self.players = []
         self.zombie = False
         self.ammoRoom = ammoRoom
+        self. coords = coords
         self.playersThisTurn = set()
 
     def addPlayer(self, player):
