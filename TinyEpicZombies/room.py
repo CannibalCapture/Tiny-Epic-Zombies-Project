@@ -2,7 +2,7 @@ class Room:
     def __init__(self, roomID, coords, zombie=False, ammoRoom=False):
         self.roomID = roomID
         self.players = []
-        self.zombie = False
+        self.zombie = zombie
         self.ammoRoom = ammoRoom
         self. coords = coords
         self.playersThisTurn = set()

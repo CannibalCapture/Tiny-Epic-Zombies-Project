@@ -115,7 +115,6 @@ while run:
 
     manager.draw_ui(display)
 
-
     pygame.display.update()
 
 pygame.quit()

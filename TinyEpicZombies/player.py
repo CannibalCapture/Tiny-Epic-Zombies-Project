@@ -19,7 +19,7 @@ class Player(Listener):
     def meleeAttack(self):
         pass
 
-    def rangedAttack(self, targetRoom):
+    def rangedAttack(self):
         pass
 
     def setmeleeWeapon(self, newWeapon):
@@ -33,3 +33,7 @@ class Player(Listener):
 
     def on_event(self, event):
         print(event)
+        if event['type'] == 'PLAYER MELEE':
+            print(f"{self.name} kills a zombie at {self.coords}")
+        elif event['type'] == 'PLAYER RANGED':
+            print(f"{self.name} kills a zombie from range")
