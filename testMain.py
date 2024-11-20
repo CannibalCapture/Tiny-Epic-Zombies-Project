@@ -22,3 +22,6 @@ al.addEdge((0,2), (0,1))
 
 manager.movePlayer((0,1), player1)
 manager.playerRanged(player1, (0,2))
+
+# Make the dice for melee attacks next (1/3: Nothing, 1/3 Overkill, 1/6: 1 dmg, 1/6 2 dmg)
+# Plan is to make the decks, then implement noise.

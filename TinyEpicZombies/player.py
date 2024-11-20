@@ -1,3 +1,4 @@
+from random import choice
 from .listener import Listener
 
 class Player(Listener):
@@ -17,10 +18,18 @@ class Player(Listener):
         self.coords = coords
         
     def meleeAttack(self):
-        pass
+        self.rollMeleeDice()
+
+    def rollMeleeDice(self):
+        choices = [0,0,1,2,-1,-1]
+        roll = choice(choices)
+        if roll >= 0:
+            self.health -= roll
+        else:
+            self.moves += 1
 
     def rangedAttack(self):
-        pass
+        self.ammo -= 1
 
     def setmeleeWeapon(self, newWeapon):
         self.meleeWeapon = newWeapon
