@@ -1,23 +1,28 @@
 from .player import Player
+from .listener import Listener
+from .eventGenerator import EventGenerator
 
-class GameManager:
-    def __init__(self, map, players={}):
+class GameManager(Listener, EventGenerator):
+    def __init__(self, map, players=dict()):
+        Listener.__init__(self)
+        EventGenerator.__init__(self)
         self.players = players # players is a dictionary with key=playerID, value=playerObject
         self.map = map
-        self.listeners = []
+        self.respawns = 3
 
-    def add_listener(self, listener):
-        self.listeners.append(listener)
-    
-    def send_event(self, event):
-        for listener in self.listeners:
-            listener.on_event(event)
-
+    def on_event(self, event):
+        super().on_event(event)
+        if event['type'] == 'PLAYER DIE':
+            self.respawns -= 1
+            if self.respawns < 0:
+                pass # check if game is over
+            else:
+                self.players[event['playerID']].reset()
     def createPlayer(self, name, playerID, colour, character, coords):
         player = Player(name, playerID, colour, character, coords)
         self.players[playerID] = player
         player.room = coords # coords (coordinates) will be in the form (storeID, room)
-        # Adding a player as a listener to listen for the createPlayer method doesnt work (for somewhat obvious reasons).
+        player.add_listener(self)
 
     def movePlayer(self, newCoords, player): # newCoords is a tuple containing the storeID and the room in that store.
         if self.map.adjList.validatePlayerMove(player, newCoords):
