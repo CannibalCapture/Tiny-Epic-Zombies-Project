@@ -52,10 +52,10 @@ class Player(Listener, EventGenerator):
     def rangedAttack(self):
         self.ammo -= 1
 
-    def setmeleeWeapon(self, newWeapon):
+    def equipMelee(self, newWeapon):
         self.meleeWeapon = newWeapon
 
-    def setrangedWeapon(self, newWeapon):
+    def equipRanged(self, newWeapon):
         self.rangedWeapon = newWeapon
 
     def changeAmmo(self, value):

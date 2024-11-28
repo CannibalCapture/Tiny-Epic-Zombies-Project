@@ -13,11 +13,12 @@ class adjList: # The graph is represented by an adjacency list.
 
     def addEdge(self, r1Coords, r2Coords): # adds an edge between room1 and room2
         self.adjList[r1Coords].append(r2Coords)
+        self.adjList[r2Coords].append(r1Coords)
     
     def validatePlayerMove(self, player, coords):
         if coords in self.adjList[player.coords]:
             return True
         return False
 
-    def getAdjList(self):
+    def returnAdjList(self):
         return self.adjList
