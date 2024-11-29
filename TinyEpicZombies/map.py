@@ -15,13 +15,13 @@ class Map: # map will manage the rooms
         rooms = []
         for i in range(0,3):
             rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID))
+        self.stores.append(Store(rooms, storeID, "BLUE"))
 
     def createCentreStore(self, storeID=4):
         rooms = []
         for i in range(0,5):
             rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID))
+        self.stores.append(Store(rooms, storeID, "None"))
 
     def createMap(self):
         for i in range(0,4):

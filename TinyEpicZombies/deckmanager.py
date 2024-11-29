@@ -15,10 +15,10 @@ class DeckManager:
         for i in range(6):
             self.searchDeck.append(golfClub())
     
-    def takeSupply(self):
+    def drawSupply(self):
         card = randint(0, len(self.supplyDeck)-1)
         return self.supplyDeck.pop(card) # Both returns and removes the drawn card from the list. 
     
-    def takeSearch(self):
+    def drawSearch(self):
         card = randint(0, len(self.searchDeck)-1)
         return self.searchDeck.pop(card)
