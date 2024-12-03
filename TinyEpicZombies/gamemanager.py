@@ -1,20 +1,20 @@
 from .player import Player
 from .listener import Listener
-from .eventGenerator import EventGenerator
+from .eventgenerator import EventGenerator
 from .map import Map
 from .deckmanager import DeckManager
-from .zombiePlayer import ZombiePlayer
+from .zombieplayer import ZombiePlayer
 from .constants import COLOURS, CENTRE_ROOM
 
 class GameManager(Listener, EventGenerator):
-    def __init__(self, players=dict()):
+    def __init__(self, respawns=3, players=dict()):
         Listener.__init__(self)
         EventGenerator.__init__(self)
         self.players = players # players is a dictionary with key=playerID, value=playerObject
         self.map = Map()
         self.dm = DeckManager()
         self.zp = ZombiePlayer()
-        self.respawns = 3
+        self.respawns = respawns
         self._initGame()
         self._initListeners()
 
@@ -39,16 +39,16 @@ class GameManager(Listener, EventGenerator):
         self.add_listener(self.zp)
 
     def _initGame(self):
-        # players = int(input("How many players? [1/2/3/4]\n"))
-        # for i in range(players):
-        #     name = input(f"What is {COLOURS[i]} player's name?\n")
-        #     self.createPlayer(name, i, COLOURS[i], "character", CENTRE_ROOM)
-        self.createPlayer("toby", 0, "BLUE", "Medic", (0,0))
+        players = int(input("How many players? [2/3/4]\n"))
+        for i in range(players):
+            name = input(f"What is {COLOURS[i]} player's name?\n")
+            self.createPlayer(name, i, COLOURS[i], "character", CENTRE_ROOM)
+        # self.createPlayer("toby", 0, "BLUE", "Medic", (0,0))
 
     def createPlayer(self, name, playerID, colour, character, coords):
         player = Player(name, playerID, colour, character, coords)
         self.players[playerID] = player
-        player.room = coords # coordinates will be in the form (storeID, room)
+        player.move(coords) # coordinates will be in the form (storeID, room)
         self.add_listener(player)
         player.add_listener(self)
 
@@ -93,5 +93,8 @@ class GameManager(Listener, EventGenerator):
     def playerSearchStore(self, player):
         player.equipMelee(self.dm.drawSearch())
         noiseColour = self.map.stores[player.coords[0]].noiseColour
-        event = {"type":"BLUE NOISE", "playerID":player.playerID, "coords":player.coords}
+        event = {"type":f"{noiseColour} NOISE", "playerID":player.playerID, "coords":player.coords}
         self.send_event(event)
+    
+    def addZombie(self, coords):
+        self.map.addZombie(coords)

@@ -1,7 +1,6 @@
 import pygame, pygame_gui, bcrypt, sqlite3
 from pygame.locals import *
 import pygame_gui.elements.ui_image
-from TinyEpicZombies import adjList
 
 def createNewUser(username, password):
     flag = True
@@ -73,7 +72,7 @@ startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/
 
 # in game menu placeholder
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
-gameboardSurf = pygame.image.load("C:\\Users\\DELL\\Desktop\\School-Note\\Computing\\Tiny-Epic-Zombies\\TinyEpicZombies-Code\\TinyEpicZombies\\gameboard.png")
+gameboardSurf = pygame.image.load("C:\\Users\\DELL\\Desktop\\School-Note\\Computing\\Tiny-Epic-Zombies\\TinyEpicZombies-Code\\TinyEpicZombies\\assets\\gameboard.png")
 pygame_gui.elements.ui_image.UIImage(relative_rect=pygame.Rect((0, 0), (WIDTH, HEIGHT)), image_surface=gameboardSurf, manager=gameboard)
 exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Exit game", manager=gameboard)
 

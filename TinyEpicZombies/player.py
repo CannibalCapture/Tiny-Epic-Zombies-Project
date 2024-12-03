@@ -1,6 +1,6 @@
 from random import choice
 from .listener import Listener
-from .eventGenerator import EventGenerator
+from .eventgenerator import EventGenerator
 
 class Player(Listener, EventGenerator):
     def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, health=9, ammo=9, moves = 3):
@@ -50,16 +50,22 @@ class Player(Listener, EventGenerator):
         self.rangedWeapon = None
 
     def rangedAttack(self):
-        self.ammo -= 1
+        self.changeAmmo(-1)
+
+    def changeAmmo(self, value):
+        self.ammo += value
 
     def equipMelee(self, newWeapon):
         self.meleeWeapon = newWeapon
 
     def equipRanged(self, newWeapon):
         self.rangedWeapon = newWeapon
-
-    def changeAmmo(self, value):
-        self.ammo += value
+    
+    def returnMelee(self):
+        return self.meleeWeapon
+    
+    def returnRanged(self):
+        return self.rangedWeapon
 
     def on_event(self, event):
         print(event)

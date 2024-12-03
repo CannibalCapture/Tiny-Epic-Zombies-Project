@@ -1,2 +1,2 @@
 CENTRE_ROOM = (4,2)
-COLOURS = ["blue", "purple", "red", "green"]
+COLOURS = ["PURPLE", "ORANGE", "GREEN", "PURPLE", "NONE", "BLUE", "GREEN", "BLUE", "ORANGE"]

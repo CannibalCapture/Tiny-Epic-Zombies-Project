@@ -1,13 +1,15 @@
-from .adjList import adjList
+from .adjlist import adjList
 from .store import Store
 from .room import Room
+from .zombieplayer import ZombiePlayer
+from .constants import COLOURS
 
 # To access the room at coordinates (a,b): map.stores[a].rooms[b]
 
 class Map: # map will manage the rooms
     def __init__(self, stores=[]):
         self.stores = stores
-        self.createMap()
+        self._initStores()
         self.al = adjList(stores)
         self.addEdges()
 
@@ -15,7 +17,7 @@ class Map: # map will manage the rooms
         rooms = []
         for i in range(0,3):
             rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID, "BLUE"))
+        self.stores.append(Store(rooms, storeID, COLOURS[i]))
 
     def createCentreStore(self, storeID=4):
         rooms = []
@@ -23,7 +25,7 @@ class Map: # map will manage the rooms
             rooms.append(Room(i, (storeID, i)))
         self.stores.append(Store(rooms, storeID, "None"))
 
-    def createMap(self):
+    def _initStores(self):
         for i in range(0,4):
             self.createStore(i)
         self.createCentreStore(4) # This is here because the centre room has 5 rooms instead of 3. 
@@ -85,3 +87,6 @@ class Map: # map will manage the rooms
         self.al.addEdge((8,0),(8,1))
         self.al.addEdge((8,0),(8,2))
         self.al.addEdge((8,1),(8,2))
+    
+    def addZombie(coords):
+        pass # A* to find next room? (Justify with "useful to have in case of further development / zombies being able to move differently in another gamemode")
