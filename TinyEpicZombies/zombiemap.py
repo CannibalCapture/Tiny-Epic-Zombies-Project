@@ -7,7 +7,6 @@ class ZombieMap(Map):
         self._initStores()
         self.al = adjList(self.stores)
         self.addEdges()
-        print(self.al.returnAdjList())
 
     def addEdges(self):
         self.al.addEdge((0,0),(0,1))
@@ -37,5 +36,4 @@ class ZombieMap(Map):
         self.al.addEdge((3,2),(3,0))
         self.al.addEdge((3,0),(3,1))
         self.al.addEdge((3,1),(4,0))
-    
-    
+

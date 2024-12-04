@@ -88,5 +88,51 @@ class Map: # map will manage the rooms
         self.al.addEdge((8,0),(8,2))
         self.al.addEdge((8,1),(8,2))
     
-    def addZombie(coords):
-        pass # A* to find next room? (Justify with "useful to have in case of further development / zombies being able to move differently in another gamemode")
+    def addZombie(self, coords):
+        # A* to find next room? (Justify with "useful to have in case of further development / zombies being able to move differently in another gamemode")
+        self.stores[coords[0]].rooms[coords[1]].setzombie(True)
+        if coords[0] == 4:
+            pass # take 1 from the barricade.
+    
+    def shortestPath(self, startCoords):
+        endCoords = (4,1)
+        previousNodes = {} # previous node in path
+        distances = {} # distances travelled to get to a certain node
+        pathCompleted = {} # which paths are completed
+        rooms = list(self.al.returnAdjList().keys())
+        shortestDistRoom = (0,0)
+
+        for room in rooms:
+            pathCompleted[room] = False
+            distances[room] = -1
+            previousNodes[room] = None
+        
+        distances[startCoords] = 0
+
+        while pathCompleted[endCoords] == False:
+        # for i in range(2):
+            shortestDist = float('inf')
+            
+            for room in rooms:
+                # if a node has not been expanded and it has the shortest distance remaining, we select it as the current room. 
+                if pathCompleted[room] == False and distances[room] < shortestDist and distances[room] != -1:
+                    shortestDist = distances[room]
+                    shortestDistRoom = room
+
+            pathCompleted[shortestDistRoom] = True
+            connectedRooms = self.al.returnMoves(shortestDistRoom)
+
+            for room in connectedRooms: # expand the current room by iterating through the rooms connected to it. 
+                if pathCompleted[room] == False:
+                    if distances[room] == -1 or (distances[shortestDistRoom] + 1 < distances[room]):
+                        distances[room] = distances[shortestDistRoom] + 1
+                        previousNodes[room] = shortestDistRoom
+            
+        print(distances[endCoords])
+        room = endCoords
+        path = []
+        while room != startCoords:
+            path.insert(0, room)
+            room = previousNodes[room]
+        
+        print(path)

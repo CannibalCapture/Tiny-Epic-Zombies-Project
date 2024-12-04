@@ -3,7 +3,7 @@ from .listener import Listener
 from .eventgenerator import EventGenerator
 from .map import Map
 from .deckmanager import DeckManager
-from .zombieplayer import ZombiePlayer
+from .zombiemap import ZombieMap
 from .constants import COLOURS, CENTRE_ROOM
 
 class GameManager(Listener, EventGenerator):
@@ -13,7 +13,7 @@ class GameManager(Listener, EventGenerator):
         self.players = players # players is a dictionary with key=playerID, value=playerObject
         self.map = Map()
         self.dm = DeckManager()
-        self.zp = ZombiePlayer()
+        self.zm = ZombieMap()
         self.respawns = respawns
         self._initGame()
         self._initListeners()
@@ -36,7 +36,8 @@ class GameManager(Listener, EventGenerator):
             self.movePlayer(player, moveCoords)
 
     def _initListeners(self):
-        self.add_listener(self.zp)
+        # self.add_listener(self.zp)
+        pass
 
     def _initGame(self):
         players = int(input("How many players? [2/3/4]\n"))
