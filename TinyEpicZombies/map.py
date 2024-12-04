@@ -94,8 +94,8 @@ class Map: # map will manage the rooms
         if coords[0] == 4:
             pass # take 1 from the barricade.
     
-    def shortestPath(self, startCoords):
-        endCoords = (4,1)
+    def shortestPath(self, startCoords, endCoords=(4,2)):
+        endCoords = endCoords
         previousNodes = {} # previous node in path
         distances = {} # distances travelled to get to a certain node
         pathCompleted = {} # which paths are completed

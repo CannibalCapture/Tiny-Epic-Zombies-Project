@@ -15,6 +15,7 @@ class ZombieMap(Map):
         self.al.addEdge((1,0),(1,1))
         self.al.addEdge((1,1),(1,2))
         self.al.addEdge((1,2),(4,1))
+        self.al.addEdge((4,1), (4,2))
 
         self.al.addEdge((2,0),(2,1))
         self.al.addEdge((2,1),(2,2))
@@ -22,6 +23,7 @@ class ZombieMap(Map):
         self.al.addEdge((5,2),(5,0))
         self.al.addEdge((5,0),(5,1))
         self.al.addEdge((5,1),(4,4))
+        self.al.addEdge((4,4), (4,2))
 
         self.al.addEdge((8,2),(8,1))
         self.al.addEdge((8,1),(8,0))
@@ -29,6 +31,7 @@ class ZombieMap(Map):
         self.al.addEdge((7,2),(7,1))
         self.al.addEdge((7,1),(7,0))
         self.al.addEdge((7,0),(4,3))
+        self.al.addEdge((4,3), (4,2))
 
         self.al.addEdge((6,2),(6,1))
         self.al.addEdge((6,1),(6,0))
@@ -36,4 +39,4 @@ class ZombieMap(Map):
         self.al.addEdge((3,2),(3,0))
         self.al.addEdge((3,0),(3,1))
         self.al.addEdge((3,1),(4,0))
-
+        self.al.addEdge((4,0), (4,2))
