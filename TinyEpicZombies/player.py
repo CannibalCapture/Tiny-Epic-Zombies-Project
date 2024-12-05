@@ -1,6 +1,7 @@
 from random import choice
 from .listener import Listener
 from .eventgenerator import EventGenerator
+from .card import MeleeWeapon, RangedWeapon
 
 class Player(Listener, EventGenerator):
     def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, health=9, ammo=9, moves = 3):
@@ -16,6 +17,28 @@ class Player(Listener, EventGenerator):
         self.ammo = ammo
         self.moves = moves
         self.playerID = playerID
+
+    def serialize(self):
+        dict = {
+            "coords":[self.coords[0], self.coords[1]],
+            "name":self.name,
+            "colour":self.colour,
+            "character":self.character,
+            "rangedweapon": "None" if self.rangedWeapon == None else self.rangedWeapon.serialize(),
+            "meleeweapon": "None" if self.meleeWeapon == None else self.meleeWeapon.serialize(),
+            "health":self.health,
+            "ammo":self.ammo,
+            "moves":self.moves,
+            "playerID":self.playerID,
+        }
+
+        return dict
+
+    def deserialize(dict):
+        return Player(dict["name"], dict["playerID"], dict["colour"], dict["character"], tuple(dict["coords"]), 
+                      None if  dict["meleeweapon"] == "None" else MeleeWeapon.deserialize(dict["meleeweapon"]),
+                      None if  dict["rangedweapon"] == "None" else RangedWeapon.deserialize(dict["rangedweapon"]),
+                      dict["health"], dict["ammo"], dict["moves"])
 
     def move(self, coords):
         self.coords = coords

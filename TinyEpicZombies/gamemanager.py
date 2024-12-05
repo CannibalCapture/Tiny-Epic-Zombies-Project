@@ -12,11 +12,18 @@ class GameManager(Listener, EventGenerator):
         EventGenerator.__init__(self)
         self.players = players # players is a dictionary with key=playerID, value=playerObject
         self.map = Map()
-        self.dm = DeckManager()
         self.zm = ZombieMap()
+        self.dm = DeckManager()
         self.respawns = respawns
         self._initGame()
         self._initListeners()
+    
+    def serialize(self):
+        dict = {
+            "players": { id: player.serialize() for id, player in self.players.items() }
+        }
+        print(dict)
+        return dict
 
     def on_event(self, event):
         super().on_event(event)
@@ -26,6 +33,7 @@ class GameManager(Listener, EventGenerator):
                 pass # check if game is over
             else:
                 self.players[event['playerID']].reset()
+                
         
     def playerTurn(self, player):
         for move in range(1, 4):

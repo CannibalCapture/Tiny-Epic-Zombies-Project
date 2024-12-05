@@ -1,0 +1,21 @@
+{
+  "players": {
+    "0": {
+      "coords": [
+        4,
+        2
+      ],
+      "name": "t",
+      "colour": "PURPLE",
+      "character": "character",
+      "rangedweapon": "None",
+      "meleeweapon": {
+        "type": "MELEE WEAPON"
+      },
+      "health": 9,
+      "ammo": 9,
+      "moves": 3,
+      "playerID": 0
+    }
+  }
+}

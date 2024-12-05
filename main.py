@@ -1,6 +1,8 @@
 import pygame, pygame_gui, bcrypt, sqlite3
 from pygame.locals import *
 import pygame_gui.elements.ui_image
+from TinyEpicZombies.constants import WIDTH, HEIGHT, CARD_HEIGHT, CARD_WIDTH
+import os
 
 def createNewUser(username, password):
     flag = True
@@ -8,7 +10,7 @@ def createNewUser(username, password):
     password = hash(password, salt)
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
-    SQL = "INSERT INTO Users(username, password, salt) VALUES(?,?, ?)"
+    SQL = "INSERT INTO Users(username, password, salt) VALUES(?,?,?)"
     try:
         cursor.execute(SQL, (username, password, salt))
         connection.commit()
@@ -29,10 +31,14 @@ def loginUser(username, password):
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
     SQL = "SELECT Salt FROM Users WHERE username = ?"
-    salt = cursor.execute(SQL, (username,)).fetchone() # fetches the salt associated with the username
-    password = hash(password, salt[0]) # using the salt, hashes the given password and stores it back in the password variable
-    SQL = "SELECT ID FROM Users WHERE username = ? and password = ?" # performs a comparison between the stored username / hashed password and the given username / hashed password.
-    result = cursor.execute(SQL, (username, password)).fetchone() # executes the above
+    try:
+        salt = cursor.execute(SQL, (username,)).fetchone() # fetches the salt associated with the username
+        password = hash(password, salt[0]) # using the salt, hashes the given password and stores it back in the password variable
+        SQL = "SELECT ID FROM Users WHERE username = ? and password = ?" # performs a comparison between the stored username / hashed password and the given username / hashed password.
+        result = cursor.execute(SQL, (username, password)).fetchone() # executes the above
+    except:
+        print("Invalid username or password")
+        result = None
     connection.close()
     if result: # if there is a value in result, it will be the user ID of the user associated with the entered username (and password). 
         return result[0]
@@ -41,8 +47,6 @@ def loginUser(username, password):
 
 pygame.init()
 
-WIDTH = 700
-HEIGHT = 600
 display = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
@@ -70,13 +74,16 @@ welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)
 logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((150, 150), (100, 25)), text="Logout", manager=mainMenu)
 startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2), (100, 25)), text="Start Game", manager=mainMenu)
 
-# in game menu placeholder
+# in game menu
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
-gameboardSurf = pygame.image.load("C:\\Users\\DELL\\Desktop\\School-Note\\Computing\\Tiny-Epic-Zombies\\TinyEpicZombies-Code\\TinyEpicZombies\\assets\\gameboard.png")
+gameboardSurf = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "woodBackground.jpg"))
+centralStore = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "stores", "centralStore.jpg"))
+playingArea = pygame.Rect(0,0,3*WIDTH/4, HEIGHT)
 pygame_gui.elements.ui_image.UIImage(relative_rect=pygame.Rect((0, 0), (WIDTH, HEIGHT)), image_surface=gameboardSurf, manager=gameboard)
+pygame_gui.elements.ui_image.UIImage(relative_rect=pygame.Rect(((WIDTH-CARD_WIDTH)/2, (HEIGHT-CARD_HEIGHT)/2), (CARD_WIDTH, CARD_HEIGHT)), image_surface=centralStore, manager=gameboard)
 exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Exit game", manager=gameboard)
 
-manager = loggedOut
+manager = mainMenu
 
 run = True
 while run:
