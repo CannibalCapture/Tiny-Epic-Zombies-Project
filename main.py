@@ -74,24 +74,34 @@ welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)
 logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((150, 150), (100, 25)), text="Logout", manager=mainMenu)
 startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2), (100, 25)), text="Start Game", manager=mainMenu)
 
-# in game menu
+
+# in game gui
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
-gameboardSurf = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "woodBackground.jpg"))
-centralStore = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "stores", "centralStore.jpg"))
-playingArea = pygame.Rect(0,0,3*WIDTH/4, HEIGHT)
-pygame_gui.elements.ui_image.UIImage(relative_rect=pygame.Rect((0, 0), (WIDTH, HEIGHT)), image_surface=gameboardSurf, manager=gameboard)
-pygame_gui.elements.ui_image.UIImage(relative_rect=pygame.Rect(((WIDTH-CARD_WIDTH)/2, (HEIGHT-CARD_HEIGHT)/2), (CARD_WIDTH, CARD_HEIGHT)), image_surface=centralStore, manager=gameboard)
 exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Exit game", manager=gameboard)
+
+# rendering the map
+
+gameboardImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "woodBackground.jpg")).convert()
+gameboardImg = pygame.transform.scale(gameboardImg, (WIDTH, HEIGHT))
+centralStore = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "stores", "centralStore.jpg")).convert()
+# playingArea = pygame.Rect(0,0,(3*WIDTH)/4, HEIGHT)
+# gameboardSurf = pygame_gui.elements.ui_image.UIImage(relative_rect=pygame.Rect((0, 0), (WIDTH, HEIGHT)), image_surface=gameboardSurf, manager=gameboard)
 
 manager = mainMenu
 
 run = True
 while run:
     time_delta = clock.tick(30)/1000
+    display.fill((0, 0, 0))
+
+    if manager == gameboard:
+        display.blit(gameboardImg)
 
     for event in pygame.event.get():
+
         if event.type == QUIT:
             run = False
+
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == loginButton: # calls the login process
                 id = loginUser(usernameInput.text, passwordInput.text)
@@ -100,6 +110,7 @@ while run:
             if event.ui_element == signupButton: # calls the add new user process
                 createNewUser(signupUsernameInput.text, signupPasswordInput.text)
                 manager = login_page
+
             elif event.ui_element == logoutButton: # returns to login screen
                 manager = loggedOut
             elif event.ui_element == startGameButton: # proceed to game board screen
@@ -111,11 +122,17 @@ while run:
             elif event.ui_element == startSignupButton: # proceed to signup page
                 manager = signup_page
         
+        if event.type == pygame.MOUSEBUTTONUP:
+            pos = pygame.mouse.get_pos()
+            rect = gameboardImg.get_rect()
+            print(pos, rect)
+            print(WIDTH, HEIGHT)
+            print(rect.collidepoint(pos))
+        
         manager.process_events(event)
     
     manager.update(time_delta)
 
-    display.fill((0, 0, 0))
 
 #    pygame.draw.rect(display, (255, 0, 0), (100, 100, 100, 100))
 
