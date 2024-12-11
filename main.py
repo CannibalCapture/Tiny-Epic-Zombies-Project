@@ -1,7 +1,7 @@
 import pygame, pygame_gui, bcrypt, sqlite3
 from pygame.locals import *
 import pygame_gui.elements.ui_image
-from TinyEpicZombies.constants import WIDTH, HEIGHT, CH, CW, tlCoords
+from TinyEpicZombies.constants import WIDTH, HEIGHT, CH, CW, tlCoords, peNames, rotations
 import os
 
 def createNewUser(username, password):
@@ -74,6 +74,15 @@ welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)
 logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((150, 150), (100, 25)), text="Logout", manager=mainMenu)
 startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2), (100, 25)), text="Start Game", manager=mainMenu)
 
+def genStores(storeNum): #  returns a list of store surfaces
+    pathEnd = peNames[storeNum]
+    rotation = rotations[storeNum]
+    stores = []
+    img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "stores", f"{pathEnd}"))
+    img = pygame.transform.rotate(img, rotation)
+    img = pygame.transform.scale(img, (CW, CH))
+    stores.append(img)
+    return img
 
 # in game gui
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -84,8 +93,7 @@ gameboardImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "wood
 gameboardImg = pygame.transform.scale(gameboardImg, (WIDTH, HEIGHT))
 
 # Replace with Echo Ridge Security
-store0Img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "stores", "parkingDeckZ.jpg")).convert()
-store0Img = pygame.transform.scale(store0Img, (CW, CH))
+store0Img = genStores(0)
 
 # Replace with Mur's Jewlers
 store1Img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "stores", "galleria.jpg")).convert()
@@ -129,10 +137,10 @@ while run:
 
     if manager == gameboard:
         display.blit(gameboardImg)
-        display.blit(store0Img, tlCoords[0])
+        display.blit(store0Img, tlCoords[0]) # needs changing
         display.blit(store1Img, tlCoords[1])
-        display.blit(store2Img, tlCoords[2])
-        display.blit(store3Img, tlCoords[3])
+        display.blit(store2Img, tlCoords[2]) # needs changing
+        display.blit(store3Img, tlCoords[3]) # needs changing
         display.blit(centralStoreImg, tlCoords[4])
         display.blit(store5Img, tlCoords[5])
         display.blit(store6Img, tlCoords[6])
@@ -166,6 +174,7 @@ while run:
         
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
+            print(pos)
             for i in range(9):
                 rect = centralStoreImg.get_rect(topleft=tlCoords[i])
                 if rect.collidepoint(pos):
@@ -180,3 +189,5 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+
+print(genStores())
