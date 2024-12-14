@@ -89,6 +89,9 @@ class Player(Listener, EventGenerator):
     
     def returnRanged(self):
         return self.rangedWeapon
+    
+    def returnID(self):
+        return self.playerID
 
     def on_event(self, event):
         print(event)

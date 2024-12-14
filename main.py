@@ -3,6 +3,7 @@ from pygame.locals import *
 import pygame_gui.elements.ui_image
 from TinyEpicZombies.gamerenderer import GameRenderer
 from TinyEpicZombies.constants import WIDTH, HEIGHT, DISPLAY
+import json
 
 def createNewUser(username, password):
     flag = True
@@ -47,7 +48,6 @@ def loginUser(username, password):
 
 pygame.init()
 
-
 clock = pygame.time.Clock()
 
 # logged out screen elements:
@@ -78,11 +78,9 @@ startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
 exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Exit game", manager=gameboard)
 
-# rendering the map
-
-
 manager = mainMenu
 renderer = GameRenderer()
+renderer.renderMovementOptions()
 
 run = True
 while run:

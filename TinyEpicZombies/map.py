@@ -1,7 +1,6 @@
 from .adjlist import adjList
 from .store import Store
 from .room import Room
-from .zombieplayer import ZombiePlayer
 from .constants import COLOURS
 
 # To access the room at coordinates (a,b): map.stores[a].rooms[b]

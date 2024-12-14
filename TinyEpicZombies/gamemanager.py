@@ -7,6 +7,14 @@ from .zombiemap import ZombieMap
 from .constants import COLOURS, CENTRE_ROOM
 
 class GameManager(Listener, EventGenerator):
+
+    instance = None
+
+    def getInstance():
+        if GameManager.instance == None:
+            GameManager.instance = GameManager()
+        return GameManager.instance
+
     def __init__(self, respawns=3, players=dict()):
         Listener.__init__(self)
         EventGenerator.__init__(self)
@@ -24,6 +32,11 @@ class GameManager(Listener, EventGenerator):
         }
         print(dict)
         return dict
+
+    def deserialize(dict):
+        gameManager = GameManager.getInstance()
+        # gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]})
+        # ordering matters
 
     def on_event(self, event):
         super().on_event(event)
@@ -105,5 +118,8 @@ class GameManager(Listener, EventGenerator):
         event = {"type":f"{noiseColour} NOISE", "playerID":player.playerID, "coords":player.coords}
         self.send_event(event)
     
+    def getPlayer(self, playerID):
+        return self.players[playerID]
+
     def addZombie(self, coords):
         self.map.addZombie(coords)
