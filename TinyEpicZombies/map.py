@@ -12,6 +12,15 @@ class Map: # map will manage the rooms
         self.al = adjList(stores)
         self.addEdges()
 
+    def serialize(self):
+        dict = {
+            "stores": [store.serialize() for store in self.stores]
+        }
+        return dict
+    
+    def deserialize(dict):
+        return Map([store.deserialize() for store in dict["stores"]])
+
     def createStore(self, storeID): # pass in a list of 3 rooms
         rooms = []
         for i in range(0,3):
@@ -127,11 +136,10 @@ class Map: # map will manage the rooms
                         distances[room] = distances[shortestDistRoom] + 1
                         previousNodes[room] = shortestDistRoom
             
-        print(distances[endCoords])
         room = endCoords
         path = []
         while room != startCoords:
             path.insert(0, room)
             room = previousNodes[room]
         
-        print(path)
+        return(path, distances[endCoords])

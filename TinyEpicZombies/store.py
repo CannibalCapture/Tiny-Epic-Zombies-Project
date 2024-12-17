@@ -15,3 +15,7 @@ class Store:
             "noiseColour": self.noiseColour
         }
         return dict
+    
+    def deserialize(dict):
+        return Store([room.deserialize() for room in dict["rooms"]], dict["storeID"], dict["noiseColour"], dict["image"], dict["tl"])
+    

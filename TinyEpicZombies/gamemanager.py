@@ -30,13 +30,16 @@ class GameManager(Listener, EventGenerator):
         dict = {
             "players": { id: player.serialize() for id, player in self.players.items() }
         }
-        print(dict)
         return dict
 
     def deserialize(dict):
         gameManager = GameManager.getInstance()
-        # gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]})
-        # ordering matters
+        gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]})
+
+        gameManager.setMap(Map.deserialize())
+        gameManager.setZM(ZombieMap.deserialize())
+        gameManager.setDM(DeckManager.deserialize())
+
 
     def on_event(self, event):
         super().on_event(event)
@@ -117,9 +120,23 @@ class GameManager(Listener, EventGenerator):
         noiseColour = self.map.stores[player.coords[0]].noiseColour
         event = {"type":f"{noiseColour} NOISE", "playerID":player.playerID, "coords":player.coords}
         self.send_event(event)
+        
+    def addZombie(self, coords):
+        self.map.addZombie(coords)
+        # make noise
     
     def getPlayer(self, playerID):
         return self.players[playerID]
 
-    def addZombie(self, coords):
-        self.map.addZombie(coords)
+    def setPlayers(self, playersDict):
+        self.players = playersDict
+    
+    # setters for map, zombieMap and deckManger
+    def setMap(self, map):
+        self.map = map
+    
+    def setZM(self, zm):
+        self.zm = zm
+
+    def setDM(self, dm):
+        self.dm = dm

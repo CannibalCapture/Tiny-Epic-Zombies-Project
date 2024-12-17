@@ -1,7 +1,7 @@
 from random import choice
 from .listener import Listener
 from .eventgenerator import EventGenerator
-from .card import MeleeWeapon, RangedWeapon
+from .cards.card import MeleeWeapon, RangedWeapon
 
 class Player(Listener, EventGenerator):
     def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, health=9, ammo=9, moves = 3):
