@@ -1,0 +1,334 @@
+{
+    "stores": {
+        "store0": {
+            "image": "parkingDeckZ.jpg",
+            "colour": "PURPLE",
+            "rotation": 0,
+            "screenpos": [],
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [50, 50]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [50, 50],
+                        [100, 100]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [100, 100],
+                        [150, 150]
+                    ]
+                }
+            }
+        },
+
+        "store1": {
+            "image": "galleria.jpg",
+            "colour": "ORANGE",
+            "rotation": -90,
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [131, 145],
+                        [167, 188]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [69, 107],
+                        [107, 152]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [13, 112],
+                        [51, 174]
+                    ]
+                }
+            }
+        },
+
+
+        "store2": {
+            "image": "craftsAndColours.jpg",
+            "colour": "GREEN",
+            "rotation": 0,
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                }
+            }
+        },
+
+
+        "store3": {
+            "image": "hoardsCollectibles.jpg",
+            "colour": "PURPLE",
+            "rotation": 90,
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                }
+            }
+        },
+
+
+        "store4": {
+            "image": "centralStore.jpg",
+            "colour": "NONE",
+            "rotation": 0,
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [10, 31],
+                        [51, 145]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [57, 2],
+                        [232, 23]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [94, 52],
+                        [214, 132]
+                    ]
+                },
+                
+                "room3": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [81, 159],
+                        [243, 181]
+                    ]
+                },
+
+                    "room4": {
+                        "x": 100,
+                        "y": 250,
+                        "collider": [
+                            [251, 31],
+                            [291, 153]
+                            ]
+                }
+            }
+        },
+
+
+        "store5": {
+            "image": "echoRidgeFoodCourt.jpg",
+            "colour": "BLUE",
+            "rotation": -90,
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                }
+            }
+        },
+
+
+        "store6": {
+            "image": "1stPlaceSporting.jpg",
+            "colour": "GREEN",
+            "rotation": 180,
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                }
+            }
+        },
+    
+
+        "store7": {
+            "image": "department.jpg",
+            "colour": "BLUE",
+            "rotation": 180,
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                }
+            }
+        },
+
+        "store8": {
+            "image": "ampsElectronics.jpg",
+            "colour": "ORANGE",
+            "rotation": 180,
+            "rooms": {
+                "room0": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room1": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                },
+
+                "room2": {
+                    "x": 100,
+                    "y": 250,
+                    "collider": [
+                        [0, 0],
+                        [0, 0]
+                    ]
+                }
+            }
+        }
+    }
+}

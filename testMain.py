@@ -1,5 +1,8 @@
 # from TinyEpicZombies.gamemanager import GameManager
 # import json
+from TinyEpicZombies.cards.weaponsfactory import WeaponsFactory
+from TinyEpicZombies.gamerenderer import GameRenderer
+from TinyEpicZombies.inputmanager import InputManager
 
 # manager = GameManager()
 # player1 = manager.players[0]

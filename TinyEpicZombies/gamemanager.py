@@ -34,7 +34,7 @@ class GameManager(Listener, EventGenerator):
 
     def deserialize(dict):
         gameManager = GameManager.getInstance()
-        gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]})
+        gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]} )
 
         gameManager.setMap(Map.deserialize())
         gameManager.setZM(ZombieMap.deserialize())
