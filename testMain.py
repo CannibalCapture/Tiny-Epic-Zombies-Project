@@ -1,15 +1,9 @@
-# from TinyEpicZombies.gamemanager import GameManager
-# import json
-from TinyEpicZombies.cards.weaponsfactory import WeaponsFactory
-from TinyEpicZombies.gamerenderer import GameRenderer
-from TinyEpicZombies.inputmanager import InputManager
-
-# manager = GameManager()
-# player1 = manager.players[0]
-# manager.playerSearchStore(player1)
-# manager.zm.shortestPath((0,0))
-
+from TinyEpicZombies.helperfunctions.roomrects import genRoomRects
+from TinyEpicZombies import inputmanager
+import numpy as np
 # json.dump(manager.serialize(), open("game.json", "w"), indent=2)
 
 # Cards which affect movement will be dealt with in the code for generating a player turn.
 # List of status effects [("what it is", "how many turns it will last")]
+
+print(tuple(np.multiply((5,5), (6,5))))

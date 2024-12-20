@@ -36,7 +36,7 @@ def loginUser(username, password):
         salt = cursor.execute(SQL, (username,)).fetchone() # fetches the salt associated with the username
         password = hash(password, salt[0]) # using the salt, hashes the given password and stores it back in the password variable
         SQL = "SELECT ID FROM Users WHERE username = ? and password = ?" # performs a comparison between the stored username / hashed password and the given username / hashed password.
-        result = cursor.execute(SQL, (username, password)).fetchone() # executes the above
+        result = cursor.execute(SQL, (username, password)).fetchone() # executes thew above
     except:
         print("Invalid username or password")
         result = None
@@ -99,7 +99,6 @@ while run:
         
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            print(pos)
             im.roomCollisions(pos)
 
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
