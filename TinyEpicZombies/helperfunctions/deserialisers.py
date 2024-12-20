@@ -13,7 +13,12 @@ def deserializeRoom(coords):
         data = json.loads("".join(file.readlines()))
         return(data["stores"][f"store{store}"]["rooms"][f"room{room}"])
 
-def deserializeTl(store):
+def deserializeStore(store):
     with open(os.path.join("TinyEpicZombies","jsonfiles", "roompoints.json")) as file:
         data = json.loads("".join(file.readlines()))
-        return(tuple(data["stores"][f"store{store}"]["tl"]))
+        return(data["stores"][f"store{store}"])
+
+def deserializeGame():
+    with open(os.path.join("TinyEpicZombies","jsonfiles", "game.json")) as file:
+        data = json.loads("".join(file.readlines()))
+        return(data)

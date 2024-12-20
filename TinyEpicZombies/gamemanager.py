@@ -4,7 +4,7 @@ from .eventgenerator import EventGenerator
 from .map import Map
 from .deckmanager import DeckManager
 from .zombiemap import ZombieMap
-from .constants import COLOURS, CENTRE_ROOM
+from ..TinyEpicZombies.helperfunctions.deserialisers import deserializeGame
 
 class GameManager(Listener, EventGenerator):
 
@@ -66,9 +66,8 @@ class GameManager(Listener, EventGenerator):
     def _initGame(self):
         players = int(input("How many players? [2/3/4]\n"))
         for i in range(players):
-            name = input(f"What is {COLOURS[i]} player's name?\n")
-            self.createPlayer(name, i, COLOURS[i], "character", CENTRE_ROOM)
-        # self.createPlayer("toby", 0, "BLUE", "Medic", (0,0))
+            name = input(f"What is player {i}'s name?\n")
+            self.createPlayer(name, i, "BLUE", "character", deserializeGame()["constants"]["spawn"]) # untested 20/12/24
 
     def createPlayer(self, name, playerID, colour, character, coords):
         player = Player(name, playerID, colour, character, coords)

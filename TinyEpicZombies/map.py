@@ -1,7 +1,7 @@
 from .adjlist import adjList
 from .store import Store
 from .room import Room
-from .constants import COLOURS
+from .helperfunctions.deserialisers import deserializeStore
 
 # To access the room at coordinates (a,b): map.stores[a].rooms[b]
 
@@ -25,7 +25,7 @@ class Map: # map will manage the rooms
         rooms = []
         for i in range(0,3):
             rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID, COLOURS[i]))
+        self.stores.append(Store(rooms, storeID, deserializeStore(storeID)["colour"]))
 
     def createCentreStore(self, storeID=4):
         rooms = []

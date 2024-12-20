@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-from .deserialisers import deserializeRoom, deserializeTl
+from .deserialisers import deserializeRoom, deserializeStore
 
 def genRoomRects():
     out = []
@@ -8,7 +8,7 @@ def genRoomRects():
         out.append([])
         for room in range(0,3):
             screenCoords = deserializeRoom((store, room))["collider"]
-            storeTl = deserializeTl(store)
+            storeTl = deserializeStore(store)["tl"]
             tl, br = tuple(screenCoords[0]), tuple(screenCoords[1])
             rect = pygame.Rect(0,0,20,20)
             rect.topleft = tl

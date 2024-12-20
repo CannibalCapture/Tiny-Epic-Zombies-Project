@@ -272,7 +272,7 @@
         "store7": {
             "image": "department.jpg",
             "colour": "BLUE",
-            "rotation": 180,
+            "rotation": 90,
             "tl": [0.43, 0.62],
             "rooms": {
                 "room0": {

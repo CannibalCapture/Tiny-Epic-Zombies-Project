@@ -1,7 +1,7 @@
 import pygame, os
 import numpy as np
-from .constants import peNames, rotations, CW, CH, tlCoords
-from .helperfunctions.deserialisers import deserializeTl
+from .constants import CW, CH
+from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -19,6 +19,7 @@ class GameRenderer:
         self.gameboardImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "woodBackground.jpg")).convert()
         self.gameboardImg = pygame.transform.scale(self.gameboardImg, (WIDTH, HEIGHT))
         self.storeSurfaces = self.__genStoreSurfaces()
+        self.tlCoords = self.__genTlCoords()
         
 
     def renderGameScreen(self):
@@ -28,9 +29,10 @@ class GameRenderer:
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
         storeSurfaces = []
-        for i in range(9):
-            pathEnd = peNames[i]
-            rotation = rotations[i]
+        for store in range(9):
+            info = deserializeStore(store)
+            pathEnd = info["image"]
+            rotation = info["rotation"]
             img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "stores", f"{pathEnd}"))
             img = pygame.transform.scale(img, (self.cw, self.ch))
             img = pygame.transform.rotate(img, rotation)
@@ -38,8 +40,15 @@ class GameRenderer:
         return storeSurfaces
     
     def __renderStores(self):
-        for store in range(len(self.storeSurfaces)):
-            DISPLAY.blit(self.storeSurfaces[store], tuple(np.multiply((WIDTH, HEIGHT), deserializeTl(store))))
+        for store in range(9):
+            DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
+
+    def __genTlCoords(self):
+        lst = []
+        for store in range(9):
+            lst.append(tuple(np.multiply((WIDTH, HEIGHT), deserializeStore(store)["tl"])))
+        print(lst)
+        return lst
 
     def __renderMovementOptions(self):
         rect = pygame.Rect(50,50,40,40)
