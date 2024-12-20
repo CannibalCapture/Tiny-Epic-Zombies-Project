@@ -2,15 +2,8 @@ import pygame, os
 import numpy as np
 from .constants import CW, CH
 from .helperfunctions.deserialisers import deserializeStore
-from .helperfunctions.roomrects import genRoomRects
-
-os.environ['SDL_VIDEO_CENTERED'] = '1'
-pygame.init()
-
-info = pygame.display.Info() # You have to call this before pygame.display.set_mode()
-WIDTH = info.current_w
-HEIGHT = info.current_h
-DISPLAY = pygame.display.set_mode((WIDTH, HEIGHT))
+from .helperfunctions.roomrects import genRoomRects, genTlCoords
+from .constants import WIDTH, HEIGHT, DISPLAY
 
 class GameRenderer:
     def __init__(self):
@@ -19,13 +12,7 @@ class GameRenderer:
         self.gameboardImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "woodBackground.jpg")).convert()
         self.gameboardImg = pygame.transform.scale(self.gameboardImg, (WIDTH, HEIGHT))
         self.storeSurfaces = self.__genStoreSurfaces()
-        self.tlCoords = self.__genTlCoords()
-        
-
-    def renderGameScreen(self):
-        DISPLAY.blit(self.gameboardImg)
-        self.__renderStores()
-        self.__renderMovementOptions()
+        self.tlCoords = genTlCoords()
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
         storeSurfaces = []
@@ -39,16 +26,15 @@ class GameRenderer:
             storeSurfaces.append(img)
         return storeSurfaces
     
+
+    def renderGameScreen(self):
+        DISPLAY.blit(self.gameboardImg)
+        self.__renderStores()
+        self.__renderMovementOptions()
+
     def __renderStores(self):
         for store in range(9):
             DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
-
-    def __genTlCoords(self):
-        lst = []
-        for store in range(9):
-            lst.append(tuple(np.multiply((WIDTH, HEIGHT), deserializeStore(store)["tl"])))
-        print(lst)
-        return lst
 
     def __renderMovementOptions(self):
         rect = pygame.Rect(50,50,40,40)
