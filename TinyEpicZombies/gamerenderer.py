@@ -38,7 +38,7 @@ class GameRenderer:
 
     def __renderMovementOptions(self):
         roomsLst = genRoomRects()
-        rect = pygame.Rect(50,50,40,40)
+        # rect = pygame.Rect(50,50,40,40)
         for store in range(0,9):
             for room in range(len(deserializeStore(store)["rooms"])):
                 rect = roomsLst[store][room]
