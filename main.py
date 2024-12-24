@@ -4,6 +4,7 @@ import pygame_gui.elements.ui_image
 from TinyEpicZombies.gamerenderer import GameRenderer
 from TinyEpicZombies.constants import WIDTH, HEIGHT, DISPLAY
 from TinyEpicZombies.inputmanager import InputManager
+import numpy as np
 
 def createNewUser(username, password):
     flag = True
@@ -89,7 +90,6 @@ while run:
 
     if manager == gameboard:
         renderer.renderGameScreen()
-        # renderer.renderMovementOptions()
 
 
     for event in pygame.event.get():

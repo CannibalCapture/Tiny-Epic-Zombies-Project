@@ -37,13 +37,9 @@ class GameRenderer:
             DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
 
     def __renderMovementOptions(self):
+        roomsLst = genRoomRects()
         rect = pygame.Rect(50,50,40,40)
         for store in range(0,9):
-            for room in range(0,3):
-                # coords = (store, room)
-                # points = deserializeCollider(coords)
-                # tl = ((tlCoords[store][0] + points[0][0]), (tlCoords[store][1] + points[0][1]))
-                # rect.topleft = tl
-                roomsLst = genRoomRects()
+            for room in range(len(deserializeStore(store)["rooms"])):
                 rect = roomsLst[store][room]
                 pygame.draw.rect(DISPLAY, (0,0,255), rect)

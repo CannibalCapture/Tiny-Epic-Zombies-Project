@@ -22,3 +22,6 @@ def deserializeGame():
     with open(os.path.join("TinyEpicZombies","jsonfiles", "game.json")) as file:
         data = json.loads("".join(file.readlines()))
         return(data)
+    
+def scale(tupleObj):
+    return(tupleObj[0]*WIDTH, tupleObj[1]*HEIGHT)
