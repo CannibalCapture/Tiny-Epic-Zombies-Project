@@ -1,5 +1,3 @@
-from .gamemanager import GameManager
-
 class Room:
     def __init__(self, roomID, coords, players=[], zombie=False, ammoRoom=False, playersThisTurn=set()):
         self.roomID = roomID
@@ -12,17 +10,16 @@ class Room:
     def serialize(self):
         dict = {
             "roomID": self.roomID,
-            "players": [player.returnID() for player in self.players],
+            "players": self.players,
             "zombie": self.zombie,
             "ammoRoom": self.ammoRoom,
             "coords": list(self.coords),
-            "playersThisTurn": list(player.returnID for player in self.playersThisTurn)
+            "playersThisTurn": self.playersThisTurn
         }
         return dict
 
     def deserialize(dict):
-        gameManager = GameManager.getInstance()
-        return Room(dict["roomID"], tuple(dict["coords"]), [gameManager.getPlayer(playerID) for playerID in dict["players"]], dict["zombie"], dict["ammoRoom"], set(dict["playersThisTurn"]))
+        return Room(dict["roomID"], tuple(dict["coords"]), dict["players"], dict["zombie"], dict["ammoRoom"], set(dict["playersThisTurn"]))
 
     def addPlayer(self, player):
         self.players.append(player)

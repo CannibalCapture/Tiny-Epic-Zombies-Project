@@ -1,15 +1,16 @@
-from .adjlist import adjList
+from .adjlist import AdjList
 from .store import Store
 from .room import Room
-from .helperfunctions.deserialisers import deserializeStore
+from .helperfunctions.deserialisers import deserializeStore, deserializeRoom
 
 # To access the room at coordinates (a,b): map.stores[a].rooms[b]
 
 class Map: # map will manage the rooms
+
     def __init__(self, stores=[]):
         self.stores = stores
         self._initStores()
-        self.al = adjList(stores)
+        self.al = AdjList(stores)
         self.addEdges()
 
     def serialize(self):
@@ -23,15 +24,17 @@ class Map: # map will manage the rooms
 
     def createStore(self, storeID): # pass in a list of 3 rooms
         rooms = []
+        ds = deserializeStore(storeID)
         for i in range(0,3):
             rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID, deserializeStore(storeID)["colour"]))
+        self.stores.append(Store(rooms, storeID, ds["colour"], ds["image"], tuple(ds["tl"])))
 
     def createCentreStore(self, storeID=4):
         rooms = []
         for i in range(0,5):
+            ds = deserializeStore(4)
             rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID, "None"))
+        self.stores.append(Store(rooms, storeID, "None", ds["image"], ds["tl"]))
 
     def _initStores(self):
         for i in range(0,4):
@@ -101,13 +104,16 @@ class Map: # map will manage the rooms
         self.stores[coords[0]].rooms[coords[1]].setzombie(True)
         if coords[0] == 4:
             pass # take 1 from the barricade.
+
+    def getAdjList(self):
+        return self.al
     
     def shortestPath(self, startCoords, endCoords=(4,2)):
         endCoords = endCoords
         previousNodes = {} # previous node in path
         distances = {} # distances travelled to get to a certain node
         pathCompleted = {} # which paths are completed
-        rooms = list(self.al.returnAdjList().keys())
+        rooms = list(self.al.getAdjList().keys())
         shortestDistRoom = (0,0)
 
         for room in rooms:
@@ -128,7 +134,7 @@ class Map: # map will manage the rooms
                     shortestDistRoom = room
 
             pathCompleted[shortestDistRoom] = True
-            connectedRooms = self.al.returnMoves(shortestDistRoom)
+            connectedRooms = self.al.getMoves(shortestDistRoom)
 
             for room in connectedRooms: # expand the current room by iterating through the rooms connected to it. 
                 if pathCompleted[room] == False:

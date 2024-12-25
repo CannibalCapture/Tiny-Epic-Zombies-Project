@@ -3,8 +3,7 @@ from pygame.locals import *
 import pygame_gui.elements.ui_image
 from TinyEpicZombies.gamerenderer import GameRenderer
 from TinyEpicZombies.constants import WIDTH, HEIGHT, DISPLAY
-from TinyEpicZombies.inputmanager import InputManager
-import numpy as np
+from TinyEpicZombies.gamemanager import GameManager
 
 def createNewUser(username, password):
     flag = True
@@ -81,7 +80,7 @@ exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20)
 
 manager = gameboard
 renderer = GameRenderer()
-im = InputManager()
+gm = GameManager()
 
 run = True
 while run:
@@ -89,8 +88,7 @@ while run:
     DISPLAY.fill((0, 0, 0))
 
     if manager == gameboard:
-        renderer.renderGameScreen()
-
+        gm.renderGameScreen()
 
     for event in pygame.event.get():
 
@@ -99,7 +97,6 @@ while run:
         
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            print(im.roomCollisions(pos))
 
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == loginButton: # calls the login process

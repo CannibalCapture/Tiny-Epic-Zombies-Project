@@ -1,16 +1,15 @@
 import pygame
 import numpy as np
 from .deserialisers import deserializeRoom, deserializeStore, scale
-from ..constants import WIDTH, HEIGHT
 
 def genRoomRects():
     out = []
-    sTl = genTlCoords()
+    sTl = genTlCoords() # storeTopLeft
     for store in range(0,9):
         out.append([])
         for room in range(len(deserializeStore(store)["rooms"])):
-            dRoom = deserializeRoom((store, room))
-            rCenter = dRoom["centre"]
+            dRoom = deserializeRoom((store, room)) # deserializedRoom - contains dict with the information from deserialization.
+            rCenter = dRoom["centre"] # the point which will become the center of the rendered shape for the room. 
             rCenter = np.array(scale(rCenter))
             storeTl = np.array(sTl[store])
             rCenter = tuple(rCenter + storeTl)
@@ -22,5 +21,5 @@ def genRoomRects():
 def genTlCoords():
     lst = []
     for store in range(9):
-        lst.append(tuple(np.multiply((WIDTH, HEIGHT), deserializeStore(store)["tl"])))
+        lst.append(scale(deserializeStore(store)["tl"]))
     return lst

@@ -1,9 +1,8 @@
 import pygame, os
-import numpy as np
-from .constants import CW, CH
 from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects, genTlCoords
-from .constants import WIDTH, HEIGHT, DISPLAY
+from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
+from .adjlist import AdjList
 
 class GameRenderer:
     def __init__(self):
@@ -13,6 +12,7 @@ class GameRenderer:
         self.gameboardImg = pygame.transform.scale(self.gameboardImg, (WIDTH, HEIGHT))
         self.storeSurfaces = self.__genStoreSurfaces()
         self.tlCoords = genTlCoords()
+        self.roomRects = genRoomRects()
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
         storeSurfaces = []
@@ -27,19 +27,17 @@ class GameRenderer:
         return storeSurfaces
     
 
-    def renderGameScreen(self):
+    def renderGameScreen(self, coordsLst):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
-        self.__renderMovementOptions()
+        self.__renderMovementOptions(coordsLst)
 
     def __renderStores(self):
         for store in range(9):
             DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
 
-    def __renderMovementOptions(self):
-        roomsLst = genRoomRects()
-        # rect = pygame.Rect(50,50,40,40)
-        for store in range(0,9):
-            for room in range(len(deserializeStore(store)["rooms"])):
-                rect = roomsLst[store][room]
-                pygame.draw.rect(DISPLAY, (0,0,255), rect)
+    def __renderMovementOptions(self, coordsLst, selected=None):
+        for item in coordsLst:
+            store, room = item[0], item[1]
+            rect = self.roomRects[store][room]
+            pygame.draw.rect(DISPLAY, (0,0,255), rect)

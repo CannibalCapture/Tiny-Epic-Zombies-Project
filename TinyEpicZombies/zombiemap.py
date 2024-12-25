@@ -1,11 +1,11 @@
 from .map import Map
-from .adjlist import adjList
+from .adjlist import AdjList
 
 class ZombieMap(Map):
     def __init__(self, stores=[]):
         self.stores = stores
         self._initStores()
-        self.al = adjList(self.stores)
+        self.al = AdjList(self.stores)
         self.addEdges()
 
     def addEdges(self):

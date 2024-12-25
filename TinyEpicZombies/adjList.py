@@ -1,4 +1,5 @@
-class adjList: # The graph is represented by an adjacency list.
+class AdjList: # The graph is represented by an adjacency list.
+
     def __init__(self, stores):
         self.adjList = {}
         self.createAdjList(stores)
@@ -20,8 +21,8 @@ class adjList: # The graph is represented by an adjacency list.
             return True
         return False
     
-    def returnMoves(self, coords):
+    def getMoves(self, coords):
         return self.adjList[coords]
 
-    def returnAdjList(self):
+    def getAdjList(self):
         return self.adjList

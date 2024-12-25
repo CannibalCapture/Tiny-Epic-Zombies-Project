@@ -1,7 +1,8 @@
 from random import choice
 from .listener import Listener
 from .eventgenerator import EventGenerator
-from .cards.card import MeleeWeapon, RangedWeapon
+from .cards.meleeweapon import MeleeWeapon
+from .cards.rangedweapon import RangedWeapon
 
 class Player(Listener, EventGenerator):
     def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, health=9, ammo=9, moves = 3):
@@ -84,14 +85,20 @@ class Player(Listener, EventGenerator):
     def equipRanged(self, newWeapon):
         self.rangedWeapon = newWeapon
     
-    def returnMelee(self):
+    def getMelee(self):
         return self.meleeWeapon
     
-    def returnRanged(self):
+    def getRanged(self):
         return self.rangedWeapon
     
-    def returnID(self):
+    def getID(self):
         return self.playerID
+    
+    def getCoords(self):
+        return self.coords
+    
+    def getMoves(self):
+        return self.moves
 
     def on_event(self, event):
         print(event)
