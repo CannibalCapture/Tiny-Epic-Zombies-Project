@@ -12,10 +12,14 @@ class AdjList: # The graph is represented by an adjacency list.
     def addNode(self, coords):
         self.adjList[coords] = []
 
-    def addEdge(self, r1Coords, r2Coords): # adds an edge between room1 and room2
-        self.adjList[r1Coords].append(r2Coords)
-        self.adjList[r2Coords].append(r1Coords)
-    
+    def addEdge(self, r1Coords, roomsLst): # adds an edge between room1 and the rooms in roomsLst
+        for item in roomsLst:
+            try:
+                room, store = item[0], item[1]
+                self.adjList[r1Coords].append((room, store))
+            except:
+                pass
+        
     def validatePlayerMove(self, player, coords):
         if coords in self.adjList[player.coords]:
             return True

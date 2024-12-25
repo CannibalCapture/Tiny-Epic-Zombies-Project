@@ -34,7 +34,10 @@ class GameRenderer:
 
     def __renderStores(self):
         for store in range(9):
-            DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
+            if store == 49:
+                DISPLAY.blit(self.storeSurfaces[store], (0,0))
+            else:
+                DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
 
     def __renderMovementOptions(self, coordsLst, selected=None):
         for item in coordsLst:

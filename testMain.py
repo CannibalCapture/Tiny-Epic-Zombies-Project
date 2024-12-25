@@ -8,4 +8,3 @@ gm = GameManager()
 
 print(gm.getMap().getAdjList().getAdjList())
 
-# [(4, 3), (6, 2), (7, 1), (7, 2)]

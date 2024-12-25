@@ -13,9 +13,9 @@ class InputManager:
                 collide = rect.collidepoint(pos)
                 if collide:
                     self.lastClickedRoom = (store, room)
-                    return
+                    return self.lastClickedRoom
         self.lastClickedRoom = None  
-        return
+        return self.lastClickedRoom
     
     def getLastClickedRoom(self):
         return self.lastClickedRoom

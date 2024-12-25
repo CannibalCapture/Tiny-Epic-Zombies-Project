@@ -97,6 +97,10 @@ while run:
         
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
+            print(f"{pos[0]/WIDTH}, {pos[1]/HEIGHT}")
+            coll = gm.im.roomCollisions(pos)
+            if coll:
+                gm.movePlayer(gm.players[0], coll)
 
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == loginButton: # calls the login process
