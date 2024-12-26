@@ -13,6 +13,8 @@ class GameRenderer:
         self.storeSurfaces = self.__genStoreSurfaces()
         self.tlCoords = genTlCoords()
         self.roomRects = genRoomRects()
+        self.opacity = 50
+        self.flag = True
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
         storeSurfaces = []
@@ -34,13 +36,26 @@ class GameRenderer:
 
     def __renderStores(self):
         for store in range(9):
-            if store == 49:
-                DISPLAY.blit(self.storeSurfaces[store], (0,0))
-            else:
-                DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
+            DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
 
     def __renderMovementOptions(self, coordsLst, selected=None):
+        if self.flag:
+            self.opacity += 2
+        else:
+            self.opacity -= 2
+        
+        if self.opacity > 240:
+            self.flag = False
+        elif self.opacity < 5:
+            self.flag = True
+
         for item in coordsLst:
             store, room = item[0], item[1]
             rect = self.roomRects[store][room]
-            pygame.draw.rect(DISPLAY, (0,0,255), rect)
+
+            surface = pygame.Surface((30,30), pygame.SRCALPHA)
+            surface.fill((0,255,0, self.opacity))
+            DISPLAY.blit(surface, rect)
+            # pygame.display.flip()
+
+            # pygame.draw.rect(DISPLAY, (0,0,255), rect)

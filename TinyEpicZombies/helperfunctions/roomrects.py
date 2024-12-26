@@ -13,7 +13,7 @@ def genRoomRects():
             rCenter = np.array(scale(rCenter))
             storeTl = np.array(sTl[store])
             rCenter = tuple(rCenter + storeTl)
-            rect = pygame.Rect(0,0, 20, 20)
+            rect = pygame.Rect(0,0, 30, 30)
             rect.center = rCenter
             out[-1].append(rect)
     return out
