@@ -15,7 +15,7 @@ class InputManager:
                     self.lastClickedRoom = (store, room)
                     return self.lastClickedRoom
         self.lastClickedRoom = None  
-        return self.lastClickedRoom
+        return
     
     def getLastClickedRoom(self):
         return self.lastClickedRoom

@@ -23,7 +23,8 @@ class GameManager(Listener, EventGenerator):
         EventGenerator.__init__(self)
         self.players = players # players is a dictionary with key=playerID, value=playerObject
         self.respawns = respawns
-        self.turn = 0
+        self.turn = 0 # playerID representing which player's turn it is currently
+        self.movesRemaining = 0
         self.map = Map()
         self.zm = ZombieMap()
         self.dm = DeckManager()
@@ -48,22 +49,35 @@ class GameManager(Listener, EventGenerator):
         gameManager.setZM(ZombieMap.deserialize())
         gameManager.setDM(DeckManager.deserialize())
 
-
     def on_event(self, event):
         super().on_event(event)
+
         if event['type'] == 'PLAYER DIE':
             self.respawns -= 1
             if self.respawns < 0:
                 pass # check if game is over
             else:
                 self.players[event['playerID']].reset()
-                
         
-    def playerTurn(self, player):
-        for move in range(0, player.getMoves()):
-            selected = self.im.getLastClickedRoom()
+    def playerTurn(self, player=0):
+        if self.movesRemaining != 0:
+            pass
+        else:
+            print("no moves remaining")
+            self.nextTurn()
+            self.movesRemaining = self.getPlayer(self.turn).getMoves()
+            # zombie turn and increment self.turn
 
-            # self.movePlayer(player, moveCoords)
+    def onClick(self, pos):
+        coll = self.im.roomCollisions(pos)
+        if coll:
+            self.movePlayer(self.getPlayer(0), coll)
+
+    def nextTurn(self):
+        if self.turn == len(self.players) - 1:
+            self.turn = 0
+        else:
+            self.turn += 1
 
     def _initListeners(self):
         pass
@@ -75,6 +89,9 @@ class GameManager(Listener, EventGenerator):
             # name = input(f"What is player {i}'s name?\n")
             name = "Toby"
             self.createPlayer(name, i, "BLUE", "character", tuple(deserializeGame()["constants"]["spawn"]))
+        
+        self.movesRemaining = self.getPlayer(self.turn).getMoves()
+        print(self.movesRemaining)
 
 
     def createPlayer(self, name, playerID, colour, character, coords):
@@ -95,6 +112,9 @@ class GameManager(Listener, EventGenerator):
 
             event = {"type":"PLAYER MOVED", "playerID":player.playerID, "coords":player.coords}
             self.send_event(event)
+
+            self.movesRemaining -= 1
+            print(self.movesRemaining)
 
         else:
             print("Invalid move")
@@ -137,6 +157,9 @@ class GameManager(Listener, EventGenerator):
         self.map.addZombie(coords)
         # make noise
     
+    def givePos(self):
+        pass
+
     def getPlayer(self, playerID):
         return self.players[playerID]
 

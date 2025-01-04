@@ -2,7 +2,6 @@ import pygame, os
 from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects, genTlCoords
 from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
-from .adjlist import AdjList
 
 class GameRenderer:
     def __init__(self):
@@ -13,7 +12,7 @@ class GameRenderer:
         self.storeSurfaces = self.__genStoreSurfaces()
         self.tlCoords = genTlCoords()
         self.roomRects = genRoomRects()
-        self.opacity = 50
+        self.opacity = 88
         self.flag = True
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
@@ -29,33 +28,28 @@ class GameRenderer:
         return storeSurfaces
     
 
-    def renderGameScreen(self, coordsLst):
+    def renderGameScreen(self, coordsLst=None, selected=None):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
+        self.__renderMovementOptions(coordsLst, selected)
+    
+    def renderMovementOptions(self, coordsLst, selected=None):
         self.__renderMovementOptions(coordsLst)
+
 
     def __renderStores(self):
         for store in range(9):
             DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
 
-    def __renderMovementOptions(self, coordsLst, selected=None):
-        if self.flag:
-            self.opacity += 2
-        else:
-            self.opacity -= 2
-        
-        if self.opacity > 240:
-            self.flag = False
-        elif self.opacity < 5:
-            self.flag = True
+    def __renderMovementOptions(self, coordsLst, selected=None): # coordsLst are the coordinates available for moving to
 
         for item in coordsLst:
+            opacity = 255
+            if item == selected:
+                opacity = 85
             store, room = item[0], item[1]
             rect = self.roomRects[store][room]
 
             surface = pygame.Surface((30,30), pygame.SRCALPHA)
-            surface.fill((0,255,0, self.opacity))
+            surface.fill((0,255,0, opacity))
             DISPLAY.blit(surface, rect)
-            # pygame.display.flip()
-
-            # pygame.draw.rect(DISPLAY, (0,0,255), rect)

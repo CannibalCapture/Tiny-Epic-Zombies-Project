@@ -26,8 +26,6 @@ def hash(data, salt):
     hashedData = bcrypt.hashpw(bytes, salt)
     return hashedData
 
-# createNewUser("Toby", "password123")
-
 def loginUser(username, password):
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
@@ -89,6 +87,7 @@ while run:
 
     if manager == gameboard:
         gm.renderGameScreen()
+        gm.playerTurn()
 
     for event in pygame.event.get():
 
@@ -97,9 +96,7 @@ while run:
         
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            coll = gm.im.roomCollisions(pos)
-            if coll:
-                gm.movePlayer(gm.players[0], coll)
+            gm.onClick(pos)
 
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == loginButton: # calls the login process

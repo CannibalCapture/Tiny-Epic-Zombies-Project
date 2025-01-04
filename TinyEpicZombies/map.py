@@ -1,7 +1,7 @@
 from .adjlist import AdjList
 from .store import Store
 from .room import Room
-from .helperfunctions.deserialisers import deserializeStore, deserializeRoom
+from .helperfunctions.deserialisers import deserializeStore
 
 # To access the room at coordinates (a,b): map.stores[a].rooms[b]
 
@@ -87,9 +87,9 @@ class Map: # map will manage the rooms
         self.al.addEdge((8,0), [(5,2), (8,1)])
         self.al.addEdge((8,1), [(5,2), (8,0), (8,2)])
         self.al.addEdge((8,2), [(5,2), (8,1), (7,1), (7,2)])
-    
+
     def addZombie(self, coords):
-        # A* to find next room? (Justify with "useful to have in case of further development / zombies being able to move differently in another gamemode")
+        # Dijkstra to find next room? (Justify with "useful to have in case of further development / zombies being able to move differently in another gamemode")
         self.stores[coords[0]].rooms[coords[1]].setzombie(True)
         if coords[0] == 4:
             pass # take 1 from the barricade.
