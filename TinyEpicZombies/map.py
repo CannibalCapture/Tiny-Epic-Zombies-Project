@@ -11,7 +11,9 @@ class Map: # map will manage the rooms
         self.stores = stores
         self._initStores()
         self.al = AdjList(stores)
+        self.zAl = AdjList(stores)
         self.addEdges()
+        self.addZEdges()
 
     def serialize(self):
         dict = {
@@ -43,11 +45,11 @@ class Map: # map will manage the rooms
         for j in range(5,9):
             self.createStore(j)
         
-    def returnStores(self):
-        out = []
-        for store in self.stores:
-            out.append(store.storeID)
-        return out
+    def getStores(self):
+        return self.stores
+    
+    def getRoom(self, coord):
+        return self.getStores()[coord[0]].getRooms()[coord[1]]
 
     def addEdges(self): # Adds edges (left to right, top to bottom on the image)
         self.al.addEdge((0,0), [(0,1), (0,2)])
@@ -88,6 +90,39 @@ class Map: # map will manage the rooms
         self.al.addEdge((8,1), [(5,2), (8,0), (8,2)])
         self.al.addEdge((8,2), [(5,2), (8,1), (7,1), (7,2)])
 
+    def addZEdges(self): # Adds edges to the zombie map
+        self.zAl.addEdge((0,0),[(0,1)])
+        self.zAl.addEdge((0,1),[(0,2)])
+        self.zAl.addEdge((0,2),[(1,0)])
+        self.zAl.addEdge((1,0),[(1,1)])
+        self.zAl.addEdge((1,1),[(1,2)])
+        self.zAl.addEdge((1,2),[(4,1)])
+        self.zAl.addEdge((4,1),[(4,2)])
+
+        self.zAl.addEdge((2,0),[(2,1)])
+        self.zAl.addEdge((2,1),[(2,2)])
+        self.zAl.addEdge((2,2),[(5,0)])
+        self.zAl.addEdge((5,0),[(5,1)])
+        self.zAl.addEdge((5,1),[(5,2)])
+        self.zAl.addEdge((5,2),[(4,4)])
+        self.zAl.addEdge((4,4),[(4,2)])
+
+        self.zAl.addEdge((8,0),[(8,1)])
+        self.zAl.addEdge((8,1),[(8,2)])
+        self.zAl.addEdge((8,2),[(7,0)])
+        self.zAl.addEdge((7,0),[(7,1)])
+        self.zAl.addEdge((7,1),[(7,2)])
+        self.zAl.addEdge((7,2),[(4,3)])
+        self.zAl.addEdge((4,3),[(4,2)])
+
+        self.zAl.addEdge((6,0),[(6,1)])
+        self.zAl.addEdge((6,1),[(6,2)])
+        self.zAl.addEdge((6,2),[(3,0)])
+        self.zAl.addEdge((3,0),[(3,1)])
+        self.zAl.addEdge((3,1),[(3,2)])
+        self.zAl.addEdge((3,2),[(4,0)])
+        self.zAl.addEdge((4,0),[(4,2)])
+
     def addZombie(self, coords):
         # Dijkstra to find next room? (Justify with "useful to have in case of further development / zombies being able to move differently in another gamemode")
         self.stores[coords[0]].rooms[coords[1]].setzombie(True)
@@ -96,13 +131,19 @@ class Map: # map will manage the rooms
 
     def getAdjList(self):
         return self.al
+
+    def getZAdjList(self):
+        return self.zAl
     
-    def shortestPath(self, startCoords, endCoords=(4,2)):
+    def shortestPath(self, startCoords, zombie=False, endCoords=(4,2)):
         endCoords = endCoords
         previousNodes = {} # previous node in path
         distances = {} # distances travelled to get to a certain node
         pathCompleted = {} # which paths are completed
-        rooms = list(self.al.getAdjList().keys())
+        if zombie:
+            rooms = list(self.zAl.getAdjList().keys())
+        else:
+            rooms = list(self.al.getAdjList().keys())
         shortestDistRoom = (0,0)
 
         for room in rooms:
@@ -123,7 +164,10 @@ class Map: # map will manage the rooms
                     shortestDistRoom = room
 
             pathCompleted[shortestDistRoom] = True
-            connectedRooms = self.al.getMoves(shortestDistRoom)
+            if zombie:
+                connectedRooms = self.zAl.getMoves(shortestDistRoom)
+            else:
+                connectedRooms = self.al.getMoves(shortestDistRoom)
 
             for room in connectedRooms: # expand the current room by iterating through the rooms connected to it. 
                 if pathCompleted[room] == False:
@@ -136,5 +180,6 @@ class Map: # map will manage the rooms
         while room != startCoords:
             path.insert(0, room)
             room = previousNodes[room]
+        path.insert(0, startCoords)
         
-        return(path, distances[endCoords])
+        return(path)

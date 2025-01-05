@@ -5,6 +5,5 @@ from TinyEpicZombies.gamemanager import GameManager
 # Cards which affect movement will be dealt with in the code for generating a player turn.
 # List of status effects [("what it is", "how many turns it will last")]
 gm = GameManager()
-
-print(gm.getMap().getAdjList().getAdjList())
+# print(gm.map.getZAdjList().getAdjList())
 

@@ -19,3 +19,11 @@ class Store:
     def deserialize(dict):
         return Store([room.deserialize() for room in dict["rooms"]], dict["storeID"], dict["noiseColour"], dict["image"], dict["tl"])
     
+    def getNoiseColour(self):
+        return self.noiseColour
+
+    def getStoreID(self):
+        return self.storeID
+    
+    def getRooms(self):
+        return self.rooms

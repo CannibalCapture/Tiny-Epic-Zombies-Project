@@ -3,7 +3,6 @@ from .listener import Listener
 from .eventgenerator import EventGenerator
 from .map import Map
 from .deckmanager import DeckManager
-from .zombiemap import ZombieMap
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
@@ -26,7 +25,6 @@ class GameManager(Listener, EventGenerator):
         self.turn = 0 # playerID representing which player's turn it is currently
         self.movesRemaining = 0
         self.map = Map()
-        self.zm = ZombieMap()
         self.dm = DeckManager()
         self.im = InputManager()
         self.renderer = GameRenderer()
@@ -46,7 +44,6 @@ class GameManager(Listener, EventGenerator):
         gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]} )
 
         gameManager.setMap(Map.deserialize())
-        gameManager.setZM(ZombieMap.deserialize())
         gameManager.setDM(DeckManager.deserialize())
 
     def on_event(self, event):
@@ -63,10 +60,47 @@ class GameManager(Listener, EventGenerator):
         if self.movesRemaining != 0:
             pass
         else:
-            print("no moves remaining")
+            print(self.zombieTurn())
+
+            # zombie turn
+            
             self.nextTurn()
-            self.movesRemaining = self.getPlayer(self.turn).getMoves()
-            # zombie turn and increment self.turn
+            self.movesRemaining = self.players[self.turn].getMoves()
+
+    def zombieTurn(self):
+        zombies = 1 # zombies is the number of zombies added to each store which matches the type of noise the player made
+        routes = []
+        spawnLocations = []
+
+        storeColour = self.players[self.turn].getCoords()[0] # gets ID of store that the player is in
+        storeColour = self.map.getStores()[storeColour].getNoiseColour()
+        lastNoise = 'PURPLE' # noise made by the player *NOT CURRENTLY IMPLEMENTED*
+        if storeColour == lastNoise:
+            zombies = 2
+        
+        storesLst = self.map.getStores()
+        for store in storesLst:
+            if store.getNoiseColour() == storeColour:
+                sp = self.map.shortestPath((store.getStoreID(), 0), zombie=True)
+                routes.append(sp)
+
+        for route in routes:
+            for coord in route:
+                zombieAtCoord = self.map.getStores()[coord[0]].getRooms()[coord[1]].getZombie()
+                if zombieAtCoord:
+                    pass
+                else:
+                    break
+
+            spawnLocations.append(coord)
+
+            for coord in spawnLocations:
+                if coord == (4,2):
+                    pass # deplete the barricade
+                else:
+                    self.map.getRoom(coord).setZombie(True)
+
+        return 
 
     def onClick(self, pos):
         coll = self.im.roomCollisions(pos)
@@ -91,7 +125,6 @@ class GameManager(Listener, EventGenerator):
             self.createPlayer(name, i, "BLUE", "character", tuple(deserializeGame()["constants"]["spawn"]))
         
         self.movesRemaining = self.getPlayer(self.turn).getMoves()
-        print(self.movesRemaining)
 
 
     def createPlayer(self, name, playerID, colour, character, coords):
@@ -114,7 +147,7 @@ class GameManager(Listener, EventGenerator):
             self.send_event(event)
 
             self.movesRemaining -= 1
-            print(self.movesRemaining)
+
 
         else:
             print("Invalid move")
@@ -172,8 +205,5 @@ class GameManager(Listener, EventGenerator):
     def setMap(self, map):
         self.map = map
     
-    def setZM(self, zm):
-        self.zm = zm
-
     def setDM(self, dm):
         self.dm = dm
