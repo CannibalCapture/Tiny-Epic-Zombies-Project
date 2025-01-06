@@ -14,6 +14,7 @@ class Map: # map will manage the rooms
         self.zAl = AdjList(stores)
         self.addEdges()
         self.addZEdges()
+        self.zombieRooms = set()
 
     def serialize(self):
         dict = {
@@ -124,16 +125,21 @@ class Map: # map will manage the rooms
         self.zAl.addEdge((4,0),[(4,2)])
 
     def addZombie(self, coords):
-        # Dijkstra to find next room? (Justify with "useful to have in case of further development / zombies being able to move differently in another gamemode")
-        self.stores[coords[0]].rooms[coords[1]].setzombie(True)
-        if coords[0] == 4:
-            pass # take 1 from the barricade.
+        self.stores[coords[0]].rooms[coords[1]].setZombie(True)
+        self.zombieRooms.add(coords)
+    
+    def removeZombie(self, coords):
+        self.stores[coords[0]].rooms[coords[1]].setZombie(False)
+        self.zombieRooms.remove(coords)
 
     def getAdjList(self):
         return self.al
 
     def getZAdjList(self):
         return self.zAl
+    
+    def getZombieRooms(self):
+        return self.zombieRooms
     
     def shortestPath(self, startCoords, zombie=False, endCoords=(4,2)):
         endCoords = endCoords
@@ -154,7 +160,6 @@ class Map: # map will manage the rooms
         distances[startCoords] = 0
 
         while pathCompleted[endCoords] == False:
-        # for i in range(2):
             shortestDist = float('inf')
             
             for room in rooms:

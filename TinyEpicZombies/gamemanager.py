@@ -70,7 +70,6 @@ class GameManager(Listener, EventGenerator):
     def zombieTurn(self):
         zombies = 1 # zombies is the number of zombies added to each store which matches the type of noise the player made
         routes = []
-        spawnLocations = []
 
         storeColour = self.players[self.turn].getCoords()[0] # gets ID of store that the player is in
         storeColour = self.map.getStores()[storeColour].getNoiseColour()
@@ -83,24 +82,26 @@ class GameManager(Listener, EventGenerator):
             if store.getNoiseColour() == storeColour:
                 sp = self.map.shortestPath((store.getStoreID(), 0), zombie=True)
                 routes.append(sp)
+        for i in range(zombies):
+            spawnLocations = []
+            for route in routes:
+                for coord in route:
+                    zombieAtCoord = self.map.getStores()[coord[0]].getRooms()[coord[1]].getZombie()
+                    if zombieAtCoord:
+                        pass
+                    else:
+                        break
 
-        for route in routes:
-            for coord in route:
-                zombieAtCoord = self.map.getStores()[coord[0]].getRooms()[coord[1]].getZombie()
-                if zombieAtCoord:
-                    pass
-                else:
-                    break
-
-            spawnLocations.append(coord)
+                spawnLocations.append(coord)
 
             for coord in spawnLocations:
                 if coord == (4,2):
-                    pass # deplete the barricade
+                    print("deplete barricade") # deplete the barricade
                 else:
-                    self.map.getRoom(coord).setZombie(True)
+                    print("added zombie at ", coord)
+                    self.map.addZombie(coord)
 
-        return 
+        return
 
     def onClick(self, pos):
         coll = self.im.roomCollisions(pos)
@@ -184,10 +185,11 @@ class GameManager(Listener, EventGenerator):
     def renderGameScreen(self):
         player = self.getPlayer(self.turn)
         moveOptions = self.getMap().getAdjList().getMoves(player.getCoords())
-        self.renderer.renderGameScreen(moveOptions)
+        self.renderer.renderGameScreen(self.map.getZombieRooms(), moveOptions)
         
     def addZombie(self, coords):
         self.map.addZombie(coords)
+
         # make noise
     
     def givePos(self):

@@ -28,28 +28,33 @@ class GameRenderer:
         return storeSurfaces
     
 
-    def renderGameScreen(self, coordsLst=None, selected=None):
+    def renderGameScreen(self, zombieRooms=None, movementOptions=None, selected=None):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
-        self.__renderMovementOptions(coordsLst, selected)
+        self.renderZombies(zombieRooms)
+        self.__renderMovementOptions(movementOptions, selected)
     
     def renderMovementOptions(self, coordsLst, selected=None):
         self.__renderMovementOptions(coordsLst)
 
+    def renderZombies(self, coordsLst, rect=pygame.Rect):
+        for coord in coordsLst:
+            rect = self.roomRects[coord[0]][coord[1]]
+            surface = pygame.Surface((18,18), pygame.SRCALPHA)
+            surface.fill((0,80,0))
+            DISPLAY.blit(surface, rect)
 
     def __renderStores(self):
         for store in range(9):
             DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
 
     def __renderMovementOptions(self, coordsLst, selected=None): # coordsLst are the coordinates available for moving to
-
-        for item in coordsLst:
-            opacity = 255
-            if item == selected:
-                opacity = 85
-            store, room = item[0], item[1]
-            rect = self.roomRects[store][room]
+        for coord in coordsLst:
+            opacity = 80
+            if coord == selected:
+                opacity = 50
+            rect = self.roomRects[coord[0]][coord[1]]
 
             surface = pygame.Surface((30,30), pygame.SRCALPHA)
-            surface.fill((0,255,0, opacity))
+            surface.fill((0,0,255, opacity))
             DISPLAY.blit(surface, rect)
