@@ -46,11 +46,6 @@ class Map: # map will manage the rooms
         for j in range(5,9):
             self.createStore(j)
         
-    def getStores(self):
-        return self.stores
-    
-    def getRoom(self, coord):
-        return self.getStores()[coord[0]].getRooms()[coord[1]]
 
     def addEdges(self): # Adds edges (left to right, top to bottom on the image)
         self.al.addEdge((0,0), [(0,1), (0,2)])
@@ -140,6 +135,12 @@ class Map: # map will manage the rooms
     
     def getZombieRooms(self):
         return self.zombieRooms
+    
+    def getStores(self):
+        return self.stores
+    
+    def getRoom(self, coord):
+        return self.getStores()[coord[0]].getRooms()[coord[1]]
     
     def shortestPath(self, startCoords, zombie=False, endCoords=(4,2)):
         endCoords = endCoords

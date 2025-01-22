@@ -12,6 +12,7 @@ class GameRenderer:
         self.storeSurfaces = self.__genStoreSurfaces()
         self.tlCoords = genTlCoords()
         self.roomRects = genRoomRects()
+        self.buttons = []
         self.opacity = 88
         self.flag = True
 
@@ -27,12 +28,12 @@ class GameRenderer:
             storeSurfaces.append(img)
         return storeSurfaces
     
-
     def renderGameScreen(self, zombieRooms=None, movementOptions=None, selected=None):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
         self.renderZombies(zombieRooms)
         self.__renderMovementOptions(movementOptions, selected)
+        self.__renderButtons(self.buttons)
     
     def renderMovementOptions(self, coordsLst, selected=None):
         self.__renderMovementOptions(coordsLst)
@@ -43,6 +44,12 @@ class GameRenderer:
             surface = pygame.Surface((18,18), pygame.SRCALPHA)
             surface.fill((0,80,0))
             DISPLAY.blit(surface, rect)
+
+    def __renderButtons(self, buttons):
+        for button in buttons:
+            img = button.getImg()
+            tl = button.getRect().topleft
+            DISPLAY.blit(img, (tl))
 
     def __renderStores(self):
         for store in range(9):
@@ -58,3 +65,6 @@ class GameRenderer:
             surface = pygame.Surface((30,30), pygame.SRCALPHA)
             surface.fill((0,0,255, opacity))
             DISPLAY.blit(surface, rect)
+    
+    def addButton(self, button):
+        self.buttons.append(button)

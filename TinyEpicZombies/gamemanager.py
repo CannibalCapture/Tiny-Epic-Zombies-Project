@@ -6,6 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
+from .button import Button
 
 
 class GameManager(Listener, EventGenerator):
@@ -24,6 +25,7 @@ class GameManager(Listener, EventGenerator):
         self.respawns = respawns
         self.turn = 0 # playerID representing which player's turn it is currently
         self.movesRemaining = 0
+        self.moveAllowed = True
         self.map = Map()
         self.dm = DeckManager()
         self.im = InputManager()
@@ -58,11 +60,13 @@ class GameManager(Listener, EventGenerator):
         
     def playerTurn(self, player=0):
         if self.movesRemaining != 0:
-            pass
+            if self.moveAllowed:
+                pass # display possible moves
+            else:
+                pass # display takeable actions
         else:
-            print(self.zombieTurn())
-
-            # zombie turn
+            # search current store
+            self.zombieTurn()
             
             self.nextTurn()
             self.movesRemaining = self.players[self.turn].getMoves()
@@ -94,6 +98,7 @@ class GameManager(Listener, EventGenerator):
 
                 spawnLocations.append(coord)
 
+# check for spawn on player
             for coord in spawnLocations:
                 if coord == (4,2):
                     print("deplete barricade") # deplete the barricade
@@ -104,9 +109,9 @@ class GameManager(Listener, EventGenerator):
         return
 
     def onClick(self, pos):
-        coll = self.im.roomCollisions(pos)
-        if coll:
-            self.movePlayer(self.getPlayer(0), coll)
+        coll = self.im.collisions(pos)
+        if coll["lastClickedRoom"]:
+            self.movePlayer(self.getPlayer(0), coll["lastClickedRoom"])
 
     def nextTurn(self):
         if self.turn == len(self.players) - 1:
@@ -127,6 +132,9 @@ class GameManager(Listener, EventGenerator):
         
         self.movesRemaining = self.getPlayer(self.turn).getMoves()
 
+        attackButton = Button()
+        self.renderer.addButton(attackButton)
+        self.im.addButton(attackButton)
 
     def createPlayer(self, name, playerID, colour, character, coords):
         player = Player(name, playerID, colour, character, coords)
@@ -148,7 +156,7 @@ class GameManager(Listener, EventGenerator):
             self.send_event(event)
 
             self.movesRemaining -= 1
-
+            self.moveAllowed = False
 
         else:
             print("Invalid move")
@@ -186,7 +194,13 @@ class GameManager(Listener, EventGenerator):
         player = self.getPlayer(self.turn)
         moveOptions = self.getMap().getAdjList().getMoves(player.getCoords())
         self.renderer.renderGameScreen(self.map.getZombieRooms(), moveOptions)
-        
+
+    def playerCoords(self):
+        coords = [player.getCoords() for player in self.players]
+        out = []
+        for coord in coords:
+            out.append(self.map.getRoom(coord).getCen())
+
     def addZombie(self, coords):
         self.map.addZombie(coords)
 

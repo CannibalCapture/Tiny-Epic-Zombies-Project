@@ -4,6 +4,15 @@ from .helperfunctions.roomrects import genRoomRects
 class InputManager:
     def __init__(self):
         self.lastClickedRoom = None
+        self.buttons = []
+
+    def collisions(self, pos):
+        dict = {}
+        self.buttonCollisions(pos)
+        dict["lastClickedRoom"] = self.roomCollisions(pos)
+        print(dict)
+        return dict
+
 
     def roomCollisions(self, pos):
         rectsLst = genRoomRects()
@@ -17,5 +26,13 @@ class InputManager:
         self.lastClickedRoom = None  
         return
     
+    def buttonCollisions(self, pos):
+        for button in self.buttons:
+            if button.getRect().collidepoint(pos):
+                button.onClick()
+    
     def getLastClickedRoom(self):
         return self.lastClickedRoom
+    
+    def addButton(self, button):
+        self.buttons.append(button)
