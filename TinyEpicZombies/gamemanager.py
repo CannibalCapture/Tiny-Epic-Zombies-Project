@@ -131,8 +131,11 @@ class GameManager(Listener, EventGenerator):
             self.createPlayer(name, i, "BLUE", "character", tuple(deserializeGame()["constants"]["spawn"]))
         
         self.movesRemaining = self.getPlayer(self.turn).getMoves()
+        self.addButton()
 
+    def addButton(self):
         attackButton = Button()
+        attackButton.add_listener(self.renderer)
         self.renderer.addButton(attackButton)
         self.im.addButton(attackButton)
 

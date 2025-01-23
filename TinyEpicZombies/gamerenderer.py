@@ -1,9 +1,10 @@
 import pygame, os
 from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects, genTlCoords
+from .listener import Listener
 from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
 
-class GameRenderer:
+class GameRenderer(Listener):
     def __init__(self):
         self.cw = CW*WIDTH
         self.ch = CH*HEIGHT
@@ -12,6 +13,7 @@ class GameRenderer:
         self.storeSurfaces = self.__genStoreSurfaces()
         self.tlCoords = genTlCoords()
         self.roomRects = genRoomRects()
+        self.attackMode = False
         self.buttons = []
         self.players = []
         self.opacity = 88
@@ -29,17 +31,23 @@ class GameRenderer:
             storeSurfaces.append(img)
         return storeSurfaces
     
+    def on_event(self, event):
+        if event['type'] == 'ATTACK ON':
+            self.attackMode = True
+        elif event['type'] == 'ATTACK OFF':
+            self.attackMode = False
+    
     def renderGameScreen(self, zombieRooms=None, movementOptions=None, selected=None):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
+        if self.attackMode:
+            self.__renderAttackMode(zombieRooms, movementOptions)
+        else:
+            self.__renderMovementOptions(movementOptions, selected)
         self.__renderZombies(zombieRooms)
-        self.__renderMovementOptions(movementOptions, selected)
         self.__renderButtons()
         self.__renderPlayers()
-    
-    def renderMovementOptions(self, coordsLst, selected=None):
-        self.__renderMovementOptions(coordsLst)
-    
+
     def __renderPlayers(self):
         for player in self.players:
             coord = player.getCoords()
@@ -61,6 +69,15 @@ class GameRenderer:
             tl = button.getRect().topleft
             DISPLAY.blit(img, (tl))
 
+    def __renderAttackMode(self, zombieRooms, movementOptions):
+        for coord in movementOptions:
+            if coord in zombieRooms:
+                rect = self.roomRects[coord[0]][coord[1]]
+                surface = pygame.Surface((30,30), pygame.SRCALPHA)
+                surface.fill((255,0,0, 80))
+                DISPLAY.blit(surface, rect)
+
+
     def __renderStores(self):
         for store in range(9):
             DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
@@ -73,9 +90,10 @@ class GameRenderer:
             rect = self.roomRects[coord[0]][coord[1]]
 
             surface = pygame.Surface((30,30), pygame.SRCALPHA)
+
             surface.fill((0,0,255, opacity))
             DISPLAY.blit(surface, rect)
-    
+
     def addButton(self, button):
         self.buttons.append(button)
 
