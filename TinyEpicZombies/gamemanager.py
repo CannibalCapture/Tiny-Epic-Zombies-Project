@@ -98,14 +98,14 @@ class GameManager(Listener, EventGenerator):
 
                 spawnLocations.append(coord)
 
-# check for spawn on player
             for coord in spawnLocations:
                 if coord == (4,2):
                     print("deplete barricade") # deplete the barricade
+                if coord == self.getPlayer(self.turn).getCoords():
+                    pass # overrun
                 else:
                     print("added zombie at ", coord)
                     self.map.addZombie(coord)
-
         return
 
     def onClick(self, pos):
@@ -142,6 +142,7 @@ class GameManager(Listener, EventGenerator):
         player.move(coords) # coordinates will be in the form (storeID, room)
         self.add_listener(player)
         player.add_listener(self)
+        self.renderer.addPlayer(player)
 
     def movePlayer(self, player, newCoords): # newCoords is a tuple containing the storeID and the room in that store.
         if self.map.al.validatePlayerMove(player, newCoords):
@@ -199,7 +200,7 @@ class GameManager(Listener, EventGenerator):
         coords = [player.getCoords() for player in self.players]
         out = []
         for coord in coords:
-            out.append(self.map.getRoom(coord).getCen())
+            out.append(self.map.getRoom(coord))
 
     def addZombie(self, coords):
         self.map.addZombie(coords)

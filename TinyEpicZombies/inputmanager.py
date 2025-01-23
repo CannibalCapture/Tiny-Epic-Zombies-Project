@@ -10,9 +10,7 @@ class InputManager:
         dict = {}
         self.buttonCollisions(pos)
         dict["lastClickedRoom"] = self.roomCollisions(pos)
-        print(dict)
         return dict
-
 
     def roomCollisions(self, pos):
         rectsLst = genRoomRects()
@@ -25,7 +23,7 @@ class InputManager:
                     return self.lastClickedRoom
         self.lastClickedRoom = None  
         return
-    
+
     def buttonCollisions(self, pos):
         for button in self.buttons:
             if button.getRect().collidepoint(pos):

@@ -13,6 +13,7 @@ class GameRenderer:
         self.tlCoords = genTlCoords()
         self.roomRects = genRoomRects()
         self.buttons = []
+        self.players = []
         self.opacity = 88
         self.flag = True
 
@@ -31,22 +32,31 @@ class GameRenderer:
     def renderGameScreen(self, zombieRooms=None, movementOptions=None, selected=None):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
-        self.renderZombies(zombieRooms)
+        self.__renderZombies(zombieRooms)
         self.__renderMovementOptions(movementOptions, selected)
-        self.__renderButtons(self.buttons)
+        self.__renderButtons()
+        self.__renderPlayers()
     
     def renderMovementOptions(self, coordsLst, selected=None):
         self.__renderMovementOptions(coordsLst)
+    
+    def __renderPlayers(self):
+        for player in self.players:
+            coord = player.getCoords()
+            rect = self.roomRects[coord[0]][coord[1]]
+            surface = pygame.Surface((18,18), pygame.SRCALPHA)
+            surface.fill((255,0,0))
+            DISPLAY.blit(surface, rect)
 
-    def renderZombies(self, coordsLst, rect=pygame.Rect):
+    def __renderZombies(self, coordsLst, rect=pygame.Rect):
         for coord in coordsLst:
             rect = self.roomRects[coord[0]][coord[1]]
             surface = pygame.Surface((18,18), pygame.SRCALPHA)
             surface.fill((0,80,0))
             DISPLAY.blit(surface, rect)
 
-    def __renderButtons(self, buttons):
-        for button in buttons:
+    def __renderButtons(self):
+        for button in self.buttons:
             img = button.getImg()
             tl = button.getRect().topleft
             DISPLAY.blit(img, (tl))
@@ -68,3 +78,6 @@ class GameRenderer:
     
     def addButton(self, button):
         self.buttons.append(button)
+
+    def addPlayer(self, player):
+        self.players.append(player)
