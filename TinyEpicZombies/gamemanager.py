@@ -6,7 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import Button
+from .button import Button, AttackButton
 
 
 class GameManager(Listener, EventGenerator):
@@ -134,7 +134,7 @@ class GameManager(Listener, EventGenerator):
         self.addButton()
 
     def addButton(self):
-        attackButton = Button()
+        attackButton = AttackButton()
         attackButton.add_listener(self.renderer)
         self.renderer.addButton(attackButton)
         self.im.addButton(attackButton)

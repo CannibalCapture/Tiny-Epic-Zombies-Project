@@ -59,15 +59,10 @@ class GameRenderer(Listener):
     def __renderZombies(self, coordsLst, rect=pygame.Rect):
         for coord in coordsLst:
             rect = self.roomRects[coord[0]][coord[1]]
-            surface = pygame.Surface((18,18), pygame.SRCALPHA)
+            rect = rect.scale_by(0.5)
+            surface = pygame.Surface((15,15), pygame.SRCALPHA)
             surface.fill((0,80,0))
             DISPLAY.blit(surface, rect)
-
-    def __renderButtons(self):
-        for button in self.buttons:
-            img = button.getImg()
-            tl = button.getRect().topleft
-            DISPLAY.blit(img, (tl))
 
     def __renderAttackMode(self, zombieRooms, movementOptions):
         for coord in movementOptions:
@@ -77,6 +72,11 @@ class GameRenderer(Listener):
                 surface.fill((255,0,0, 80))
                 DISPLAY.blit(surface, rect)
 
+    def __renderButtons(self):
+        for button in self.buttons:
+            img = button.getImg()
+            tl = button.getRect().topleft
+            DISPLAY.blit(img, (tl))
 
     def __renderStores(self):
         for store in range(9):
