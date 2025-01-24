@@ -67,7 +67,7 @@ class Player(Listener, EventGenerator):
         return True
     
     def reset(self):
-        self.move((0,0)) # move to spawn room
+        self.move((4,2)) # move to spawn room
         self.ammo = 9
         self.health = 9
         self.meleeWeapon = None

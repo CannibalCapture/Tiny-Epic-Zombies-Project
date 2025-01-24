@@ -37,7 +37,7 @@ class Map: # map will manage the rooms
         for i in range(0,5):
             ds = deserializeStore(4)
             rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID, "None", ds["image"], ds["tl"]))
+        self.stores.append(Store(rooms, storeID, None, ds["image"], ds["tl"]))
 
     def _initStores(self):
         for i in range(0,4):

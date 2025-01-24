@@ -83,6 +83,9 @@ class GameManager(Listener, EventGenerator):
         
         storesLst = self.map.getStores()
         for store in storesLst:
+            if store.getNoiseColour() == None:
+                print("break")
+                break
             if store.getNoiseColour() == storeColour:
                 sp = self.map.shortestPath((store.getStoreID(), 0), zombie=True)
                 routes.append(sp)
