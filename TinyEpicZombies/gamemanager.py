@@ -75,16 +75,15 @@ class GameManager(Listener, EventGenerator):
         zombies = 1 # zombies is the number of zombies added to each store which matches the type of noise the player made
         routes = []
 
-        storeColour = self.players[self.turn].getCoords()[0] # gets ID of store that the player is in
-        storeColour = self.map.getStores()[storeColour].getNoiseColour()
+        storeColour = self.players[self.turn].getCoords()[0]
+        storeColour = self.map.getStores()[storeColour].getNoiseColour() # gets the colour of the store the player is currently in
         lastNoise = 'PURPLE' # noise made by the player *NOT CURRENTLY IMPLEMENTED*
         if storeColour == lastNoise:
             zombies = 2
         
         storesLst = self.map.getStores()
         for store in storesLst:
-            if store.getNoiseColour() == None:
-                print("break")
+            if storeColour == None:
                 break
             if store.getNoiseColour() == storeColour:
                 sp = self.map.shortestPath((store.getStoreID(), 0), zombie=True)
@@ -104,11 +103,11 @@ class GameManager(Listener, EventGenerator):
             for coord in spawnLocations:
                 if coord == (4,2):
                     print("deplete barricade") # deplete the barricade
-                if coord == self.getPlayer(self.turn).getCoords():
-                    pass # overrun
-                else:
+                else: # if the zombie is not spawning on a player
                     print("added zombie at ", coord)
                     self.map.addZombie(coord)
+                if coord != self.getPlayer(self.turn).getCoords():
+                    pass # overrun
         return
 
     def onClick(self, pos):
