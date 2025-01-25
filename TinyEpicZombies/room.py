@@ -58,3 +58,6 @@ class Room:
 
     def getZombie(self):
         return self.zombie
+    
+    def getCoords(self):
+        return self.coords

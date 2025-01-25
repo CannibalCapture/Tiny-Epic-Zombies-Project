@@ -26,6 +26,7 @@ class GameManager(Listener, EventGenerator):
         self.turn = 0 # playerID representing which player's turn it is currently
         self.movesRemaining = 0
         self.moveAllowed = True
+        self.buttons = {}
         self.map = Map()
         self.dm = DeckManager()
         self.im = InputManager()
@@ -111,8 +112,12 @@ class GameManager(Listener, EventGenerator):
 
     def onClick(self, pos):
         coll = self.im.collisions(pos)
-        if coll["lastClickedRoom"]:
-            self.movePlayer(self.getPlayer(0), coll["lastClickedRoom"])
+        lcr = coll["lastClickedRoom"]
+        if lcr:
+            if self.buttons["attack"].getState():
+                self.playerMelee(self.getPlayer(self.turn))
+            else:
+                self.movePlayer(self.getPlayer(0), lcr)
 
     def nextTurn(self):
         if self.turn == len(self.players) - 1:
@@ -132,13 +137,16 @@ class GameManager(Listener, EventGenerator):
             self.createPlayer(name, i, "BLUE", "character", tuple(deserializeGame()["constants"]["spawn"]))
         
         self.movesRemaining = self.getPlayer(self.turn).getMoves()
-        self.addButton()
+        self.addAttackButton()
+        self.renderer.addMap(self.map)
 
-    def addButton(self):
+    def addAttackButton(self):
         attackButton = AttackButton()
+        self.buttons["attack"] = attackButton
         attackButton.add_listener(self.renderer)
         self.renderer.addButton(attackButton)
         self.im.addButton(attackButton)
+        attackButton.enable()
 
     def createPlayer(self, name, playerID, colour, character, coords):
         player = Player(name, playerID, colour, character, coords)
@@ -160,28 +168,29 @@ class GameManager(Listener, EventGenerator):
             event = {"type":"PLAYER MOVED", "playerID":player.playerID, "coords":player.coords}
             self.send_event(event)
 
+            self.enableButtons()
             self.movesRemaining -= 1
-            self.moveAllowed = False
 
         else:
             print("Invalid move")
 
     def playerMelee(self, player):
-        room = self.map.getCoord(player.getCoords)
+        room = self.map.getRoom(player.getCoords())
+        self.disableButton("attack")
         if room.getZombie():
             player.meleeAttack()
-            room.setZombie(False)
+            self.map.removeZombie(room.getCoords())
             event = {"type":"PLAYER MELEE", "playerID":player.playerID, "coords":player.coords}
             self.send_event(event)
         else:
             print("Attack failed: No available target")
     
     def playerRanged(self, player, coords):
-        s = player.coords[0] # Store being shot into
-        r = player.coords[1] # Room being shot into
-        if self.map.al.validatePlayerMove(player, coords) and self.map.stores[s].rooms[r].zombie:
+        room = self.map.getCoord(player.getCoords)
+        self.disableButton("attack")
+        if room.getZombie():
             player.rangedAttack()
-            self.map.stores[s].rooms[r].setZombie(False)
+            room.setZombie(False)
             event = {"type":"PLAYER RANGED", "playerID":player.playerID, "coords":coords}
             self.send_event(event)
         else:
@@ -196,7 +205,7 @@ class GameManager(Listener, EventGenerator):
     def renderGameScreen(self):
         player = self.getPlayer(self.turn)
         moveOptions = self.getMap().getAdjList().getMoves(player.getCoords())
-        self.renderer.renderGameScreen(self.map.getZombieRooms(), moveOptions)
+        self.renderer.renderGameScreen(moveOptions)
 
     def playerCoords(self):
         coords = [player.getCoords() for player in self.players]
@@ -206,9 +215,14 @@ class GameManager(Listener, EventGenerator):
 
     def addZombie(self, coords):
         self.map.addZombie(coords)
-
-        # make noise
     
+    def enableButtons(self):
+        for button in self.buttons:
+            self.buttons[button].enable()
+    
+    def disableButton(self, button):
+        self.buttons[button].disable()
+
     def givePos(self):
         pass
 

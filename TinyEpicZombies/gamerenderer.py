@@ -2,6 +2,7 @@ import pygame, os
 from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects, genTlCoords
 from .listener import Listener
+from .map import Map
 from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
 
 class GameRenderer(Listener):
@@ -16,6 +17,7 @@ class GameRenderer(Listener):
         self.attackMode = False
         self.buttons = []
         self.players = []
+        self.map = None
         self.opacity = 88
         self.flag = True
 
@@ -37,7 +39,8 @@ class GameRenderer(Listener):
         elif event['type'] == 'ATTACK OFF':
             self.attackMode = False
     
-    def renderGameScreen(self, zombieRooms=None, movementOptions=None, selected=None):
+    def renderGameScreen(self, movementOptions=None, selected=None):
+        zombieRooms = self.map.getZombieRooms()
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
         if self.attackMode:
@@ -48,6 +51,9 @@ class GameRenderer(Listener):
         self.__renderButtons()
         self.__renderPlayers()
 
+    def addMap(self, value:Map):
+        self.map = value
+    
     def __renderPlayers(self):
         for player in self.players:
             coord = player.getCoords()
@@ -60,8 +66,8 @@ class GameRenderer(Listener):
         ammo = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "ammo.jpg"))
         health = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "health.jpg"))
 
-    def __renderZombies(self, coordsLst, rect=pygame.Rect):
-        for coord in coordsLst:
+    def __renderZombies(self, zombieRooms, rect=pygame.Rect):
+        for coord in zombieRooms:
             rect = self.roomRects[coord[0]][coord[1]]
             rect = rect.scale_by(0.5)
             surface = pygame.Surface((15,15), pygame.SRCALPHA)
@@ -80,6 +86,8 @@ class GameRenderer(Listener):
         for button in self.buttons:
             img = button.getImg()
             tl = button.getRect().topleft
+            if button.getEnabled():
+                pass
             DISPLAY.blit(img, (tl))
 
     def __renderStores(self):
