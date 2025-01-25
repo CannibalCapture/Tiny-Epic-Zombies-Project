@@ -103,10 +103,9 @@ class GameManager(Listener, EventGenerator):
             for coord in spawnLocations:
                 if coord == (4,2):
                     print("deplete barricade") # deplete the barricade
-                else: # if the zombie is not spawning on a player
-                    print("added zombie at ", coord)
+                else:
                     self.map.addZombie(coord)
-                if coord != self.getPlayer(self.turn).getCoords():
+                if coord != self.getPlayer(self.turn).getCoords(): # if the zombie spawns on a player
                     pass # overrun
         return
 
@@ -168,16 +167,14 @@ class GameManager(Listener, EventGenerator):
             print("Invalid move")
 
     def playerMelee(self, player):
-        cs = player.coords[0] # Current store
-        cr = player.coords[1] # Current room within the store
-        if self.map.stores[cs].rooms[cr].zombie:
+        room = self.map.getCoord(player.getCoords)
+        if room.getZombie():
             player.meleeAttack()
-            self.map.stores[cs].rooms[cr].setZombie(False)
+            room.setZombie(False)
             event = {"type":"PLAYER MELEE", "playerID":player.playerID, "coords":player.coords}
             self.send_event(event)
         else:
             print("Attack failed: No available target")
-            print(self.map.stores[cs].rooms[cr].coords)
     
     def playerRanged(self, player, coords):
         s = player.coords[0] # Store being shot into

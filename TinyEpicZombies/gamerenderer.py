@@ -55,6 +55,10 @@ class GameRenderer(Listener):
             surface = pygame.Surface((18,18), pygame.SRCALPHA)
             surface.fill((255,0,0))
             DISPLAY.blit(surface, rect)
+        
+    def __renderHealthBar(self):
+        ammo = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "ammo.jpg"))
+        health = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "health.jpg"))
 
     def __renderZombies(self, coordsLst, rect=pygame.Rect):
         for coord in coordsLst:
