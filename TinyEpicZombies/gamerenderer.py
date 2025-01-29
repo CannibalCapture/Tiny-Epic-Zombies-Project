@@ -14,9 +14,10 @@ class GameRenderer(Listener):
         self.storeSurfaces = self.__genStoreSurfaces()
         self.tlCoords = genTlCoords()
         self.roomRects = genRoomRects()
-        self.attackMode = False
         self.buttons = []
         self.players = []
+        self.mode = "move"
+        self.turn = 0
         self.map = None
         self.opacity = 88
         self.flag = True
@@ -34,25 +35,36 @@ class GameRenderer(Listener):
         return storeSurfaces
     
     def on_event(self, event):
-        if event['type'] == 'ATTACK ON':
-            self.attackMode = True
-        elif event['type'] == 'ATTACK OFF':
-            self.attackMode = False
-    
-    def renderGameScreen(self, movementOptions=None, selected=None):
-        zombieRooms = self.map.getZombieRooms()
+        if event['type'] == 'MODE CHANGE':
+            self.mode = event['mode']
+        if event['type'] == 'TURN CHANGE':
+            self.turn = event['turn']
+        if event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
+            self.mode = "move"
+
+    # def renderGameScreen(self, movementOptions=None, selected=None):
+    #     zombieRooms = self.map.getZombieRooms()
+    #     if self.mode == "attack":
+    #         self.__renderAttackMode(zombieRooms, movementOptions)
+    #     else:
+    #         self.__renderMovementOptions(movementOptions, selected)
+
+    def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
-        if self.attackMode:
-            self.__renderAttackMode(zombieRooms, movementOptions)
-        else:
-            self.__renderMovementOptions(movementOptions, selected)
-        self.__renderZombies(zombieRooms)
+        self.__renderZombies()
         self.__renderButtons()
         self.__renderPlayers()
+        self.renderOverlay()
 
     def addMap(self, value:Map):
         self.map = value
+
+    def renderOverlay(self):
+        if self.mode == "move":
+            self.__renderMovementOptions(self.turn)
+        if self.mode == "attack":
+            self.__renderAttackMode(self.turn)
     
     def __renderPlayers(self):
         for player in self.players:
@@ -62,11 +74,13 @@ class GameRenderer(Listener):
             surface.fill((255,0,0))
             DISPLAY.blit(surface, rect)
         
-    def __renderHealthBar(self):
+    def __renderPlayerCard(self):
         ammo = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "ammo.jpg"))
         health = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "health.jpg"))
+        # show the whole player card
 
-    def __renderZombies(self, zombieRooms, rect=pygame.Rect):
+    def __renderZombies(self):
+        zombieRooms = self.map.getZombieRooms()
         for coord in zombieRooms:
             rect = self.roomRects[coord[0]][coord[1]]
             rect = rect.scale_by(0.5)
@@ -74,7 +88,14 @@ class GameRenderer(Listener):
             surface.fill((0,80,0))
             DISPLAY.blit(surface, rect)
 
-    def __renderAttackMode(self, zombieRooms, movementOptions):
+    def __renderAttackMode(self, turn):
+        zombieRooms = self.map.getZombieRooms()
+        player = self.players[turn]
+        movementOptions = player.getMovementOptions()
+        # ask james about the below (rendering an attack box over zombie in room w/ player)
+        # print(movementOptions)
+        # movementOptions.insert(0, player.getCoords())
+        # print(movementOptions)
         for coord in movementOptions:
             if coord in zombieRooms:
                 rect = self.roomRects[coord[0]][coord[1]]
@@ -86,19 +107,16 @@ class GameRenderer(Listener):
         for button in self.buttons:
             img = button.getImg()
             tl = button.getRect().topleft
-            if button.getEnabled():
-                pass
             DISPLAY.blit(img, (tl))
 
     def __renderStores(self):
         for store in range(9):
             DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
 
-    def __renderMovementOptions(self, coordsLst, selected=None): # coordsLst are the coordinates available for moving to
+    def __renderMovementOptions(self, turn): # coordsLst are the coordinates available for moving to
+        coordsLst = self.players[turn].getMovementOptions()
         for coord in coordsLst:
             opacity = 80
-            if coord == selected:
-                opacity = 50
             rect = self.roomRects[coord[0]][coord[1]]
 
             surface = pygame.Surface((30,30), pygame.SRCALPHA)

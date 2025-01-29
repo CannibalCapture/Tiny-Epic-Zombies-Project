@@ -127,6 +127,9 @@ class Map: # map will manage the rooms
         self.stores[coords[0]].rooms[coords[1]].setZombie(False)
         self.zombieRooms.remove(coords)
 
+    def getMovementOptions(self, coords):
+        return self.al.getMoves(coords)
+
     def getAdjList(self):
         return self.al
 

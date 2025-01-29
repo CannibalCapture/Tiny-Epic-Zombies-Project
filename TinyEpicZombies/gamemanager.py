@@ -6,8 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import Button, AttackButton
-
+from .button import AttackButton, MoveButton
 
 class GameManager(Listener, EventGenerator):
 
@@ -24,45 +23,34 @@ class GameManager(Listener, EventGenerator):
         self.players = players # players is a dictionary with key=playerID, value=playerObject
         self.respawns = respawns
         self.turn = 0 # playerID representing which player's turn it is currently
+        self.player = None
         self.movesRemaining = 0
         self.moveAllowed = True
-        self.buttons = {}
+        self.mode = "move"
         self.map = Map()
         self.dm = DeckManager()
         self.im = InputManager()
         self.renderer = GameRenderer()
-        self._initGame()
         self._initListeners()
+        self._initGame()
     
-    def serialize(self):
-        dict = {
-            "players": { id: player.serialize() for id, player in self.players.items() },
-            "playerTurn": self.turn,
-            "respawns": self.respawns
-        }
-        return dict
-
-    def deserialize(dict):
-        gameManager = GameManager.getInstance()
-        gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]} )
-
-        gameManager.setMap(Map.deserialize())
-        gameManager.setDM(DeckManager.deserialize())
-
     def on_event(self, event):
         super().on_event(event)
-
         if event['type'] == 'PLAYER DIE':
             self.respawns -= 1
             if self.respawns < 0:
                 pass # check if game is over
             else:
                 self.players[event['playerID']].reset()
-        
-    def playerTurn(self, player=0):
+
+    def playerTurn(self, playerID=0):
         if self.movesRemaining != 0:
-            if self.moveAllowed:
-                pass # display possible moves
+            if self.mode == "move":
+                # self.renderer.renderMovementOptions(self.turn)
+                pass
+            if self.mode == "attack":
+                # self.renderer.renderAttackMode(self.turn)
+                pass
             else:
                 pass # display takeable actions
         else:
@@ -70,13 +58,37 @@ class GameManager(Listener, EventGenerator):
             self.zombieTurn()
             
             self.nextTurn()
-            self.movesRemaining = self.players[self.turn].getMoves()
+            self.movesRemaining = self.player.getMoves()
+        
+    def setMode(self, mode):
+        self.mode = mode
+        event = {'type':'MODE CHANGE', 'mode':mode}
+        self.send_event(event)
+
+    def onClick(self, pos):
+        coll = self.im.collisions(pos)
+        lcr = coll["lastClickedRoom"]
+        mode = coll["mode"]
+
+        # if they clicked on a room
+        if lcr:
+            if self.mode == "attack": # and attack mode is on:
+                if lcr == self.player.getCoords():
+                    self.playerMelee(self.player)
+                else:
+                    self.playerRanged(self.player, lcr)
+            else:
+                self.movePlayer(self.player, lcr)
+
+        if mode:
+            self.setMode(mode)
+
 
     def zombieTurn(self):
         zombies = 1 # zombies is the number of zombies added to each store which matches the type of noise the player made
         routes = []
 
-        storeColour = self.players[self.turn].getCoords()[0]
+        storeColour = self.player.getCoords()[0]
         storeColour = self.map.getStores()[storeColour].getNoiseColour() # gets the colour of the store the player is currently in
         lastNoise = 'PURPLE' # noise made by the player *NOT CURRENTLY IMPLEMENTED*
         if storeColour == lastNoise:
@@ -110,23 +122,18 @@ class GameManager(Listener, EventGenerator):
                     pass # overrun
         return
 
-    def onClick(self, pos):
-        coll = self.im.collisions(pos)
-        lcr = coll["lastClickedRoom"]
-        if lcr:
-            if self.buttons["attack"].getState():
-                self.playerMelee(self.getPlayer(self.turn))
-            else:
-                self.movePlayer(self.getPlayer(0), lcr)
-
     def nextTurn(self):
         if self.turn == len(self.players) - 1:
             self.turn = 0
         else:
             self.turn += 1
+        self.player = self.getPlayer(self.turn)
+        event = {'type':'TURN CHANGE', 'turn':self.turn}
+        self.send_event(event)
 
     def _initListeners(self):
-        pass
+        self.add_listener(self.renderer)
+        self.add_listener(self.im)
 
     def _initGame(self):
         # players = int(input("How many players? [2/3/4]\n"))
@@ -135,18 +142,27 @@ class GameManager(Listener, EventGenerator):
             # name = input(f"What is player {i}'s name?\n")
             name = "Toby"
             self.createPlayer(name, i, "BLUE", "character", tuple(deserializeGame()["constants"]["spawn"]))
+            self.setMode("move")
         
-        self.movesRemaining = self.getPlayer(self.turn).getMoves()
+        self.player = self.players[0]
+        self.movesRemaining = self.player.getMoves()
         self.addAttackButton()
+        self.addMoveButton()
         self.renderer.addMap(self.map)
 
     def addAttackButton(self):
         attackButton = AttackButton()
-        self.buttons["attack"] = attackButton
-        attackButton.add_listener(self.renderer)
         self.renderer.addButton(attackButton)
         self.im.addButton(attackButton)
+        self.add_listener(attackButton)
         attackButton.enable()
+
+    def addMoveButton(self):
+        moveButton = MoveButton()
+        self.renderer.addButton(moveButton)
+        self.im.addButton(moveButton)
+        self.add_listener(moveButton)
+        moveButton.enable()
 
     def createPlayer(self, name, playerID, colour, character, coords):
         player = Player(name, playerID, colour, character, coords)
@@ -155,6 +171,7 @@ class GameManager(Listener, EventGenerator):
         self.add_listener(player)
         player.add_listener(self)
         self.renderer.addPlayer(player)
+        self.updateMovementOptions(player)
 
     def movePlayer(self, player, newCoords): # newCoords is a tuple containing the storeID and the room in that store.
         if self.map.al.validatePlayerMove(player, newCoords):
@@ -164,11 +181,12 @@ class GameManager(Listener, EventGenerator):
             self.map.stores[newStoreID].rooms[newRoom].addPlayer(player) # add player to new room
 
             player.move(newCoords) # update player's coordinates attributes
+            self.updateMovementOptions(player)
 
             event = {"type":"PLAYER MOVED", "playerID":player.playerID, "coords":player.coords}
             self.send_event(event)
 
-            self.enableButtons()
+            # self.enableButtons()
             self.movesRemaining -= 1
 
         else:
@@ -176,25 +194,25 @@ class GameManager(Listener, EventGenerator):
 
     def playerMelee(self, player):
         room = self.map.getRoom(player.getCoords())
-        self.disableButton("attack")
         if room.getZombie():
             player.meleeAttack()
             self.map.removeZombie(room.getCoords())
             event = {"type":"PLAYER MELEE", "playerID":player.playerID, "coords":player.coords}
             self.send_event(event)
+            self.mode = "move"
         else:
             print("Attack failed: No available target")
     
     def playerRanged(self, player, coords):
-        room = self.map.getCoord(player.getCoords)
-        self.disableButton("attack")
-        if room.getZombie():
+        room = self.map.getRoom(coords)
+        if room.getZombie() and (coords in player.getMovementOptions() or coords == player.getCoords()):
             player.rangedAttack()
-            room.setZombie(False)
+            self.map.removeZombie(coords)
             event = {"type":"PLAYER RANGED", "playerID":player.playerID, "coords":coords}
             self.send_event(event)
+            self.mode = "move"
         else:
-            print("Attack failed: Ranged")
+            print("Attack failed: Ranged", player.getCoords(), coords, room.getZombie(), player.getMovementOptions())
 
     def playerSearchStore(self, player):
         player.equipMelee(self.dm.drawSearch())
@@ -203,9 +221,7 @@ class GameManager(Listener, EventGenerator):
         self.send_event(event)
 
     def renderGameScreen(self):
-        player = self.getPlayer(self.turn)
-        moveOptions = self.getMap().getAdjList().getMoves(player.getCoords())
-        self.renderer.renderGameScreen(moveOptions)
+        self.renderer.renderGameBoard()
 
     def playerCoords(self):
         coords = [player.getCoords() for player in self.players]
@@ -216,9 +232,12 @@ class GameManager(Listener, EventGenerator):
     def addZombie(self, coords):
         self.map.addZombie(coords)
     
-    def enableButtons(self):
-        for button in self.buttons:
-            self.buttons[button].enable()
+    # def enableButtons(self):
+    #     for button in self.buttons:
+    #         self.buttons[button].enable()
+    
+    def updateMovementOptions(self, player):
+        player.setMovementOptions(self.map.getMovementOptions(player.getCoords()))
     
     def disableButton(self, button):
         self.buttons[button].disable()
@@ -240,3 +259,18 @@ class GameManager(Listener, EventGenerator):
     
     def setDM(self, dm):
         self.dm = dm
+
+    def serialize(self):
+        dict = {
+            "players": { id: player.serialize() for id, player in self.players.items() },
+            "playerTurn": self.turn,
+            "respawns": self.respawns
+        }
+        return dict
+
+    def deserialize(dict):
+        gameManager = GameManager.getInstance()
+        gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]} )
+
+        gameManager.setMap(Map.deserialize())
+        gameManager.setDM(DeckManager.deserialize())

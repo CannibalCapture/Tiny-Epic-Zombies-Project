@@ -1,33 +1,39 @@
 from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects
+from .listener import Listener
 
-class InputManager:
+class InputManager(Listener):
     def __init__(self):
         self.lastClickedRoom = None
         self.buttons = []
 
     def collisions(self, pos):
         dict = {}
-        self.buttonCollisions(pos)
-        dict["lastClickedRoom"] = self.roomCollisions(pos)
+        mode, lcr = self.buttonCollisions(pos), self.roomCollisions(pos)
+        dict = mode | lcr
         return dict
 
-    def roomCollisions(self, pos):
+    def roomCollisions(self, pos): # returns last clicked room's coordinates
         rectsLst = genRoomRects()
+        dict = {}
         for store in range(0,9):
             for room in range(len(deserializeStore(store)["rooms"])):
                 rect = rectsLst[store][room]
                 collide = rect.collidepoint(pos)
                 if collide:
-                    self.lastClickedRoom = (store, room)
-                    return self.lastClickedRoom
-        self.lastClickedRoom = None  
-        return
+                    lastClickedRoom = (store, room)
+                    dict["lastClickedRoom"] = lastClickedRoom
+                    return dict
+        dict["lastClickedRoom"] = None
+        return dict
 
-    def buttonCollisions(self, pos):
+    def buttonCollisions(self, pos): # Executes onClick methods for all pressed buttons and returns the state of any button which has just been pressed. 
+        dict = {"mode":None}
         for button in self.buttons:
             if button.getRect().collidepoint(pos):
-                button.onClick()
+                mode = button.onClick() # if a button is clicked and returns a change in mode, this function will return which mode has been returned. 
+                dict["mode"] = mode
+        return dict
     
     def getLastClickedRoom(self):
         return self.lastClickedRoom

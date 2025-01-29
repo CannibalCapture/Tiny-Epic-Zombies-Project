@@ -17,6 +17,7 @@ class Player(Listener, EventGenerator):
         self.health = health
         self.ammo = ammo
         self.moves = moves
+        self.movementOptions = None
         self.playerID = playerID
 
     def serialize(self):
@@ -98,8 +99,14 @@ class Player(Listener, EventGenerator):
         return self.coords
     
     def getMoves(self):
-        return self.moves
+        return self.moves # the number of times the player may move each turn. 
 
+    def getMovementOptions(self):
+        return self.movementOptions
+
+    def setMovementOptions(self, lstValue):
+        self.movementOptions = lstValue
+    
     def on_event(self, event):
         print(event)
         if event['type'] == 'PLAYER MELEE':
