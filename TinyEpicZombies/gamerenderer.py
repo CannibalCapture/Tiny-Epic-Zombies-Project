@@ -3,7 +3,7 @@ from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects, genTlCoords
 from .listener import Listener
 from .map import Map
-from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
+from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH, COLOURS
 
 class GameRenderer(Listener):
     def __init__(self):
@@ -71,7 +71,7 @@ class GameRenderer(Listener):
             coord = player.getCoords()
             rect = self.roomRects[coord[0]][coord[1]]
             surface = pygame.Surface((18,18), pygame.SRCALPHA)
-            surface.fill((255,0,0))
+            surface.fill(COLOURS[player.getColour()])
             DISPLAY.blit(surface, rect)
         
     def __renderPlayerCard(self):
@@ -91,11 +91,9 @@ class GameRenderer(Listener):
     def __renderAttackMode(self, turn):
         zombieRooms = self.map.getZombieRooms()
         player = self.players[turn]
-        movementOptions = player.getMovementOptions()
-        # ask james about the below (rendering an attack box over zombie in room w/ player)
-        # print(movementOptions)
-        # movementOptions.insert(0, player.getCoords())
-        # print(movementOptions)
+        movementOptions = player.getMovementOptions().copy()
+        movementOptions.append(player.getCoords())
+        print(movementOptions)
         for coord in movementOptions:
             if coord in zombieRooms:
                 rect = self.roomRects[coord[0]][coord[1]]

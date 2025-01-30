@@ -25,7 +25,6 @@ class GameManager(Listener, EventGenerator):
         self.turn = 0 # playerID representing which player's turn it is currently
         self.player = None
         self.movesRemaining = 0
-        self.moveAllowed = True
         self.mode = "move"
         self.map = Map()
         self.dm = DeckManager()
@@ -35,7 +34,6 @@ class GameManager(Listener, EventGenerator):
         self._initGame()
     
     def on_event(self, event):
-        super().on_event(event)
         if event['type'] == 'PLAYER DIE':
             self.respawns -= 1
             if self.respawns < 0:
@@ -43,16 +41,9 @@ class GameManager(Listener, EventGenerator):
             else:
                 self.players[event['playerID']].reset()
 
-    def playerTurn(self, playerID=0):
+    def playerTurn(self):
         if self.movesRemaining != 0:
-            if self.mode == "move":
-                # self.renderer.renderMovementOptions(self.turn)
-                pass
-            if self.mode == "attack":
-                # self.renderer.renderAttackMode(self.turn)
-                pass
-            else:
-                pass # display takeable actions
+            pass
         else:
             # search current store
             self.zombieTurn()
@@ -72,7 +63,8 @@ class GameManager(Listener, EventGenerator):
 
         # if they clicked on a room
         if lcr:
-            if self.mode == "attack": # and attack mode is on:
+            # and attack mode is on
+            if self.mode == "attack":
                 if lcr == self.player.getCoords():
                     self.playerMelee(self.player)
                 else:
@@ -140,12 +132,13 @@ class GameManager(Listener, EventGenerator):
         players = 1
         for i in range(players):
             # name = input(f"What is player {i}'s name?\n")
-            name = "Toby"
-            self.createPlayer(name, i, "BLUE", "character", tuple(deserializeGame()["constants"]["spawn"]))
-            self.setMode("move")
+            name = f"Toby{i}"
+            self.createPlayer(name, i, "PURPLE", "character", tuple(deserializeGame()["constants"]["spawn"]))
+        
+        self.setMode("move")
         
         self.player = self.players[0]
-        self.movesRemaining = self.player.getMoves()
+        self.nextTurn()
         self.addAttackButton()
         self.addMoveButton()
         self.renderer.addMap(self.map)
@@ -186,7 +179,6 @@ class GameManager(Listener, EventGenerator):
             event = {"type":"PLAYER MOVED", "playerID":player.playerID, "coords":player.coords}
             self.send_event(event)
 
-            # self.enableButtons()
             self.movesRemaining -= 1
 
         else:

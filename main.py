@@ -1,8 +1,8 @@
 import pygame, pygame_gui, bcrypt, sqlite3
 from pygame.locals import *
 import pygame_gui.elements.ui_image
-from TinyEpicZombies.gamerenderer import GameRenderer
 from TinyEpicZombies.constants import WIDTH, HEIGHT, DISPLAY
+from TinyEpicZombies.gamerenderer import GameRenderer
 from TinyEpicZombies.gamemanager import GameManager
 
 def createNewUser(username, password):
@@ -69,8 +69,12 @@ signupButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50, 150),
 # main menu elements
 mainMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
 welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)),text="Welcome", manager=mainMenu)
-logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((150, 150), (100, 25)), text="Logout", manager=mainMenu)
+logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Logout", manager=mainMenu)
 startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2), (100, 25)), text="Start Game", manager=mainMenu)
+gameName = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 100), (100, 30)), manager=mainMenu)
+gameNameLabel = pygame_gui.elements.UILabel(pygame.Rect((0, 70), (200, 100)),text="Game Name", manager=mainMenu)
+playersNumber = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 150), (20, 30)), manager=mainMenu)
+playersNumberLabel = pygame_gui.elements.UILabel(pygame.Rect((20, 115), (200, 100)),text="Players", manager=mainMenu)
 
 # in game gui
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))

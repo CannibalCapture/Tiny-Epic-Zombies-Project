@@ -98,6 +98,9 @@ class Player(Listener, EventGenerator):
     def getCoords(self):
         return self.coords
     
+    def getColour(self):
+        return self.colour
+    
     def getMoves(self):
         return self.moves # the number of times the player may move each turn. 
 
@@ -108,7 +111,6 @@ class Player(Listener, EventGenerator):
         self.movementOptions = lstValue
     
     def on_event(self, event):
-        print(event)
         if event['type'] == 'PLAYER MELEE':
             print(f"{self.name} kills a zombie at {self.coords}")
         elif event['type'] == 'PLAYER RANGED':
