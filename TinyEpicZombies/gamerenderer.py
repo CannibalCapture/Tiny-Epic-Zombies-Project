@@ -17,10 +17,15 @@ class GameRenderer(Listener):
         self.buttons = []
         self.players = []
         self.mode = "move"
+        self.playerCardShown = True
         self.turn = 0
         self.map = None
         self.opacity = 88
         self.flag = True
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "pieces", "ammo.jpg"))
+        img = pygame.transform.scale(img, (0.02*WIDTH, 0.02*HEIGHT))
+        self.ammo = img
+
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
         storeSurfaces = []
@@ -41,6 +46,10 @@ class GameRenderer(Listener):
             self.turn = event['turn']
         if event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
             self.mode = "move"
+        if event['type'] == 'OPEN CARD':
+            self.playerCardShown = True
+        if event['type'] == 'CLOSE CARD':
+            self.playerCardShown = False
 
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
@@ -69,13 +78,20 @@ class GameRenderer(Listener):
             DISPLAY.blit(surface, rect)
         
     def __renderPlayerCards(self):
-        player = self.players[self.turn]
-        img = player.getImg()
-        print(img)
-        # img = pygame.transform.scale(img, (self.cw, self.ch))
-        # rect = pygame.Rect((WIDTH*(1 - CW), 0) ,(WIDTH*CW, HEIGHT*CH))
-        # surface = pygame.Surface(img)
-        DISPLAY.blit(img, (WIDTH*(1 - 1.6*CW), 0))
+        cWidth = 1.6*CW
+
+        if self.playerCardShown:
+            player = self.players[self.turn]
+            img = player.getImg()
+            x, y = WIDTH*(1 - cWidth), 0
+            DISPLAY.blit(img, (x, y))
+            img = self.ammo
+            x += WIDTH*cWidth - WIDTH*cWidth/9.8*(player.getAmmoMissing() + 1)
+            y += HEIGHT*0.025
+            DISPLAY.blit(img, (x, y))
+
+
+
 
     def __renderZombies(self):
         zombieRooms = self.map.getZombieRooms()
@@ -89,7 +105,7 @@ class GameRenderer(Listener):
     def __renderAttackMode(self, turn):
         zombieRooms = self.map.getZombieRooms()
         player = self.players[turn]
-        movementOptions = player.getMovementOptions().copy()
+        movementOptions = player.getMovementOptions().copy() # .copy() ensures player.movementOptions is passed by value. By reference would alter the player's movement options, allowing them to move to the space they already occupy. 
         movementOptions.append(player.getCoords())
         for coord in movementOptions:
             if coord in zombieRooms:

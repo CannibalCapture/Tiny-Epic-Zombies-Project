@@ -8,9 +8,9 @@ class InputManager(Listener):
         self.buttons = []
 
     def collisions(self, pos):
-        dict = {}
-        mode, lcr = self.buttonCollisions(pos), self.roomCollisions(pos)
-        dict = mode | lcr
+        dict = {"mode": None, "lastClickedRoom": None, 'type': None}
+        buttonReturn, lcr = self.buttonCollisions(pos), self.roomCollisions(pos)
+        dict = dict | lcr | buttonReturn
         return dict
 
     def roomCollisions(self, pos): # returns last clicked room's coordinates
@@ -32,7 +32,7 @@ class InputManager(Listener):
         for button in self.buttons:
             if button.getRect().collidepoint(pos):
                 mode = button.onClick() # if a button is clicked and returns a change in mode, this function will return which mode has been returned. 
-                dict["mode"] = mode
+                dict = mode
         return dict
     
     def getLastClickedRoom(self):

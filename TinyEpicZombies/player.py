@@ -7,7 +7,7 @@ from .cards.rangedweapon import RangedWeapon
 from .constants import CW, CH, WIDTH, HEIGHT
 
 class Player(Listener, EventGenerator):
-    def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, healthMissing=0, ammoMissing=0, moves = 3):
+    def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, healthMissing=0, ammoMissing=1, moves = 3):
         Listener.__init__(self)
         EventGenerator.__init__(self)
         self.coords = coords
@@ -80,10 +80,10 @@ class Player(Listener, EventGenerator):
         self.rangedWeapon = None
 
     def rangedAttack(self):
-        self.changeAmmo(-1)
+        self.changeAmmo(1)
 
     def changeAmmo(self, value):
-        self.ammo += value
+        self.ammoMissing += value
 
     def equipMelee(self, newWeapon):
         self.meleeWeapon = newWeapon
@@ -114,6 +114,9 @@ class Player(Listener, EventGenerator):
     
     def getImg(self):
         return self.img
+
+    def getAmmoMissing(self):
+        return self.ammoMissing
 
     def setMovementOptions(self, lstValue):
         self.movementOptions = lstValue

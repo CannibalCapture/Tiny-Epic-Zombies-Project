@@ -6,7 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import AttackButton, MoveButton
+from .button import AttackButton, MoveButton, OpenCardButton
 
 class GameManager(Listener, EventGenerator):
 
@@ -60,6 +60,7 @@ class GameManager(Listener, EventGenerator):
         coll = self.im.collisions(pos)
         lcr = coll["lastClickedRoom"]
         mode = coll["mode"]
+        type = coll["type"]
 
         # if they clicked on a room
         if lcr:
@@ -74,6 +75,10 @@ class GameManager(Listener, EventGenerator):
 
         if mode:
             self.setMode(mode)
+
+        if type:
+            dict = {'type':type}
+            self.send_event(dict)
 
 
     def zombieTurn(self):
@@ -129,11 +134,13 @@ class GameManager(Listener, EventGenerator):
 
     def _initGame(self):
         # players = int(input("How many players? [2/3/4]\n"))
-        players = 1
+        chars = ["teenager", "doctor"]
+        players = 2
         for i in range(players):
             # name = input(f"What is player {i}'s name?\n")
             name = f"Toby{i}"
-            self.createPlayer(name, i, "PURPLE", "teenager", tuple(deserializeGame()["constants"]["spawn"]))
+            char = chars[i]
+            self.createPlayer(name, i, "PURPLE", char, tuple(deserializeGame()["constants"]["spawn"]))
         
         self.setMode("move")
         
@@ -141,6 +148,7 @@ class GameManager(Listener, EventGenerator):
         self.nextTurn()
         self.addAttackButton()
         self.addMoveButton()
+        self.addOpenCardButton()
         self.renderer.addMap(self.map)
 
     def addAttackButton(self):
@@ -156,6 +164,13 @@ class GameManager(Listener, EventGenerator):
         self.im.addButton(moveButton)
         self.add_listener(moveButton)
         moveButton.enable()
+
+    def addOpenCardButton(self):
+        ocButton = OpenCardButton()
+        self.renderer.addButton(ocButton)
+        self.im.addButton(ocButton)
+        self.add_listener(ocButton)
+        ocButton.enable()
 
     def createPlayer(self, name, playerID, colour, character, coords):
         player = Player(name, playerID, colour, character, coords)
