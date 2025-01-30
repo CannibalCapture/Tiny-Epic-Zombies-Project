@@ -42,13 +42,6 @@ class GameRenderer(Listener):
         if event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
             self.mode = "move"
 
-    # def renderGameScreen(self, movementOptions=None, selected=None):
-    #     zombieRooms = self.map.getZombieRooms()
-    #     if self.mode == "attack":
-    #         self.__renderAttackMode(zombieRooms, movementOptions)
-    #     else:
-    #         self.__renderMovementOptions(movementOptions, selected)
-
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
@@ -74,10 +67,9 @@ class GameRenderer(Listener):
             surface.fill(COLOURS[player.getColour()])
             DISPLAY.blit(surface, rect)
         
-    def __renderPlayerCard(self):
+    def __renderPlayerCard(self, player):
         ammo = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "ammo.jpg"))
         health = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "health.jpg"))
-        # show the whole player card
 
     def __renderZombies(self):
         zombieRooms = self.map.getZombieRooms()
@@ -93,7 +85,6 @@ class GameRenderer(Listener):
         player = self.players[turn]
         movementOptions = player.getMovementOptions().copy()
         movementOptions.append(player.getCoords())
-        print(movementOptions)
         for coord in movementOptions:
             if coord in zombieRooms:
                 rect = self.roomRects[coord[0]][coord[1]]
