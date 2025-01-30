@@ -71,10 +71,11 @@ class GameRenderer(Listener):
     def __renderPlayerCards(self):
         player = self.players[self.turn]
         img = player.getImg()
-        img = pygame.transform.scale(img, (self.cw, self.ch))
+        print(img)
+        # img = pygame.transform.scale(img, (self.cw, self.ch))
         # rect = pygame.Rect((WIDTH*(1 - CW), 0) ,(WIDTH*CW, HEIGHT*CH))
         # surface = pygame.Surface(img)
-        DISPLAY.blit(img, (WIDTH*(1 - CW), 0))
+        DISPLAY.blit(img, (WIDTH*(1 - 1.6*CW), 0))
 
     def __renderZombies(self):
         zombieRooms = self.map.getZombieRooms()

@@ -4,6 +4,7 @@ from .listener import Listener
 from .eventgenerator import EventGenerator
 from .cards.meleeweapon import MeleeWeapon
 from .cards.rangedweapon import RangedWeapon
+from .constants import CW, CH, WIDTH, HEIGHT
 
 class Player(Listener, EventGenerator):
     def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, healthMissing=0, ammoMissing=0, moves = 3):
@@ -20,7 +21,9 @@ class Player(Listener, EventGenerator):
         self.movementOptions = None
         self.playerID = playerID
         self.character = character
-        self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters",f"{self.character}Card.jpg"))
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters",f"{self.character}Card.jpg"))
+        img = pygame.transform.scale(img, (CW*1.6*WIDTH, CH*1.6*HEIGHT))
+        self.img = img
 
     def serialize(self):
         dict = {
