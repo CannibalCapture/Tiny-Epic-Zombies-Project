@@ -48,6 +48,7 @@ class GameRenderer(Listener):
         self.__renderZombies()
         self.__renderButtons()
         self.__renderPlayers()
+        self.__renderPlayerCards()
         self.renderOverlay()
 
     def addMap(self, value:Map):
@@ -67,9 +68,13 @@ class GameRenderer(Listener):
             surface.fill(COLOURS[player.getColour()])
             DISPLAY.blit(surface, rect)
         
-    def __renderPlayerCard(self, player):
-        ammo = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "ammo.jpg"))
-        health = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "health.jpg"))
+    def __renderPlayerCards(self):
+        player = self.players[self.turn]
+        img = player.getImg()
+        img = pygame.transform.scale(img, (self.cw, self.ch))
+        # rect = pygame.Rect((WIDTH*(1 - CW), 0) ,(WIDTH*CW, HEIGHT*CH))
+        # surface = pygame.Surface(img)
+        DISPLAY.blit(img, (WIDTH*(1 - CW), 0))
 
     def __renderZombies(self):
         zombieRooms = self.map.getZombieRooms()

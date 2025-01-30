@@ -133,7 +133,7 @@ class GameManager(Listener, EventGenerator):
         for i in range(players):
             # name = input(f"What is player {i}'s name?\n")
             name = f"Toby{i}"
-            self.createPlayer(name, i, "PURPLE", "character", tuple(deserializeGame()["constants"]["spawn"]))
+            self.createPlayer(name, i, "PURPLE", "teenager", tuple(deserializeGame()["constants"]["spawn"]))
         
         self.setMode("move")
         

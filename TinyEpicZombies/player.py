@@ -1,24 +1,26 @@
 from random import choice
+import pygame, os
 from .listener import Listener
 from .eventgenerator import EventGenerator
 from .cards.meleeweapon import MeleeWeapon
 from .cards.rangedweapon import RangedWeapon
 
 class Player(Listener, EventGenerator):
-    def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, health=9, ammo=9, moves = 3):
+    def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, healthMissing=0, ammoMissing=0, moves = 3):
         Listener.__init__(self)
         EventGenerator.__init__(self)
         self.coords = coords
         self.name = name
         self.colour = colour
-        self.character = character
         self.meleeWeapon = meleeWeapon
         self.rangedWeapon = rangedWeapon
-        self.health = health
-        self.ammo = ammo
+        self.healthMissing = healthMissing
+        self.ammoMissing = ammoMissing
         self.moves = moves
         self.movementOptions = None
         self.playerID = playerID
+        self.character = character
+        self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters",f"{self.character}Card.jpg"))
 
     def serialize(self):
         dict = {
@@ -106,6 +108,9 @@ class Player(Listener, EventGenerator):
 
     def getMovementOptions(self):
         return self.movementOptions
+    
+    def getImg(self):
+        return self.img
 
     def setMovementOptions(self, lstValue):
         self.movementOptions = lstValue

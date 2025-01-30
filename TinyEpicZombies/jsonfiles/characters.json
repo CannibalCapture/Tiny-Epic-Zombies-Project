@@ -1,0 +1,19 @@
+{
+    "characters":{
+            "teenager": {
+                "image": "'TinyEpicZombies','assets','characters', 'teenagerCard.jpg'"
+            },
+
+            "popstar": {
+                "image": "'TinyEpicZombies','assets','characters','popstarCard.jpg'"
+            },
+            
+            "doctor": {
+                "image": "'TinyEpicZombies','assets','characters','doctorCard.jpg'"
+            },
+
+            "athlete": {
+                "image": "'TinyEpicZombies','assets','characters','athleteCard.jpg'"
+            }
+    }
+}
