@@ -28,12 +28,12 @@ class InputManager(Listener):
         return dict
 
     def buttonCollisions(self, pos): # Executes onClick methods for all pressed buttons and returns the state of any button which has just been pressed. 
-        dict = {"mode":None}
         for button in self.buttons:
             if button.getRect().collidepoint(pos):
                 mode = button.onClick() # if a button is clicked and returns a change in mode, this function will return which mode has been returned. 
-                dict = mode
-        return dict
+                if mode:
+                    return mode
+        return {}
     
     def getLastClickedRoom(self):
         return self.lastClickedRoom

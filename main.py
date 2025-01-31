@@ -91,7 +91,6 @@ while run:
 
     if manager == gameboard:
         gm.renderGameScreen()
-        gm.playerTurn()
 
     for event in pygame.event.get():
 

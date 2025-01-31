@@ -6,7 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import AttackButton, MoveButton, OpenCardButton
+from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton
 
 class GameManager(Listener, EventGenerator):
 
@@ -24,6 +24,7 @@ class GameManager(Listener, EventGenerator):
         self.respawns = respawns
         self.turn = 0 # playerID representing which player's turn it is currently
         self.player = None
+        self.turnEnded = False
         self.movesRemaining = 0
         self.mode = "move"
         self.map = Map()
@@ -40,16 +41,6 @@ class GameManager(Listener, EventGenerator):
                 pass # check if game is over
             else:
                 self.players[event['playerID']].reset()
-
-    def playerTurn(self):
-        if self.movesRemaining != 0:
-            pass
-        else:
-            # search current store
-            self.zombieTurn()
-            
-            self.nextTurn()
-            self.movesRemaining = self.player.getMoves()
         
     def setMode(self, mode):
         self.mode = mode
@@ -78,8 +69,10 @@ class GameManager(Listener, EventGenerator):
 
         if type:
             dict = {'type':type}
+            if dict['type'] == 'END TURN':
+                self.zombieTurn()
+                self.nextTurn()
             self.send_event(dict)
-
 
     def zombieTurn(self):
         zombies = 1 # zombies is the number of zombies added to each store which matches the type of noise the player made
@@ -120,6 +113,7 @@ class GameManager(Listener, EventGenerator):
         return
 
     def nextTurn(self):
+        self.movesRemaining = self.player.getMoves()
         if self.turn == len(self.players) - 1:
             self.turn = 0
         else:
@@ -127,6 +121,7 @@ class GameManager(Listener, EventGenerator):
         self.player = self.getPlayer(self.turn)
         event = {'type':'TURN CHANGE', 'turn':self.turn}
         self.send_event(event)
+        self.turnEnded = False
 
     def _initListeners(self):
         self.add_listener(self.renderer)
@@ -149,6 +144,7 @@ class GameManager(Listener, EventGenerator):
         self.addAttackButton()
         self.addMoveButton()
         self.addOpenCardButton()
+        self.addEndTurnButton()
         self.renderer.addMap(self.map)
 
     def addAttackButton(self):
@@ -164,6 +160,12 @@ class GameManager(Listener, EventGenerator):
         self.im.addButton(moveButton)
         self.add_listener(moveButton)
         moveButton.enable()
+    
+    def addEndTurnButton(self):
+        etButton = EndTurnButton()
+        self.renderer.addButton(etButton)
+        self.im.addButton(etButton)
+        self.add_listener(etButton)
 
     def addOpenCardButton(self):
         ocButton = OpenCardButton()
@@ -182,7 +184,7 @@ class GameManager(Listener, EventGenerator):
         self.updateMovementOptions(player)
 
     def movePlayer(self, player, newCoords): # newCoords is a tuple containing the storeID and the room in that store.
-        if self.map.al.validatePlayerMove(player, newCoords):
+        if self.map.al.validatePlayerMove(player, newCoords) and self.movesRemaining != 0:
             oldStoreID, oldRoom = player.coords[0], player.coords[1]
             newStoreID, newRoom = newCoords[0], newCoords[1]
             self.map.stores[oldStoreID].rooms[oldRoom].removePlayer(player) # remove player from old room
@@ -191,7 +193,7 @@ class GameManager(Listener, EventGenerator):
             player.move(newCoords) # update player's coordinates attributes
             self.updateMovementOptions(player)
 
-            event = {"type":"PLAYER MOVED", "playerID":player.playerID, "coords":player.coords}
+            event = {"type":"PLAYER MOVED", "playerID":player.playerID, "coords":player.coords, "moves":self.movesRemaining-1}
             self.send_event(event)
 
             self.movesRemaining -= 1
@@ -219,7 +221,7 @@ class GameManager(Listener, EventGenerator):
             self.send_event(event)
             self.mode = "move"
         else:
-            print("Attack failed: Ranged", player.getCoords(), coords, room.getZombie(), player.getMovementOptions())
+            print("Attack failed: Ranged")
 
     def playerSearchStore(self, player):
         player.equipMelee(self.dm.drawSearch())
@@ -238,10 +240,6 @@ class GameManager(Listener, EventGenerator):
 
     def addZombie(self, coords):
         self.map.addZombie(coords)
-    
-    # def enableButtons(self):
-    #     for button in self.buttons:
-    #         self.buttons[button].enable()
     
     def updateMovementOptions(self, player):
         player.setMovementOptions(self.map.getMovementOptions(player.getCoords()))

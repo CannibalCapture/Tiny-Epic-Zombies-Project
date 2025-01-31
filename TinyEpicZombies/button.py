@@ -142,3 +142,18 @@ class OpenCardButton(Button):
             else:
                 self.state = True
                 return {'type':'OPEN CARD'}
+
+class EndTurnButton(Button):
+    def __init__(self):
+        self.pos = (0.94, 0.67)
+        width, height = 0.05, 0.08
+        self.ID = "endTurn"
+        self.enabled = True
+        self.state = True
+        self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "healthTrue.png"))
+        self.img = pygame.transform.scale(self.img, (WIDTH*width, HEIGHT*height))
+        self.rect = self.img.get_rect()
+        self.rect.topleft = (self.pos[0]*WIDTH, self.pos[1]*HEIGHT)
+
+    def onClick(self):
+        return {'type':'END TURN'}

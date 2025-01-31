@@ -25,6 +25,9 @@ class GameRenderer(Listener):
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "pieces", "ammo.jpg"))
         img = pygame.transform.scale(img, (0.02*WIDTH, 0.02*HEIGHT))
         self.ammo = img
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "pieces", "health.png"))
+        img = pygame.transform.scale(img, (0.02*WIDTH, 0.03*HEIGHT))
+        self.health = img
 
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
@@ -44,12 +47,16 @@ class GameRenderer(Listener):
             self.mode = event['mode']
         if event['type'] == 'TURN CHANGE':
             self.turn = event['turn']
+            self.mode = "move"
         if event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
             self.mode = "move"
         if event['type'] == 'OPEN CARD':
             self.playerCardShown = True
         if event['type'] == 'CLOSE CARD':
             self.playerCardShown = False
+        if event['type'] == 'PLAYER MOVED':
+            if event['moves'] == 0:
+                self.mode = None
 
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
@@ -72,10 +79,11 @@ class GameRenderer(Listener):
     def __renderPlayers(self):
         for player in self.players:
             coord = player.getCoords()
-            rect = self.roomRects[coord[0]][coord[1]]
-            surface = pygame.Surface((18,18), pygame.SRCALPHA)
-            surface.fill(COLOURS[player.getColour()])
-            DISPLAY.blit(surface, rect)
+            tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in. 
+            img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "avatars", f"{player.getCharacter()}.png"))
+            img = pygame.transform.scale(img, (0.04*WIDTH, 0.06*HEIGHT))
+            DISPLAY.blit(img, tl)
+
         
     def __renderPlayerCards(self):
         cWidth = 1.6*CW
@@ -86,21 +94,23 @@ class GameRenderer(Listener):
             x, y = WIDTH*(1 - cWidth), 0
             DISPLAY.blit(img, (x, y))
             img = self.ammo
+
             x += WIDTH*cWidth - WIDTH*cWidth/9.8*(player.getAmmoMissing() + 1)
             y += HEIGHT*0.025
             DISPLAY.blit(img, (x, y))
 
-
+            img = self.health
+            x = WIDTH*(1 - cWidth) + WIDTH*cWidth/9.8*(player.getHealthMissing())
+            DISPLAY.blit(img, (x, y))
 
 
     def __renderZombies(self):
         zombieRooms = self.map.getZombieRooms()
         for coord in zombieRooms:
-            rect = self.roomRects[coord[0]][coord[1]]
-            rect = rect.scale_by(0.5)
-            surface = pygame.Surface((15,15), pygame.SRCALPHA)
-            surface.fill((0,80,0))
-            DISPLAY.blit(surface, rect)
+            tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in. 
+            img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "zombie.png"))
+            img = pygame.transform.scale(img, (0.03*WIDTH, 0.04*HEIGHT))
+            DISPLAY.blit(img, tl)
 
     def __renderAttackMode(self, turn):
         zombieRooms = self.map.getZombieRooms()

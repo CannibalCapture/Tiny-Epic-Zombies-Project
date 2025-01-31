@@ -7,7 +7,7 @@ from .cards.rangedweapon import RangedWeapon
 from .constants import CW, CH, WIDTH, HEIGHT
 
 class Player(Listener, EventGenerator):
-    def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, healthMissing=0, ammoMissing=1, moves = 3):
+    def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, healthMissing=0, ammoMissing=0, moves = 3):
         Listener.__init__(self)
         EventGenerator.__init__(self)
         self.coords = coords
@@ -62,13 +62,13 @@ class Player(Listener, EventGenerator):
             self.moves += 1
 
     def takeDamage(self, value):
-        self.health -= value
+        self.healthMissing += value
         if not self.isAlive():
             event = {'type': 'PLAYER DIE', 'playerID': self.playerID}
             self.send_event(event)
     
     def isAlive(self):
-        if self.ammo + self.health < 11:
+        if self.ammoMissing + self.healthMissing > 8:
             return False
         return True
     
@@ -106,6 +106,9 @@ class Player(Listener, EventGenerator):
     def getColour(self):
         return self.colour
     
+    def getCharacter(self):
+        return self.character
+    
     def getMoves(self):
         return self.moves # the number of times the player may move each turn. 
 
@@ -117,6 +120,9 @@ class Player(Listener, EventGenerator):
 
     def getAmmoMissing(self):
         return self.ammoMissing
+
+    def getHealthMissing(self):
+        return self.healthMissing
 
     def setMovementOptions(self, lstValue):
         self.movementOptions = lstValue
