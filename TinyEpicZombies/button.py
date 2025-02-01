@@ -66,7 +66,7 @@ class AttackButton(Button):
     def on_event(self, event):
         if event['type'] == 'PLAYER MELEE' or event['type'] == 'PLAYER RANGED':
             self.disable()
-        elif event['type'] == 'PLAYER MOVED':
+        elif event['type'] == 'PLAYER MOVED' or event['type'] == 'TURN CHANGE':
             self.enable()
         super().on_event(event)
 
