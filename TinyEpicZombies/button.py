@@ -125,10 +125,10 @@ class OpenCardButton(Button):
 
     def updateImg(self):
         width, height = 0.05, 0.08 # maybe put in json file
-        if self.enabled: # can probably go in parent class
-            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "healthTrue.png"))
+        if self.state: # can probably go in parent class
+            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "upArrow.png"))
         else:
-            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "healthFalse.png"))
+            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "downArrow.png"))
 
         self.img = pygame.transform.scale(self.img, (WIDTH*width, HEIGHT*height))
 
@@ -138,9 +138,11 @@ class OpenCardButton(Button):
         else:
             if self.state:
                 self.state = False
+                self.updateImg()
                 return {'type':'CLOSE CARD'}
             else:
                 self.state = True
+                self.updateImg()
                 return {'type':'OPEN CARD'}
 
 class EndTurnButton(Button):

@@ -193,10 +193,9 @@ class GameManager(Listener, EventGenerator):
             player.move(newCoords) # update player's coordinates attributes
             self.updateMovementOptions(player)
 
-            event = {"type":"PLAYER MOVED", "playerID":player.playerID, "coords":player.coords, "moves":self.movesRemaining-1}
-            self.send_event(event)
-
             self.movesRemaining -= 1
+            event = {"type":"PLAYER MOVED", "playerID":player.playerID, "coords":player.coords, "moves":self.movesRemaining}
+            self.send_event(event)
 
         else:
             print("Invalid move")
@@ -206,7 +205,7 @@ class GameManager(Listener, EventGenerator):
         if room.getZombie():
             player.meleeAttack()
             self.map.removeZombie(room.getCoords())
-            event = {"type":"PLAYER MELEE", "playerID":player.playerID, "coords":player.coords}
+            event = {"type":"PLAYER MELEE", "playerID":player.playerID, "coords":player.getCoords(), "moves":self.movesRemaining}
             self.send_event(event)
             self.mode = "move"
         else:
@@ -217,7 +216,7 @@ class GameManager(Listener, EventGenerator):
         if room.getZombie() and (coords in player.getMovementOptions() or coords == player.getCoords()):
             player.rangedAttack()
             self.map.removeZombie(coords)
-            event = {"type":"PLAYER RANGED", "playerID":player.playerID, "coords":coords}
+            event = {"type":"PLAYER RANGED", "playerID":player.playerID, "coords":coords, "moves":self.movesRemaining}
             self.send_event(event)
             self.mode = "move"
         else:

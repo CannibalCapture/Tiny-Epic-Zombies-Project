@@ -22,10 +22,10 @@ class GameRenderer(Listener):
         self.map = None
         self.opacity = 88
         self.flag = True
-        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "pieces", "ammo.jpg"))
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "ammo.jpg"))
         img = pygame.transform.scale(img, (0.02*WIDTH, 0.02*HEIGHT))
         self.ammo = img
-        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "pieces", "health.png"))
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "health.png"))
         img = pygame.transform.scale(img, (0.02*WIDTH, 0.03*HEIGHT))
         self.health = img
 
@@ -49,7 +49,8 @@ class GameRenderer(Listener):
             self.turn = event['turn']
             self.mode = "move"
         if event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
-            self.mode = "move"
+            if event['moves'] != 0:
+                self.mode = "move"
         if event['type'] == 'OPEN CARD':
             self.playerCardShown = True
         if event['type'] == 'CLOSE CARD':
