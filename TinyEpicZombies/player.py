@@ -2,12 +2,11 @@ from random import choice
 import pygame, os
 from .listener import Listener
 from .eventgenerator import EventGenerator
-from .cards.meleeweapon import MeleeWeapon
-from .cards.rangedweapon import RangedWeapon
+from .cards.card import MeleeWeapon, RangedWeapon
 from .constants import CW, CH, WIDTH, HEIGHT
 
 class Player(Listener, EventGenerator):
-    def __init__(self, name, playerID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, healthMissing=0, ammoMissing=0, moves = 3):
+    def __init__(self, name, ID, colour, character, coords, meleeWeapon=None, rangedWeapon=None, healthMissing=0, ammoMissing=0, moves = 3):
         Listener.__init__(self)
         EventGenerator.__init__(self)
         self.coords = coords
@@ -19,7 +18,7 @@ class Player(Listener, EventGenerator):
         self.ammoMissing = ammoMissing
         self.moves = moves
         self.movementOptions = None
-        self.playerID = playerID
+        self.ID = ID
         self.character = character
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters",f"{self.character}Card.jpg"))
         img = pygame.transform.scale(img, (CW*1.6*WIDTH, CH*1.6*HEIGHT))
@@ -36,13 +35,13 @@ class Player(Listener, EventGenerator):
             "health":self.health,
             "ammo":self.ammo,
             "moves":self.moves,
-            "playerID":self.playerID,
+            "ID":self.ID,
         }
 
         return dict
 
     def deserialize(dict):
-        return Player(dict["name"], dict["playerID"], dict["colour"], dict["character"], tuple(dict["coords"]), 
+        return Player(dict["name"], dict["ID"], dict["colour"], dict["character"], tuple(dict["coords"]), 
                       None if  dict["meleeweapon"] == "None" else MeleeWeapon.deserialize(dict["meleeweapon"]),
                       None if  dict["rangedweapon"] == "None" else RangedWeapon.deserialize(dict["rangedweapon"]),
                       dict["health"], dict["ammo"], dict["moves"])
@@ -64,7 +63,7 @@ class Player(Listener, EventGenerator):
     def takeDamage(self, value):
         self.healthMissing += value
         if not self.isAlive():
-            event = {'type': 'PLAYER DIE', 'playerID': self.playerID}
+            event = {'type': 'PLAYER DIE', 'ID': self.ID}
             self.send_event(event)
     
     def isAlive(self):
@@ -98,7 +97,7 @@ class Player(Listener, EventGenerator):
         return self.rangedWeapon
     
     def getID(self):
-        return self.playerID
+        return self.ID
     
     def getCoords(self):
         return self.coords

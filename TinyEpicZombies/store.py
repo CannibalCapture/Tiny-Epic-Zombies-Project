@@ -5,6 +5,7 @@ class Store:
         self.noiseColour = noiseColour
         self.image = image
         self.tl = tl
+        self.cards = []
 
     def serialize(self):
         dict = {
@@ -19,6 +20,9 @@ class Store:
     def deserialize(dict):
         return Store([room.deserialize() for room in dict["rooms"]], dict["storeID"], dict["noiseColour"], dict["image"], dict["tl"])
     
+    def addCard(self, card):
+        self.cards.append(card)
+
     def getNoiseColour(self):
         return self.noiseColour
 
@@ -27,3 +31,6 @@ class Store:
     
     def getRooms(self):
         return self.rooms
+    
+    def getCards(self):
+        return self.cards

@@ -65,8 +65,9 @@ class GameRenderer(Listener):
         self.__renderZombies()
         self.__renderPlayers()
         self.__renderPlayerCards()
-        self.renderOverlay()
+        self.__renderFoundCards()
         self.__renderButtons()
+        self.renderOverlay()
 
     def addMap(self, value:Map):
         self.map = value
@@ -85,7 +86,17 @@ class GameRenderer(Listener):
             img = pygame.transform.scale(img, (0.04*WIDTH, 0.06*HEIGHT))
             DISPLAY.blit(img, tl)
 
-        
+    def __renderFoundCards(self):
+        i = self.players[self.turn].getCoords()[0]
+        store = self.map.getStores()[i]
+        try:
+            pathEnd = store.getCards()[0].getImg()
+            img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", pathEnd))
+            img = pygame.transform.scale(img, (0.17*WIDTH, 0.4*HEIGHT))
+            DISPLAY.blit(img, (0.01*WIDTH, 0.3*HEIGHT))
+        except:
+            pass
+
     def __renderPlayerCards(self):
         cWidth = 1.6*CW
 

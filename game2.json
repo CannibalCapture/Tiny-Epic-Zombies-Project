@@ -15,7 +15,7 @@
       "health": 9,
       "ammo": 9,
       "moves": 3,
-      "playerID": 0
+      "ID": 0
     }
   }
 }
