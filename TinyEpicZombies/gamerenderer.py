@@ -63,10 +63,10 @@ class GameRenderer(Listener):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
         self.__renderZombies()
-        self.__renderButtons()
         self.__renderPlayers()
         self.__renderPlayerCards()
         self.renderOverlay()
+        self.__renderButtons()
 
     def addMap(self, value:Map):
         self.map = value

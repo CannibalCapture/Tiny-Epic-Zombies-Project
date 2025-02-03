@@ -95,9 +95,9 @@ class MoveButton(Button):
     def updateImg(self):
         width, height = 0.05, 0.08 # maybe put in json file
         if self.enabled: # can probably go in parent class
-            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "healthTrue.png"))
+            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "moveTrue.png"))
         else:
-            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "healthFalse.png"))
+            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "moveFalse.png"))
 
         self.img = pygame.transform.scale(self.img, (WIDTH*width, HEIGHT*height))
     
@@ -115,7 +115,7 @@ class MoveButton(Button):
 
 class OpenCardButton(Button):
     def __init__(self):
-        self.pos = (0.84, 0.67)
+        self.pos = (0.96, 0.02)
         self.ID = "openCard" # the mode which the button represents
         self.enabled = True
         self.state = True
@@ -124,11 +124,11 @@ class OpenCardButton(Button):
         self.rect.topleft = (self.pos[0]*WIDTH, self.pos[1]*HEIGHT)
 
     def updateImg(self):
-        width, height = 0.05, 0.08 # maybe put in json file
+        width, height = 0.03, 0.048 # maybe put in json file
         if self.state: # can probably go in parent class
-            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "upArrow.png"))
-        else:
             self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "downArrow.png"))
+        else:
+            self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "upArrow.png"))
 
         self.img = pygame.transform.scale(self.img, (WIDTH*width, HEIGHT*height))
 
@@ -147,12 +147,12 @@ class OpenCardButton(Button):
 
 class EndTurnButton(Button):
     def __init__(self):
-        self.pos = (0.94, 0.67)
-        width, height = 0.05, 0.08
+        self.pos = (0.90, 0.67)
+        width, height = 0.1, 0.16
         self.ID = "endTurn"
         self.enabled = True
         self.state = True
-        self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "healthTrue.png"))
+        self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "endTurn.png"))
         self.img = pygame.transform.scale(self.img, (WIDTH*width, HEIGHT*height))
         self.rect = self.img.get_rect()
         self.rect.topleft = (self.pos[0]*WIDTH, self.pos[1]*HEIGHT)
