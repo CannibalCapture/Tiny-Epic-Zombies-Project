@@ -160,7 +160,28 @@ class EndTurnButton(Button):
     def onClick(self):
         return {'type':'END TURN'}
     
-# class StoreCardsButton(Button):
-#     def __init__(self, store):
-#         self.store = store
-#         self.pos = 
+class StoreCardsButton(Button):
+    def __init__(self, store):
+        dStore = deserializeStore(store)
+        self.store = store
+        self.pos = tuple(dStore["tl"])
+        self.enabled = True
+        self.state = False
+        width, height = 0.03, 0.03
+        self.img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "downArrow.png"))
+        self.img = pygame.transform.scale(self.img, (WIDTH*width, HEIGHT*height))
+        self.rect = self.img.get_rect()
+        self.rect.topleft = (self.pos[0]*WIDTH, self.pos[1]*HEIGHT)
+
+    def onClick(self):
+        if not self.enabled:
+            return
+        else:
+            if self.state:
+                self.state = False
+                self.updateImg()
+                return {'type':'HIDE CARDS'}
+            else:
+                self.state = True
+                self.updateImg()
+                return {'type':'SHOW CARDS'}

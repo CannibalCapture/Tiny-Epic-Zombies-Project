@@ -121,7 +121,6 @@ while run:
             elif event.ui_element == startSignupButton: # proceed to signup page
                 manager = signup_page
         
-        
         manager.process_events(event)
     
     manager.update(time_delta)

@@ -6,7 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton
+from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton
 
 class GameManager(Listener, EventGenerator):
 
@@ -145,39 +145,29 @@ class GameManager(Listener, EventGenerator):
         
         self.player = self.players[0]
         self.nextTurn()
-        self.addAttackButton()
-        self.addMoveButton()
-        self.addOpenCardButton()
-        self.addEndTurnButton()
+        self.addButtons()
         self.renderer.addMap(self.map)
 
-    def addAttackButton(self):
-        attackButton = AttackButton()
-        self.renderer.addButton(attackButton)
-        self.im.addButton(attackButton)
-        self.add_listener(attackButton)
-        attackButton.enable()
+    def addButton(self, button):
+        if button == "attack":
+            button = AttackButton()
+        elif button == "move":
+            button = MoveButton()
+        elif button == "endTurn":
+            button = EndTurnButton()
+        elif button == "openCard":
+            button = OpenCardButton()
 
-    def addMoveButton(self):
-        moveButton = MoveButton()
-        self.renderer.addButton(moveButton)
-        self.im.addButton(moveButton)
-        self.add_listener(moveButton)
-        moveButton.enable()
+        self.renderer.addButton(button)
+        self.im.addButton(button)
+        self.add_listener(button)
+
+    def addButtons(self):
+        self.addButton("attack")
+        self.addButton("move")
+        self.addButton("endTurn")
+        self.addButton("openCard")
     
-    def addEndTurnButton(self):
-        etButton = EndTurnButton()
-        self.renderer.addButton(etButton)
-        self.im.addButton(etButton)
-        self.add_listener(etButton)
-
-    def addOpenCardButton(self):
-        ocButton = OpenCardButton()
-        self.renderer.addButton(ocButton)
-        self.im.addButton(ocButton)
-        self.add_listener(ocButton)
-        ocButton.enable()
-
     def createPlayer(self, name, ID, colour, character, coords):
         player = Player(name, ID, colour, character, coords)
         self.players[ID] = player
