@@ -12,7 +12,7 @@ class DeckManager:
         for i in range(6):
             self.supplyDeck.append(Crowbar("BLUE"))
         for i in range(6):
-            self.searchDeck.append(golfClub("PURPLE"))
+            self.searchDeck.append(golfClub("ORANGE"))
 
     def serialize(self):
         dict = {

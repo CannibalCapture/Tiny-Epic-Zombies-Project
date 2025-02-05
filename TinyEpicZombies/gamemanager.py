@@ -26,6 +26,7 @@ class GameManager(Listener, EventGenerator):
         self.player = None
         self.turnEnded = False
         self.movesRemaining = 0
+        self.noise = None
         self.mode = "move"
         self.map = Map()
         self.dm = DeckManager()
@@ -81,8 +82,7 @@ class GameManager(Listener, EventGenerator):
 
         storeColour = self.player.getCoords()[0]
         storeColour = self.map.getStores()[storeColour].getNoiseColour() # gets the colour of the store the player is currently in
-        lastNoise = 'PURPLE' # noise made by the player *NOT CURRENTLY IMPLEMENTED*
-        if storeColour == lastNoise:
+        if storeColour == self.noise:
             zombies = 2
         
         storesLst = self.map.getStores()
@@ -182,6 +182,7 @@ class GameManager(Listener, EventGenerator):
         coords = player.getCoords()
         card = self.dm.drawSearch()
         self.map.getStores()[coords[0]].addCard(card)
+        self.noise = card.getColour()
         event = {"type":"NOISE","colour":card.getColour(), "ID":player.getID(), "coords":coords, "card":card.getID()}
         self.send_event(event)
 
