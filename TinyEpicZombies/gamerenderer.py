@@ -87,13 +87,15 @@ class GameRenderer(Listener):
             DISPLAY.blit(img, tl)
 
     def __renderFoundCards(self):
-        i = self.players[self.turn].getCoords()[0]
-        store = self.map.getStores()[i]
+        storeID = self.players[self.turn].getCoords()[0] # gets store the player is in. 
+        store = self.map.getStores()[storeID]
         try:
-            pathEnd = store.getCards()[0].getImg()
-            img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", pathEnd))
-            img = pygame.transform.scale(img, (0.17*WIDTH, 0.4*HEIGHT))
-            DISPLAY.blit(img, (0.01*WIDTH, 0.3*HEIGHT))
+            for i in range (len(store.getCards())):
+                card = store.getCards()[i]
+                pathEnd = card.getImg()
+                img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", pathEnd))
+                img = pygame.transform.scale(img, (0.17*WIDTH, 0.4*HEIGHT))
+                DISPLAY.blit(img, (0.01*WIDTH, (0.3+(0.1*i))*HEIGHT))
         except:
             pass
 
