@@ -6,7 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton
+from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton, PickupStoreCardsButton
 
 class GameManager(Listener, EventGenerator):
 
@@ -55,8 +55,7 @@ class GameManager(Listener, EventGenerator):
         type = coll["type"]
 
         # if they clicked on a room
-        if lcr:
-            # and attack mode is on
+        if lcr: # and attack mode is on
             if self.mode == "attack":
                 if lcr == self.player.getCoords():
                     self.playerMelee(self.player)
@@ -70,11 +69,18 @@ class GameManager(Listener, EventGenerator):
 
         if type:
             dict = {'type':type}
-            if dict['type'] == 'END TURN':
+            if type == 'END TURN':
                 self.playerSearchStore()
                 self.zombieTurn()
                 self.nextTurn()
             self.send_event(dict)
+            if type == 'PICKUP STORE CARDS':
+                pass
+        
+    def pickupStoreCards(self):
+        player = self.player
+        # add store's revealed cards to player inventory. 
+
 
     def zombieTurn(self):
         zombies = 1 # zombies is the number of zombies added to each store which matches the type of noise the player made
@@ -157,6 +163,8 @@ class GameManager(Listener, EventGenerator):
             button = EndTurnButton()
         elif button == "openCard":
             button = OpenCardButton()
+        elif button == "pickupStoreCards":
+            button = PickupStoreCardsButton()
 
         self.renderer.addButton(button)
         self.im.addButton(button)
@@ -167,6 +175,7 @@ class GameManager(Listener, EventGenerator):
         self.addButton("move")
         self.addButton("endTurn")
         self.addButton("openCard")
+        self.addButton("pickupStoreCards")
     
     def createPlayer(self, name, ID, colour, character, coords):
         player = Player(name, ID, colour, character, coords)
