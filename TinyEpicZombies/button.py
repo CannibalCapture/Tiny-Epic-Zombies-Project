@@ -158,12 +158,11 @@ class StoreCardsButton(Button): # show all cards attatched to a specific store.
         super().__init__("storeCards", (0,0), True, False)
         dStore = deserializeStore(store)
         self.store = store
-        #self.pos = tuple(dStore["tl"])
         self.setPos(tuple(dStore["tl"]))
 
     def load_images(self):
-        width, height = 0.1, 0.16
-        self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "endTurn.png"))
+        width, height = 0.025, 0.040
+        self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "downArrowGreen.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
         self.disabled_img = self.enabled_img
 
@@ -173,12 +172,10 @@ class StoreCardsButton(Button): # show all cards attatched to a specific store.
         else:
             if self.state:
                 self.state = False
-                #self.updateImg()
-                return {'type':'HIDE CARDS'}
+                return {'type':'HIDE CARDS', 'store':self.store}
             else:
                 self.state = True
-                #self.updateImg()
-                return {'type':'SHOW CARDS'}
+                return {'type':'SHOW CARDS', 'store':self.store}
             
 class PickupStoreCardsButton(Button):
     def __init__(self):
@@ -186,22 +183,17 @@ class PickupStoreCardsButton(Button):
 
     def load_images(self):
         width, height = 0.1, 0.16
-        self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "endTurn.png"))
+        self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "upArrowGreen.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
         self.disabled_img = self.enabled_img
-
 
     def onClick(self):
         if not self.enabled:
             return
         else:
             self.disable()
-            #self.updateImg()
             return {'type':'PICKUP STORE CARDS'}
         
     def on_event(self, event):
         if event['type'] == 'PLAYER MOVED':
             self.enable()
-        
-    #def updateImg(self):
-    #    pass

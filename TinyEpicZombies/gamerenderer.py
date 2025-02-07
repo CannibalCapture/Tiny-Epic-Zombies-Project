@@ -3,7 +3,7 @@ from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects, genTlCoords
 from .listener import Listener
 from .map import Map
-from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH, COLOURS
+from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
 
 class GameRenderer(Listener):
     def __init__(self):
@@ -18,6 +18,7 @@ class GameRenderer(Listener):
         self.players = []
         self.mode = "move"
         self.playerCardShown = True
+        self.shownPickupCards = None # contains the store which we will render the pickup cards for
         self.turn = 0
         self.map = None
         self.opacity = 88
@@ -58,6 +59,8 @@ class GameRenderer(Listener):
         if event['type'] == 'PLAYER MOVED':
             if event['moves'] == 0:
                 self.mode = None
+        if event['type'] == 'SHOW CARDS':
+            self.shownPickupCards = event['store']
 
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
@@ -84,17 +87,31 @@ class GameRenderer(Listener):
             tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in. 
             img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "avatars", f"{player.getCharacter()}.png"))
             img = pygame.transform.scale(img, (0.04*WIDTH, 0.06*HEIGHT))
+            # img = genImg(f"TinyEpicZombies", "assets", "avatars", f"{player.getCharacter()}.png", (0.04*WIDTH, 0.06*HEIGHT))
+            
             DISPLAY.blit(img, tl)
 
     def __renderFoundCards(self):
-        storeID = self.players[self.turn].getCoords()[0] # gets store the player is in. 
-        store = self.map.getStores()[storeID]
+        width, height = 0.18, 0.08
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "text", "pickupCards.png"))
+        img = pygame.transform.scale(img, (width*WIDTH, (height)*HEIGHT))
+        DISPLAY.blit(img, (0.01*WIDTH, 0.16*HEIGHT))
+
+        if not self.shownPickupCards:
+            return
+        
+        width, height = 0.05, 0.05
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "text", f"{self.shownPickupCards}.png"))
+        img = pygame.transform.scale(img, (width*WIDTH, (height)*HEIGHT))
+        DISPLAY.blit(img, (0.19*WIDTH, (0.17)*HEIGHT))
+        store = self.map.getStores()[self.shownPickupCards]
+        width, height = 0.17, 0.4
         try:
             for i in range (len(store.getCards())):
                 card = store.getCards()[i]
                 pathEnd = card.getImg()
                 img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", pathEnd))
-                img = pygame.transform.scale(img, (0.17*WIDTH, 0.4*HEIGHT))
+                img = pygame.transform.scale(img, (width*WIDTH, height*HEIGHT))
                 DISPLAY.blit(img, (0.01*WIDTH, (0.3+(0.1*i))*HEIGHT))
         except:
             pass

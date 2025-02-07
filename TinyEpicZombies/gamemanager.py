@@ -68,12 +68,12 @@ class GameManager(Listener, EventGenerator):
             self.setMode(mode)
 
         if type:
-            dict = {'type':type}
             if type == 'END TURN':
                 self.playerSearchStore()
                 self.zombieTurn()
                 self.nextTurn()
-            self.send_event(dict)
+            self.send_event(coll)
+            
             if type == 'PICKUP STORE CARDS':
                 pass
         
@@ -154,7 +154,7 @@ class GameManager(Listener, EventGenerator):
         self.addButtons()
         self.renderer.addMap(self.map)
 
-    def addButton(self, button):
+    def addButton(self, button, store=None):
         if button == "attack":
             button = AttackButton()
         elif button == "move":
@@ -165,6 +165,8 @@ class GameManager(Listener, EventGenerator):
             button = OpenCardButton()
         elif button == "pickupStoreCards":
             button = PickupStoreCardsButton()
+        elif button == "showStoreCards":
+            button = StoreCardsButton(store)
 
         self.renderer.addButton(button)
         self.im.addButton(button)
@@ -176,6 +178,8 @@ class GameManager(Listener, EventGenerator):
         self.addButton("endTurn")
         self.addButton("openCard")
         self.addButton("pickupStoreCards")
+        for i in range(9):
+            self.addButton("showStoreCards", i)
     
     def createPlayer(self, name, ID, colour, character, coords):
         player = Player(name, ID, colour, character, coords)

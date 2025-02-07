@@ -25,3 +25,8 @@ def deserializeGame():
     
 def scale(tupleObj):
     return(tupleObj[0]*WIDTH, tupleObj[1]*HEIGHT)
+
+# def genImg(path, scale):
+#     img = pygame.image.load(os.path.join(path))
+#     img = pygame.transform.scale(img, (scale[0]*WIDTH, scale[1]*HEIGHT))
+#     return img
