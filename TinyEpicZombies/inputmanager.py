@@ -6,12 +6,16 @@ class InputManager(Listener):
     def __init__(self):
         self.lastClickedRoom = None
         self.buttons = []
+        self.mode = "NORMAL"
 
     def collisions(self, pos):
-        dict = {"mode": None, "lastClickedRoom": None, 'type': None}
-        buttonReturn, lcr = self.buttonCollisions(pos), self.roomCollisions(pos)
-        dict = dict | lcr | buttonReturn
-        return dict
+        if self.mode == "NORMAL":
+            dict = {"mode": None, "lastClickedRoom": None, 'type': None}
+            buttonReturn, lcr = self.buttonCollisions(pos), self.roomCollisions(pos)
+            dict = dict | lcr | buttonReturn
+            return dict
+        elif self.mode == "":
+            pass
 
     def roomCollisions(self, pos): # returns last clicked room's coordinates
         rectsLst = genRoomRects()

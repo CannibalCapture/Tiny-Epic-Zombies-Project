@@ -5,7 +5,7 @@ from .listener import Listener
 from .map import Map
 from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
 
-class GameRenderer(Listener):
+class GameRenderer(Listener): # could be a child of a rectGenerator class
     def __init__(self):
         self.cw = CW*WIDTH
         self.ch = CH*HEIGHT
@@ -17,19 +17,20 @@ class GameRenderer(Listener):
         self.buttons = []
         self.players = []
         self.mode = "move"
-        self.playerCardShown = True
-        self.shownPickupCards = None # contains the store which we will render the pickup cards for
         self.turn = 0
-        self.map = None
         self.opacity = 88
-        self.flag = True
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "ammo.jpg"))
         img = pygame.transform.scale(img, (0.02*WIDTH, 0.02*HEIGHT))
         self.ammo = img
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "health.png"))
         img = pygame.transform.scale(img, (0.02*WIDTH, 0.03*HEIGHT))
         self.health = img
-
+        self.player = None
+        self.map = None
+        self.shownPickupCards = False # contains the store which we will render the pickup cards for
+        self.playerCardShown = True
+        self.pickupWeaponChoice = False
+        self.flag = True
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
         storeSurfaces = []
@@ -42,13 +43,12 @@ class GameRenderer(Listener):
             img = pygame.transform.rotate(img, rotation)
             storeSurfaces.append(img)
         return storeSurfaces
-    
+
     def on_event(self, event):
         if event['type'] == 'MODE CHANGE':
             self.mode = event['mode']
         if event['type'] == 'TURN CHANGE':
-            self.turn = event['turn']
-            self.mode = "move"
+            self.nextTurn(event['turn'])
         if event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
             if event['moves'] != 0:
                 self.mode = "move"
@@ -61,6 +61,9 @@ class GameRenderer(Listener):
                 self.mode = None
         if event['type'] == 'SHOW CARDS':
             self.shownPickupCards = event['store']
+        if event['type'] == 'PICKUP STORE CARDS':
+            self.pickupWeaponChoice = True
+            self.shownPickupCards = None
 
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
@@ -71,6 +74,13 @@ class GameRenderer(Listener):
         self.__renderFoundCards()
         self.__renderButtons()
         self.renderOverlay()
+        self.__renderPickupWeaponChoice()
+
+    def nextTurn(self, turn):
+        self.turn = turn
+        self.player = self.players[turn]
+        self.mode = "move"
+        self.shownPickupCards = self.player.getCoords()[0]
 
     def addMap(self, value:Map):
         self.map = value
@@ -85,33 +95,21 @@ class GameRenderer(Listener):
         for player in self.players:
             coord = player.getCoords()
             tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in. 
-            img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "avatars", f"{player.getCharacter()}.png"))
-            img = pygame.transform.scale(img, (0.04*WIDTH, 0.06*HEIGHT))
-            # img = genImg(f"TinyEpicZombies", "assets", "avatars", f"{player.getCharacter()}.png", (0.04*WIDTH, 0.06*HEIGHT))
+            img = player.getImg()
             
             DISPLAY.blit(img, tl)
 
-    def __renderFoundCards(self):
-        width, height = 0.18, 0.08
-        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "text", "pickupCards.png"))
-        img = pygame.transform.scale(img, (width*WIDTH, (height)*HEIGHT))
-        DISPLAY.blit(img, (0.01*WIDTH, 0.16*HEIGHT))
+
+    def __renderFoundCards(self): # Function breaks when displaying more than 3 cards (tries to render it off the screen)
 
         if not self.shownPickupCards:
             return
-        
-        width, height = 0.05, 0.05
-        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "text", f"{self.shownPickupCards}.png"))
-        img = pygame.transform.scale(img, (width*WIDTH, (height)*HEIGHT))
-        DISPLAY.blit(img, (0.19*WIDTH, (0.17)*HEIGHT))
+
         store = self.map.getStores()[self.shownPickupCards]
-        width, height = 0.17, 0.4
         try:
             for i in range (len(store.getCards())):
                 card = store.getCards()[i]
-                pathEnd = card.getImg()
-                img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", pathEnd))
-                img = pygame.transform.scale(img, (width*WIDTH, height*HEIGHT))
+                img = card.getImg()
                 DISPLAY.blit(img, (0.01*WIDTH, (0.3+(0.1*i))*HEIGHT))
         except:
             pass
@@ -121,11 +119,11 @@ class GameRenderer(Listener):
 
         if self.playerCardShown:
             player = self.players[self.turn]
-            img = player.getImg()
+            img = player.getCardImg()
             x, y = WIDTH*(1 - cWidth), 0
             DISPLAY.blit(img, (x, y))
-            img = self.ammo
 
+            img = self.ammo
             x += WIDTH*cWidth - WIDTH*cWidth/9.8*(player.getAmmoMissing() + 1)
             y += HEIGHT*0.025
             DISPLAY.blit(img, (x, y))
@@ -134,6 +132,27 @@ class GameRenderer(Listener):
             x = WIDTH*(1 - cWidth) + WIDTH*cWidth/9.8*(player.getHealthMissing())
             DISPLAY.blit(img, (x, y))
 
+    def __renderPickupWeaponChoice(self):
+        if not self.pickupWeaponChoice:
+            return
+        
+        # Darkening effect on the background
+        surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA) 
+        surface.fill((0,0,0, 80))
+        DISPLAY.blit(surface, (0,0))
+
+        store = self.map.getStores()[self.player.getCoords()[0]]
+        width, height = 0.17, 0.4
+        cardCount = len(store.getCards())
+        for i in range(cardCount):
+            card = store.getCards()[i]
+            img = card.getImg()
+
+            card.setPos((((1-cardCount*width)/2 + width*i), (0.5-(height/2))))
+            pos = card.getPos()
+            pos = (pos[0]*WIDTH, pos[1]*HEIGHT)
+
+            DISPLAY.blit(img, pos)
 
     def __renderZombies(self):
         zombieRooms = self.map.getZombieRooms()
@@ -158,8 +177,8 @@ class GameRenderer(Listener):
     def __renderButtons(self):
         for button in self.buttons:
             img = button.getImg()
-            tl = button.getRect().topleft
-            DISPLAY.blit(img, (tl))
+            tl = button.getPos()
+            DISPLAY.blit(img, (tl[0]*WIDTH, tl[1]*HEIGHT))
 
     def __renderStores(self):
         for store in range(9):

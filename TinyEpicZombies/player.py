@@ -2,7 +2,7 @@ from random import choice
 import pygame, os
 from .listener import Listener
 from .eventgenerator import EventGenerator
-from .cards.card import MeleeWeapon, RangedWeapon
+from .cards.card import Card
 from .constants import CW, CH, WIDTH, HEIGHT
 
 class Player(Listener, EventGenerator):
@@ -20,9 +20,12 @@ class Player(Listener, EventGenerator):
         self.movementOptions = None
         self.ID = ID
         self.character = character
-        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters",f"{self.character}Card.jpg"))
-        img = pygame.transform.scale(img, (CW*1.6*WIDTH, CH*1.6*HEIGHT))
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "avatars",f"{self.character}.png"))
+        img = pygame.transform.scale(img, (0.04*WIDTH, 0.06*HEIGHT))
         self.img = img
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters",f"{self.character}Card.jpg"))
+        img = pygame.transform.scale(img, ((CW*1.6)*WIDTH, (CH*1.6)*HEIGHT))
+        self.cardImg = img
 
     def serialize(self):
         dict = {
@@ -40,11 +43,11 @@ class Player(Listener, EventGenerator):
 
         return dict
 
-    def deserialize(dict):
-        return Player(dict["name"], dict["ID"], dict["colour"], dict["character"], tuple(dict["coords"]), 
-                      None if  dict["meleeweapon"] == "None" else MeleeWeapon.deserialize(dict["meleeweapon"]),
-                      None if  dict["rangedweapon"] == "None" else RangedWeapon.deserialize(dict["rangedweapon"]),
-                      dict["health"], dict["ammo"], dict["moves"])
+    # def deserialize(dict):
+    #     return Player(dict["name"], dict["ID"], dict["colour"], dict["character"], tuple(dict["coords"]), 
+    #                   None if  dict["meleeweapon"] == "None" else MeleeWeapon.deserialize(dict["meleeweapon"]),
+    #                   None if  dict["rangedweapon"] == "None" else RangedWeapon.deserialize(dict["rangedweapon"]),
+    #                   dict["health"], dict["ammo"], dict["moves"])
 
     def move(self, coords):
         self.coords = coords
@@ -113,6 +116,9 @@ class Player(Listener, EventGenerator):
 
     def getMovementOptions(self):
         return self.movementOptions
+    
+    def getCardImg(self):
+        return self.cardImg
     
     def getImg(self):
         return self.img

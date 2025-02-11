@@ -1,0 +1,40 @@
+{
+    "buttons": {
+        "attackButton": {
+            "pos": [0.92, 0.87],
+            "enabled": true,
+            "state": false
+        },
+
+        "moveButton": {
+            "pos": [0.84, 0.87],
+            "enabled": true,
+            "state": false
+        },
+
+        "openCardButton": {
+            "pos": [0.96, 0.02],
+            "enabled": true,
+            "state": true
+        },
+
+        "endTurnButton": {
+            "pos": [0.90, 0.67],
+            "enabled": true,
+            "state": true
+        },
+
+        "storeCardsButton": {
+            "pos": [0,0],
+            "enabled": true,
+            "state": false
+        },
+
+        "pickupStoreCardsButton": {
+            "pos": [0.80, 0.67],
+            "enabled": false,
+            "state": false
+        }
+
+    }
+}

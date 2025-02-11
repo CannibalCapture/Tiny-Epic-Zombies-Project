@@ -75,10 +75,21 @@ class GameManager(Listener, EventGenerator):
             self.send_event(coll)
             
             if type == 'PICKUP STORE CARDS':
-                pass
+                self.pickupStoreCards()
         
     def pickupStoreCards(self):
         player = self.player
+        store = self.map.getStores()[player.getCoords()[0]]
+        cards = store.getCards()
+        for i in range(len(cards)):
+            card = cards[i]
+            if card.getType() == "MELEE WEAPON" or card.getType() == "RANGED WEAPON":
+                print("weapon", card.getID())
+            else:
+                store.removeCard(i)
+                # ask if they would like to replace their current weapon with the new one. 
+            # elif card.getType():
+                # pass # other card types to be added.
         # add store's revealed cards to player inventory. 
 
 

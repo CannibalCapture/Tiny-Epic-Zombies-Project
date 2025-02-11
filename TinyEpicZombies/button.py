@@ -8,12 +8,12 @@ class Button(EventGenerator, Listener):
     def __init__(self, ID, pos, enabled, state):
         self.ID = ID
         self.enabled = enabled
-        self.pos = pos
         self.state = state
         self.enabled_img = None
         self.disabled_img = None
         self.load_images()
         self.rect = self.getImg().get_rect() if self.getImg() else pygame.Rect(0, 0, 0, 0)
+        self.setPos(pos)
         self.rect.topleft = (self.pos[0]*WIDTH, self.pos[1]*HEIGHT)
 
     def load_images(self):
@@ -53,6 +53,9 @@ class Button(EventGenerator, Listener):
     def getID(self):
         return self.ID
     
+    def getPos(self):
+        return self.pos
+    
     def setPos(self, pos):
         self.pos = pos
         self.rect.topleft = (self.pos[0]*WIDTH, self.pos[1]*HEIGHT)
@@ -62,7 +65,7 @@ class Button(EventGenerator, Listener):
 
 class AttackButton(Button):
     def __init__(self):
-        super().__init__("attack", (0.92, 0.87), True, False)
+        super().__init__("attackButton", (0.92, 0.87), True, False)
 
     def onClick(self):
         if not self.enabled:

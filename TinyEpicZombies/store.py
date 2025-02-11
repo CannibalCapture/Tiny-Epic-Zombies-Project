@@ -23,6 +23,9 @@ class Store:
     def addCard(self, card):
         self.cards.append(card)
 
+    def removeCard(self, index):
+        return self.cards.pop(index)
+
     def getNoiseColour(self):
         return self.noiseColour
 
