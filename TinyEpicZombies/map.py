@@ -25,19 +25,19 @@ class Map: # map will manage the rooms
     def deserialize(dict):
         return Map([store.deserialize() for store in dict["stores"]])
 
-    def createStore(self, storeID): # pass in a list of 3 rooms
+    def createStore(self, ID): # pass in a list of 3 rooms
         rooms = []
-        ds = deserializeStore(storeID)
+        ds = deserializeStore(ID)
         for i in range(0,3):
-            rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID, ds["colour"], ds["image"], tuple(ds["tl"])))
+            rooms.append(Room(i, (ID, i)))
+        self.stores.append(Store(rooms, ID, ds["colour"], ds["image"], tuple(ds["tl"])))
 
-    def createCentreStore(self, storeID=4):
+    def createCentreStore(self, ID=4):
         rooms = []
         for i in range(0,5):
             ds = deserializeStore(4)
-            rooms.append(Room(i, (storeID, i)))
-        self.stores.append(Store(rooms, storeID, None, ds["image"], ds["tl"]))
+            rooms.append(Room(i, (ID, i)))
+        self.stores.append(Store(rooms, ID, None, ds["image"], ds["tl"]))
 
     def _initStores(self):
         for i in range(0,4):

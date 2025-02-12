@@ -6,7 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton, PickupStoreCardsButton, ExitMenuButton
+from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton, PickupStoreCardsButton, ExitMenuButton, TestButton
 
 class GameManager(Listener, EventGenerator):
 
@@ -71,18 +71,22 @@ class GameManager(Listener, EventGenerator):
             self.setMode(mode)
 
         if "type" in keys:
-            type = coll["type"]
-            if type == 'END TURN':
+            if coll['type'] == 'END TURN':
+                print("end turn gm")
                 self.playerSearchStore()
                 self.zombieTurn()
                 self.nextTurn()
+            
+            if coll['type'] == 'PICKUP STORE CARDS':
+                self.pickupStoreCards()
+            
+            if coll['type'] == 'TEST BUTTON': #################################################################
+                # store = self.renderer.map.getStores()[self.renderer.shownPickupCards]
+                # print(store.getCards(), len(store.getCards()))
+                pass
+            
             self.send_event(coll)
 
-            # if type == 'EXIT MENU':
-            #     self.exitMenu()
-            
-            if type == 'PICKUP STORE CARDS':
-                self.pickupStoreCards()
         
     def pickupStoreCards(self):
         player = self.player
@@ -118,7 +122,7 @@ class GameManager(Listener, EventGenerator):
             if storeColour == None:
                 break
             if store.getNoiseColour() == storeColour:
-                sp = self.map.shortestPath((store.getStoreID(), 0), zombie=True)
+                sp = self.map.shortestPath((store.getID(), 0), zombie=True)
                 routes.append(sp)
         for i in range(zombies):
             spawnLocations = []
@@ -192,6 +196,8 @@ class GameManager(Listener, EventGenerator):
             button = StoreCardsButton(store)
         elif button == "exitMenu":
             button = ExitMenuButton()
+        elif button == "test":
+            button = TestButton()
 
         self.renderer.addButton(button)
         self.im.addButton(button)
@@ -204,13 +210,14 @@ class GameManager(Listener, EventGenerator):
         self.addButton("openCard")
         self.addButton("pickupStoreCards")
         self.addButton("exitMenu")
+        self.addButton("test")
         for i in range(9):
             self.addButton("showStoreCards", i)
     
     def createPlayer(self, name, ID, colour, character, coords):
         player = Player(name, ID, colour, character, coords)
         self.players[ID] = player
-        player.move(coords) # coordinates will be in the form (storeID, room)
+        player.move(coords) # coordinates will be in the form (ID, room)
         self.add_listener(player)
         player.add_listener(self)
         self.renderer.addPlayer(player)
@@ -220,12 +227,13 @@ class GameManager(Listener, EventGenerator):
         player = self.player
         coords = player.getCoords()
         card = self.dm.drawSearch()
+        # print(self.map.getStores()[coords[0]].getID())
         self.map.getStores()[coords[0]].addCard(card)
         self.noise = card.getColour()
         event = {"type":"NOISE","colour":card.getColour(), "ID":player.getID(), "coords":coords, "card":card.getID()}
         self.send_event(event)
 
-    def movePlayer(self, player, newCoords): # newCoords is a tuple containing the storeID and the room in that store.
+    def movePlayer(self, player, newCoords): # newCoords is a tuple containing the ID and the room in that store.
         if self.map.al.validatePlayerMove(player, newCoords) and self.movesRemaining != 0:
             oldStoreID, oldRoom = player.coords[0], player.coords[1]
             newStoreID, newRoom = newCoords[0], newCoords[1]

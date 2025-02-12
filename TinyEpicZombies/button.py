@@ -166,7 +166,8 @@ class EndTurnButton(Button):
         width, height = 0.1, 0.16
         self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "endTurn.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
-        self.disabled_img = self.enabled_img
+        self.disabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "empty.png"))
+        self.disabled_img = pygame.transform.scale(self.disabled_img, (WIDTH*width, HEIGHT*height))
 
     def onClick(self):
         return {'type':'END TURN'}
@@ -182,7 +183,8 @@ class StoreCardsButton(Button): # show all cards attatched to a specific store.
         width, height = 0.025, 0.040
         self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "downArrowGreen.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
-        self.disabled_img = self.enabled_img
+        self.disabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "downArrowGrey.png"))
+        self.disabled_img = pygame.transform.scale(self.disabled_img, (WIDTH*width, HEIGHT*height))
 
     def onClick(self):
         if not self.enabled:
@@ -195,6 +197,23 @@ class StoreCardsButton(Button): # show all cards attatched to a specific store.
                 self.state = True
                 return {'type':'SHOW CARDS', 'store':self.store}
             
+    def on_event(self, event):
+        if event['type'] == 'SHOW CARDS':
+            if event['store'] != self.store:
+                self.state = False 
+        if event['type'] == 'TURN CHANGE':
+            if event['player'].getCoords()[0] == self.store:
+                self.state = True
+            else:
+                self.state = False
+
+
+    def getImg(self):
+        if self.state:
+            return self.enabled_img
+        else:
+            return self.disabled_img
+            
 class PickupStoreCardsButton(Button):
     def __init__(self):
         super().__init__("pickupStoreCards", (0.80, 0.67), False, False)
@@ -203,7 +222,8 @@ class PickupStoreCardsButton(Button):
         width, height = 0.1, 0.16
         self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "upArrowGreen.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
-        self.disabled_img = self.enabled_img
+        self.disabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "upArrowGrey.png"))
+        self.disabled_img = pygame.transform.scale(self.disabled_img, (WIDTH*width, HEIGHT*height))
 
     def onClick(self):
         if not self.enabled:
@@ -221,7 +241,6 @@ class PickupStoreCardsButton(Button):
 class ExitMenuButton(Button): # Returns to gameboard screen
     def __init__(self):
         super().__init__("exitMenu", (0.2, 0.2), False, False)
-        # self.load_images()
 
     def onClick(self):
         if not self.enabled:
@@ -246,3 +265,19 @@ class ExitMenuButton(Button): # Returns to gameboard screen
             return self.enabled_img
         else:
             return self.disabled_img
+
+class TestButton(Button):
+    def __init__(self):
+        super().__init__("exitMenu", (0.8, 0.2), True, False)
+
+    def onClick(self):
+        if not self.enabled:
+            return
+        else:
+            return {'type':'TEST BUTTON'}
+    
+    def load_images(self):
+        width, height = 0.1, 0.16
+        self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "endTurn.png"))
+        self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
+        self.disabled_img = self.enabled_img

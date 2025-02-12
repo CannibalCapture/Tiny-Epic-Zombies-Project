@@ -79,7 +79,7 @@ class GameRenderer(Listener):
         self.__renderZombies()
         self.__renderPlayers()
         self.__renderPlayerCards()
-        self.__renderFoundCards()
+        self.__renderPickupCards()
         self.__renderButtons()
         self.renderOverlay()
         self.__renderPickupWeaponChoice()
@@ -99,19 +99,17 @@ class GameRenderer(Listener):
             DISPLAY.blit(img, tl)
 
 
-    def __renderFoundCards(self): # Function breaks when displaying more than 3 cards (tries to render it off the screen)
+    def __renderPickupCards(self): # Function breaks when displaying more than 3 cards (tries to render it off the screen)
 
-        if not self.shownPickupCards:
+        if self.shownPickupCards == None:
             return
 
         store = self.map.getStores()[self.shownPickupCards]
-        try:
-            for i in range (len(store.getCards())):
+        if len(store.getCards()) > 0:
+            for i in range(len(store.getCards())):
                 card = store.getCards()[i]
                 img = card.getImg()
                 DISPLAY.blit(img, (0.01*WIDTH, (0.3+(0.1*i))*HEIGHT))
-        except:
-            pass
 
     def __renderPlayerCards(self):
         cWidth = 1.6*CW
@@ -177,9 +175,6 @@ class GameRenderer(Listener):
     def __renderButtons(self):
         for button in self.buttons:
             img = button.getImg()
-            if type(button) == MoveButton:
-                # print(button, button.getEnabled(),img.)
-                pass
             tl = button.getPos()
             DISPLAY.blit(img, (tl[0]*WIDTH, tl[1]*HEIGHT))
 
