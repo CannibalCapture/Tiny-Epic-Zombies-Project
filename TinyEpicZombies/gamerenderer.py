@@ -1,16 +1,17 @@
 import pygame, os
+
+from TinyEpicZombies.button import MoveButton
 from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects, genTlCoords
 from .listener import Listener
 from .map import Map
 from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
 
-class GameRenderer(Listener): # could be a child of a rectGenerator class
+class GameRenderer(Listener):
     def __init__(self):
         self.cw = CW*WIDTH
         self.ch = CH*HEIGHT
-        self.gameboardImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "woodBackground.jpg")).convert()
-        self.gameboardImg = pygame.transform.scale(self.gameboardImg, (WIDTH, HEIGHT))
+        self.load_images()
         self.storeSurfaces = self.__genStoreSurfaces()
         self.tlCoords = genTlCoords()
         self.roomRects = genRoomRects()
@@ -19,18 +20,23 @@ class GameRenderer(Listener): # could be a child of a rectGenerator class
         self.mode = "move"
         self.turn = 0
         self.opacity = 88
-        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "ammo.jpg"))
-        img = pygame.transform.scale(img, (0.02*WIDTH, 0.02*HEIGHT))
-        self.ammo = img
-        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "health.png"))
-        img = pygame.transform.scale(img, (0.02*WIDTH, 0.03*HEIGHT))
-        self.health = img
         self.player = None
         self.map = None
         self.shownPickupCards = False # contains the store which we will render the pickup cards for
         self.playerCardShown = True
         self.pickupWeaponChoice = False
         self.flag = True
+
+    def load_images(self):
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "woodBackground.jpg")).convert()
+        img = pygame.transform.scale(img, (WIDTH, HEIGHT))
+        self.gameboardImg = img
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "ammo.jpg"))
+        img = pygame.transform.scale(img, (0.02*WIDTH, 0.02*HEIGHT))
+        self.ammo = img
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "health.png"))
+        img = pygame.transform.scale(img, (0.02*WIDTH, 0.03*HEIGHT))
+        self.health = img
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
         storeSurfaces = []
@@ -64,6 +70,8 @@ class GameRenderer(Listener): # could be a child of a rectGenerator class
         if event['type'] == 'PICKUP STORE CARDS':
             self.pickupWeaponChoice = True
             self.shownPickupCards = None
+        if event['type'] == 'EXIT MENU':
+            self.pickupWeaponChoice = False
 
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
@@ -75,15 +83,6 @@ class GameRenderer(Listener): # could be a child of a rectGenerator class
         self.__renderButtons()
         self.renderOverlay()
         self.__renderPickupWeaponChoice()
-
-    def nextTurn(self, turn):
-        self.turn = turn
-        self.player = self.players[turn]
-        self.mode = "move"
-        self.shownPickupCards = self.player.getCoords()[0]
-
-    def addMap(self, value:Map):
-        self.map = value
 
     def renderOverlay(self):
         if self.mode == "move":
@@ -162,6 +161,7 @@ class GameRenderer(Listener): # could be a child of a rectGenerator class
             img = pygame.transform.scale(img, (0.03*WIDTH, 0.04*HEIGHT))
             DISPLAY.blit(img, tl)
 
+
     def __renderAttackMode(self, turn):
         zombieRooms = self.map.getZombieRooms()
         player = self.players[turn]
@@ -177,6 +177,9 @@ class GameRenderer(Listener): # could be a child of a rectGenerator class
     def __renderButtons(self):
         for button in self.buttons:
             img = button.getImg()
+            if type(button) == MoveButton:
+                # print(button, button.getEnabled(),img.)
+                pass
             tl = button.getPos()
             DISPLAY.blit(img, (tl[0]*WIDTH, tl[1]*HEIGHT))
 
@@ -200,3 +203,12 @@ class GameRenderer(Listener): # could be a child of a rectGenerator class
 
     def addPlayer(self, player):
         self.players.append(player)
+
+    def nextTurn(self, turn):
+        self.turn = turn
+        self.player = self.players[turn]
+        self.mode = "move"
+        self.shownPickupCards = self.player.getCoords()[0]
+
+    def addMap(self, value:Map):
+        self.map = value

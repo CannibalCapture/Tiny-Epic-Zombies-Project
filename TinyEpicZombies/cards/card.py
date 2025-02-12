@@ -15,6 +15,7 @@ class Card:
 
     def setPos(self, pos):
         self.pos = pos
+        self.rect = self.getImg().get_rect()
         self.rect.topleft = (self.pos[0]*WIDTH, self.pos[1]*HEIGHT)
 
     def serialize(self):
@@ -40,3 +41,6 @@ class Card:
     
     def getType(self):
         return self.type
+    
+    def getRect(self):
+        return self.rect

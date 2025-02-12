@@ -6,7 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton, PickupStoreCardsButton
+from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton, PickupStoreCardsButton, ExitMenuButton
 
 class GameManager(Listener, EventGenerator):
 
@@ -50,12 +50,14 @@ class GameManager(Listener, EventGenerator):
 
     def onClick(self, pos):
         coll = self.im.collisions(pos)
-        lcr = coll["lastClickedRoom"]
-        mode = coll["mode"]
-        type = coll["type"]
+        try:
+            keys = [*coll]
+        except:
+            keys = []
 
         # if they clicked on a room
-        if lcr: # and attack mode is on
+        if "lastClickedRoom" in keys: # and attack mode is on
+            lcr = coll["lastClickedRoom"]
             if self.mode == "attack":
                 if lcr == self.player.getCoords():
                     self.playerMelee(self.player)
@@ -64,15 +66,20 @@ class GameManager(Listener, EventGenerator):
             else:
                 self.movePlayer(self.player, lcr)
 
-        if mode:
+        if "mode" in keys:
+            mode = coll["mode"]
             self.setMode(mode)
 
-        if type:
+        if "type" in keys:
+            type = coll["type"]
             if type == 'END TURN':
                 self.playerSearchStore()
                 self.zombieTurn()
                 self.nextTurn()
             self.send_event(coll)
+
+            # if type == 'EXIT MENU':
+            #     self.exitMenu()
             
             if type == 'PICKUP STORE CARDS':
                 self.pickupStoreCards()
@@ -84,13 +91,17 @@ class GameManager(Listener, EventGenerator):
         for i in range(len(cards)):
             card = cards[i]
             if card.getType() == "MELEE WEAPON" or card.getType() == "RANGED WEAPON":
-                print("weapon", card.getID())
+                pass
             else:
                 store.removeCard(i)
                 # ask if they would like to replace their current weapon with the new one. 
             # elif card.getType():
                 # pass # other card types to be added.
         # add store's revealed cards to player inventory. 
+
+    def exitMenu(self):
+        event = {'type':'EXIT MENU'}
+        self.send_event(event)
 
 
     def zombieTurn(self):
@@ -137,7 +148,7 @@ class GameManager(Listener, EventGenerator):
         else:
             self.turn += 1
         self.player = self.getPlayer(self.turn)
-        event = {'type':'TURN CHANGE', 'turn':self.turn}
+        event = {'type':'TURN CHANGE', 'turn':self.turn, 'player':self.player}
         self.send_event(event)
         self.turnEnded = False
 
@@ -164,6 +175,7 @@ class GameManager(Listener, EventGenerator):
         self.nextTurn()
         self.addButtons()
         self.renderer.addMap(self.map)
+        self.im.addMap(self.map)
 
     def addButton(self, button, store=None):
         if button == "attack":
@@ -178,6 +190,8 @@ class GameManager(Listener, EventGenerator):
             button = PickupStoreCardsButton()
         elif button == "showStoreCards":
             button = StoreCardsButton(store)
+        elif button == "exitMenu":
+            button = ExitMenuButton()
 
         self.renderer.addButton(button)
         self.im.addButton(button)
@@ -189,6 +203,7 @@ class GameManager(Listener, EventGenerator):
         self.addButton("endTurn")
         self.addButton("openCard")
         self.addButton("pickupStoreCards")
+        self.addButton("exitMenu")
         for i in range(9):
             self.addButton("showStoreCards", i)
     

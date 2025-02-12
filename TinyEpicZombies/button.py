@@ -38,6 +38,9 @@ class Button(EventGenerator, Listener):
     def updateImg():
         pass
 
+    def getEnabled(self):
+        return self.enabled
+
     def getImg(self):
         if self.enabled:
             return self.enabled_img
@@ -100,9 +103,21 @@ class MoveButton(Button):
         width, height = 0.05, 0.08 # maybe put in json file
         self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "moveTrue.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
-        self.disabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "moveTrue.png")) # change to moveFalse when it exists
-        self.disabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
-            
+        self.disabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "moveFalse.png")) # change to moveFalse when it exists
+        self.disabled_img = pygame.transform.scale(self.disabled_img, (WIDTH*width, HEIGHT*height))
+
+    def on_event(self, event):
+        if event['type'] == 'PLAYER MOVED':
+            if event['moves'] == 0:
+                self.disable()
+        if event['type'] == 'TURN CHANGE':
+            self.enable()
+
+    def getImg(self):
+        if self.enabled==True:
+            return self.enabled_img
+        else:
+            return self.disabled_img
     def onClick(self): # toggling on / off states could go in parent class
         if not self.enabled:
             return
@@ -124,7 +139,7 @@ class OpenCardButton(Button):
         self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "downArrow.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
         self.disabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "upArrow.png"))
-        self.disabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
+        self.disabled_img = pygame.transform.scale(self.disabled_img, (WIDTH*width, HEIGHT*height))
 
     def onClick(self):
         if not self.enabled:
@@ -198,5 +213,36 @@ class PickupStoreCardsButton(Button):
             return {'type':'PICKUP STORE CARDS'}
         
     def on_event(self, event):
-        if event['type'] == 'PLAYER MOVED':
+        if event['type'] == 'PLAYER MOVED' and event['moves'] == 0:
             self.enable()
+        if event['type'] == 'TURN CHANGE':
+            self.disable()
+
+class ExitMenuButton(Button): # Returns to gameboard screen
+    def __init__(self):
+        super().__init__("exitMenu", (0.2, 0.2), False, False)
+        # self.load_images()
+
+    def onClick(self):
+        if not self.enabled:
+            return
+        else:
+            self.disable()
+            return {'type':'EXIT MENU'}
+    
+    def on_event(self, event):
+        if event['type'] == 'PICKUP STORE CARDS':
+            self.enable()
+        
+    def load_images(self):
+        width, height = 0.1, 0.16
+        self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "endTurn.png"))
+        self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
+        self.disabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "empty.png"))
+        self.disabled_img = pygame.transform.scale(self.disabled_img, (WIDTH*width, HEIGHT*height))
+
+    def getImg(self):
+        if self.enabled:
+            return self.enabled_img
+        else:
+            return self.disabled_img

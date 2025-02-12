@@ -1,21 +1,32 @@
 from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects
 from .listener import Listener
+from .map import Map
 
 class InputManager(Listener):
     def __init__(self):
         self.lastClickedRoom = None
         self.buttons = []
+        self.player = None
         self.mode = "NORMAL"
 
+    def on_event(self, event):
+        if event['type'] == 'PICKUP STORE CARDS':
+            self.mode = "PICKUP"
+        if event['type'] == 'TURN CHANGE':
+            self.player = event['player']
+        if event['type'] == 'EXIT MENU':
+            self.mode = "NORMAL"
+
     def collisions(self, pos):
+        dict = {}
         if self.mode == "NORMAL":
-            dict = {"mode": None, "lastClickedRoom": None, 'type': None}
             buttonReturn, lcr = self.buttonCollisions(pos), self.roomCollisions(pos)
             dict = dict | lcr | buttonReturn
-            return dict
-        elif self.mode == "":
-            pass
+        elif self.mode == "PICKUP":
+            buttonReturn, cardColl = self.buttonCollisions(pos), self.cardCollisions(pos)
+            dict = buttonReturn | cardColl
+        return dict
 
     def roomCollisions(self, pos): # returns last clicked room's coordinates
         rectsLst = genRoomRects()
@@ -28,7 +39,6 @@ class InputManager(Listener):
                     lastClickedRoom = (store, room)
                     dict["lastClickedRoom"] = lastClickedRoom
                     return dict
-        dict["lastClickedRoom"] = None
         return dict
 
     def buttonCollisions(self, pos): # Executes onClick methods for all pressed buttons and returns the state of any button which has just been pressed. 
@@ -39,8 +49,21 @@ class InputManager(Listener):
                     return mode
         return {}
     
+    def cardCollisions(self, pos):
+        store = self.map.getStores()[self.player.getCoords()[0]]
+        cardCount = len(store.getCards())
+        out = {}
+        for i in range(cardCount):
+            card = store.getCards()[i]
+            if card.getRect().collidepoint(pos):
+                out[i] = card
+        return out
+    
     def getLastClickedRoom(self):
         return self.lastClickedRoom
     
     def addButton(self, button):
         self.buttons.append(button)
+
+    def addMap(self, value:Map):
+        self.map = value
