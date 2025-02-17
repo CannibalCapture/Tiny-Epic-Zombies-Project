@@ -56,7 +56,7 @@ class InputManager(Listener):
         for i in range(cardCount):
             card = store.getCards()[i]
             if card.getRect().collidepoint(pos):
-                out[i] = card
+                out["lastClickedCard"] = card
         return out
     
     def getLastClickedRoom(self):

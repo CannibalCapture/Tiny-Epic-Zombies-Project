@@ -97,6 +97,9 @@ while run:
         if event.type == QUIT:
             run = False
 
+        elif event.type == pygame.KEYUP:
+            gm.onKeyPress(event.key)
+
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             gm.onClick(pos)

@@ -7,6 +7,7 @@ from ..constants import WIDTH, HEIGHT
 class Crowbar(Card):
     def __init__(self, colour):
         super().__init__(colour, "MELEE WEAPON", "crowbar")
+        self.load_image()
 
     def load_image(self):
         width, height = 0.17, 0.4

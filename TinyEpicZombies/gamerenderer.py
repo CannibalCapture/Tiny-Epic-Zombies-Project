@@ -1,6 +1,4 @@
 import pygame, os
-
-from TinyEpicZombies.button import MoveButton
 from .helperfunctions.deserialisers import deserializeStore
 from .helperfunctions.roomrects import genRoomRects, genTlCoords
 from .listener import Listener
@@ -51,27 +49,52 @@ class GameRenderer(Listener):
         return storeSurfaces
 
     def on_event(self, event):
-        if event['type'] == 'MODE CHANGE':
-            self.mode = event['mode']
-        if event['type'] == 'TURN CHANGE':
-            self.nextTurn(event['turn'])
-        if event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
-            if event['moves'] != 0:
+        match event['type']:
+            case 'MODE CHANGE':
+                self.mode = event['mode']
+            case 'TURN CHANGE':
+                self.nextTurn(event['turn'])
                 self.mode = "move"
-        if event['type'] == 'OPEN CARD':
-            self.playerCardShown = True
-        if event['type'] == 'CLOSE CARD':
-            self.playerCardShown = False
-        if event['type'] == 'PLAYER MOVED':
-            if event['moves'] == 0:
-                self.mode = None
-        if event['type'] == 'SHOW CARDS':
-            self.shownPickupCards = event['store']
-        if event['type'] == 'PICKUP STORE CARDS':
-            self.pickupWeaponChoice = True
-            self.shownPickupCards = None
-        if event['type'] == 'EXIT MENU':
-            self.pickupWeaponChoice = False
+            case 'PLAYER RANGED' | 'PLAYER MELEE':
+                if event['moves'] != 0:
+                    self.mode = "move"
+                else:
+                    self.mode = None
+            case 'OPEN CARD':
+                self.playerCardShown = True
+            case 'CLOSE CARD':
+                self.playerCardShown = False
+            case 'PLAYER MOVED':
+                moves = event['moves']
+                if moves == 0:
+                    self.mode = None
+            case 'SHOW CARDS':
+                self.shownPickupCards = event['store']
+                self.shownPickupCards = None
+            case 'EXIT MENU':
+                self.pickupWeaponChoice = False
+
+        # if event['type'] == 'MODE CHANGE':
+        #     self.mode = event['mode']
+        # elif event['type'] == 'TURN CHANGE':
+        #     self.nextTurn(event['turn'])
+        # elif event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
+        # if event['moves'] != 0:
+        #     self.mode = "move"
+        # elif event['type'] == 'OPEN CARD':
+        #     self.playerCardShown = True
+        # elif event['type'] == 'CLOSE CARD':
+        #     self.playerCardShown = False
+        # elif event['type'] == 'PLAYER MOVED':
+        #     if event['moves'] == 0:
+        #         self.mode = None
+        # elif event['type'] == 'SHOW CARDS':
+        #     self.shownPickupCards = event['store']
+        # elif event['type'] == 'PICKUP STORE CARDS':
+        #     self.pickupWeaponChoice = True
+        #     self.shownPickupCards = None
+        # elif event['type'] == 'EXIT MENU':
+        #     self.pickupWeaponChoice = False
 
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
@@ -99,7 +122,7 @@ class GameRenderer(Listener):
             DISPLAY.blit(img, tl)
 
 
-    def __renderPickupCards(self): # Function breaks when displaying more than 3 cards (tries to render it off the screen)
+    def __renderPickupCards(self): # Game breaks when the deck runs out of cards currently. 
 
         if self.shownPickupCards == None:
             return
@@ -145,6 +168,7 @@ class GameRenderer(Listener):
             card = store.getCards()[i]
             img = card.getImg()
 
+            width = 0.2
             card.setPos((((1-cardCount*width)/2 + width*i), (0.5-(height/2))))
             pos = card.getPos()
             pos = (pos[0]*WIDTH, pos[1]*HEIGHT)

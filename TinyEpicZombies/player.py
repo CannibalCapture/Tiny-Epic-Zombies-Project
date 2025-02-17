@@ -87,16 +87,16 @@ class Player(Listener, EventGenerator):
     def changeAmmo(self, value):
         self.ammoMissing += value
 
-    def equipMelee(self, newWeapon):
+    def setMeleeWeapon(self, newWeapon):
         self.meleeWeapon = newWeapon
 
-    def equipRanged(self, newWeapon):
+    def setRangedWeapon(self, newWeapon):
         self.rangedWeapon = newWeapon
     
-    def getMelee(self):
+    def getMeleeWeapon(self):
         return self.meleeWeapon
     
-    def getRanged(self):
+    def getRangedWeapon(self):
         return self.rangedWeapon
     
     def getID(self):

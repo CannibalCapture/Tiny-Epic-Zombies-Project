@@ -56,7 +56,7 @@ class GameManager(Listener, EventGenerator):
             keys = []
 
         # if they clicked on a room
-        if "lastClickedRoom" in keys: # and attack mode is on
+        if "lastClickedRoom" in keys:
             lcr = coll["lastClickedRoom"]
             if self.mode == "attack":
                 if lcr == self.player.getCoords():
@@ -65,6 +65,14 @@ class GameManager(Listener, EventGenerator):
                     self.playerRanged(self.player, lcr)
             else:
                 self.movePlayer(self.player, lcr)
+        
+        if "lastClickedCard" in keys:
+            lcc = coll['lastClickedCard']
+            if lcc.getType() == "MELEE WEAPON":
+                self.player.setMeleeWeapon(lcc)
+            elif lcc.getType() == "RANGED WEAPON":
+                self.player.setRangedWeapon(lcc)
+
 
         if "mode" in keys:
             mode = coll["mode"]
@@ -80,12 +88,14 @@ class GameManager(Listener, EventGenerator):
             if coll['type'] == 'PICKUP STORE CARDS':
                 self.pickupStoreCards()
             
-            if coll['type'] == 'TEST BUTTON': #################################################################
-                # store = self.renderer.map.getStores()[self.renderer.shownPickupCards]
-                # print(store.getCards(), len(store.getCards()))
-                pass
+            if coll['type'] == 'TEST BUTTON': ###########################################################################
+                print(self.player.getMeleeWeapon(), self.player.getRangedWeapon())
             
             self.send_event(coll)
+        
+
+    def onKeyPress(self, key):
+        pass
 
         
     def pickupStoreCards(self):
@@ -154,6 +164,7 @@ class GameManager(Listener, EventGenerator):
         self.player = self.getPlayer(self.turn)
         event = {'type':'TURN CHANGE', 'turn':self.turn, 'player':self.player}
         self.send_event(event)
+        self.mode = "move"
         self.turnEnded = False
 
     def revealCard(self):

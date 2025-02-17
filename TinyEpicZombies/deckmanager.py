@@ -9,10 +9,20 @@ class DeckManager:
 
     def createDecks(self): # Decks are not currently randomised - random.shuffle(list) - will do it,
         # but drawing is already randomised. 
-        for i in range(6):
-            self.supplyDeck.append(Crowbar("BLUE"))
-        for i in range(6):
-            self.searchDeck.append(golfClub("ORANGE"))
+        
+        self.supplyDeck.append(Crowbar("BLUE"))
+        self.supplyDeck.append(Crowbar("RED"))
+        self.supplyDeck.append(Crowbar("GREEN"))
+        self.supplyDeck.append(golfClub("ORANGE"))
+        self.supplyDeck.append(golfClub("BLUE"))
+        self.supplyDeck.append(golfClub("GREEN"))
+        
+        self.searchDeck.append(Crowbar("BLUE"))
+        self.searchDeck.append(Crowbar("RED"))
+        self.searchDeck.append(Crowbar("GREEN"))
+        self.searchDeck.append(golfClub("ORANGE"))
+        self.searchDeck.append(golfClub("BLUE"))
+        self.searchDeck.append(golfClub("GREEN"))
 
     def serialize(self):
         dict = {
