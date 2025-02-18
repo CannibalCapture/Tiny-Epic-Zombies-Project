@@ -250,7 +250,7 @@ class ExitMenuButton(Button): # Returns to gameboard screen
             return {'type':'EXIT MENU'}
     
     def on_event(self, event):
-        if event['type'] == 'PICKUP STORE CARDS':
+        if event['type'] == 'PICKUP STORE CARDS' or event['type'] == 'OPEN INVENTORY':
             self.enable()
         
     def load_images(self):
@@ -281,3 +281,26 @@ class TestButton(Button):
         self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "endTurn.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
         self.disabled_img = self.enabled_img
+
+class InventoryButton(Button):
+    def __init__(self):
+        super().__init__("inventory", (0.90, 0.47), True, False)
+
+    def onClick(self):
+        if not self.enabled:
+            return
+        else:
+            if self.state:
+                return
+            else:
+                return {'type': 'OPEN INVENTORY'}
+    
+    def on_event(self, event):
+        if event['type'] == 'EXIT MENU':
+            self.state = False
+            
+    def load_images(self):
+        width, height = 0.06, 0.12
+        self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "buttons", "backpack.png"))
+        self.enabled_img = pygame.transform.scale(self.enabled_img, (WIDTH*width, HEIGHT*height))
+        self.disabled_img = self.enabled_img # to be changed I suppose

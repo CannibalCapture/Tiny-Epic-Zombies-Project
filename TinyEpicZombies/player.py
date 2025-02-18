@@ -14,6 +14,7 @@ class Player(Listener, EventGenerator):
         self.colour = colour
         self.meleeWeapon = meleeWeapon
         self.rangedWeapon = rangedWeapon
+        self.inventory = []
         self.healthMissing = healthMissing
         self.ammoMissing = ammoMissing
         self.moves = moves
@@ -54,6 +55,9 @@ class Player(Listener, EventGenerator):
         
     def meleeAttack(self):
         self.rollMeleeDice()
+
+    def addCard(self, val):
+        self.inventory.append(val)
 
     def rollMeleeDice(self):
         choices = [0,0,1,2,-1,-1]
@@ -101,6 +105,9 @@ class Player(Listener, EventGenerator):
     
     def getID(self):
         return self.ID
+
+    def getInventory(self):
+        return self.inventory
     
     def getCoords(self):
         return self.coords

@@ -42,3 +42,15 @@ class Revolver(Card):
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", "revolver.jpg"))
         img = pygame.transform.scale(img, (width*WIDTH, height*HEIGHT))
         self.img = img
+
+class Shotgun(Card):
+    def __init__(self, colour):
+        super().__init__(colour, "RANGED WEAPON", "shotgun")
+        self.load_image()
+    
+    def load_image(self):
+        width, height = 0.17, 0.4
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", "shotgun.jpg"))
+        img = pygame.transform.scale(img, (width*WIDTH, height*HEIGHT))
+        self.img = img
+

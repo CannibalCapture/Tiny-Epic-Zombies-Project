@@ -23,6 +23,7 @@ class GameRenderer(Listener):
         self.shownPickupCards = False # contains the store which we will render the pickup cards for
         self.playerCardShown = True
         self.pickupWeaponChoice = False
+        self.inventoryShown = False
         self.flag = True
 
     def load_images(self):
@@ -73,9 +74,12 @@ class GameRenderer(Listener):
             case 'EXIT MENU':
                 self.pickupWeaponChoice = False
                 self.shownPickupCards = None
+                self.inventoryShown = False
             case 'PICKUP STORE CARDS':
                 self.pickupWeaponChoice = True
                 self.shownPickupCards = None
+            case 'OPEN INVENTORY':
+                self.inventoryShown = True
 
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
@@ -87,12 +91,34 @@ class GameRenderer(Listener):
         self.__renderButtons()
         self.renderOverlay()
         self.__renderPickupWeaponChoice()
+        self.__renderInventory()
 
     def renderOverlay(self):
         if self.mode == "move":
             self.__renderMovementOptions(self.turn)
         if self.mode == "attack":
             self.__renderAttackMode(self.turn)
+        
+    def __renderInventory(self):
+        if not self.inventoryShown:
+            return
+
+        shown = []
+        
+        self.__renderMenuShadow()
+        self.__renderExitMenuButton()
+
+        cardsLst = self.player.getInventory()
+        for i in range(len(cardsLst)):
+            card = cardsLst[i]
+            img = card.getImg()
+
+            width, height = 0.2, 0.4
+            card.setPos((((1-len(cardsLst)*width)/2 + width*i), (0.5-(height/2))))
+            pos = card.getPos()
+            pos = (pos[0]*WIDTH, pos[1]*HEIGHT)
+
+            DISPLAY.blit(img, pos)
     
     def __renderPlayers(self):
         lst = []
@@ -138,23 +164,30 @@ class GameRenderer(Listener):
             x = WIDTH*(1 - cWidth) + WIDTH*cWidth/9.8*(player.getHealthMissing())
             DISPLAY.blit(img, (x, y))
 
-    def __renderPickupWeaponChoice(self):
-        if not self.pickupWeaponChoice:
-            return
-        
+    def __renderMenuShadow(self):
         # Darkening effect on the background
         surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA) 
         surface.fill((0,0,0, 80))
         DISPLAY.blit(surface, (0,0))
+    
+    def __renderExitMenuButton(self):
+        button = self.buttons[5] # rerendering the exit menu button over the menu shadow. 
+        img = button.getImg()
+        tl = button.getPos()
+        DISPLAY.blit(img, (tl[0]*WIDTH, tl[1]*HEIGHT))
+
+
+    def __renderPickupWeaponChoice(self):
+        if not self.pickupWeaponChoice:
+            return
+        
+        self.__renderMenuShadow()
 
         store = self.map.getStores()[self.player.getCoords()[0]]
         width, height = 0.17, 0.4
         cardCount = len(store.getCards())
 
-        button = self.buttons[5] # rerendering the exit menu button over the menu shadow. 
-        img = button.getImg()
-        tl = button.getPos()
-        DISPLAY.blit(img, (tl[0]*WIDTH, tl[1]*HEIGHT))
+        self.__renderExitMenuButton()
 
         for i in range(cardCount):
             card = store.getCards()[i]

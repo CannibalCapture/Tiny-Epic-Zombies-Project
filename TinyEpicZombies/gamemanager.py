@@ -6,7 +6,7 @@ from .deckmanager import DeckManager
 from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
-from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton, PickupStoreCardsButton, ExitMenuButton, TestButton
+from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton, PickupStoreCardsButton, ExitMenuButton, TestButton, InventoryButton
 
 class GameManager(Listener, EventGenerator):
 
@@ -91,9 +91,13 @@ class GameManager(Listener, EventGenerator):
             
             if coll['type'] == 'PICKUP STORE CARDS':
                 self.pickupStoreCards()
+
+            if coll['type'] == 'OPEN INVENTORY':
+                pass
             
             if coll['type'] == 'TEST BUTTON': ###########################################################################
                 print(self.player.getMeleeWeapon(), self.player.getRangedWeapon())
+                print(self.player.getInventory())
             
             self.send_event(coll)
         
@@ -104,22 +108,24 @@ class GameManager(Listener, EventGenerator):
     def pickupStoreCards(self):
         player = self.player
         store = self.map.getStores()[player.getCoords()[0]]
-        cards = store.getCards()
-        for i in range(len(cards)):
-            card = cards[i]
+        cards = store.getCards().copy()
+        print(cards)
+        for card in cards:
             if card.getType() == "MELEE WEAPON" or card.getType() == "RANGED WEAPON":
                 pass
+            elif card.getType() == "BACKPACK ITEM":
+                player.addCard(card)
+                store.removeCardByValue(card)
             else:
-                store.removeCard(i)
+                print("else?") # event cards
                 # ask if they would like to replace their current weapon with the new one. 
-            # elif card.getType():
-                # pass # other card types to be added.
         # add store's revealed cards to player inventory. 
 
     def exitMenu(self):
-        player = self.player
-        store = self.map.getStores()[player.getCoords()[0]]
-        store.setCards([])
+        pass
+        # player = self.player
+        # store = self.map.getStores()[player.getCoords()[0]]
+        # store.setCards([])
 
 
 
@@ -214,6 +220,8 @@ class GameManager(Listener, EventGenerator):
             button = ExitMenuButton()
         elif button == "test":
             button = TestButton()
+        elif button == "inventory":
+            button = InventoryButton()
 
         self.renderer.addButton(button)
         self.im.addButton(button)
@@ -227,6 +235,7 @@ class GameManager(Listener, EventGenerator):
         self.addButton("pickupStoreCards")
         self.addButton("exitMenu")
         self.addButton("test")
+        self.addButton("inventory")
         for i in range(9):
             self.addButton("showStoreCards", i)
     
