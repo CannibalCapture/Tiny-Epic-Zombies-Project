@@ -72,6 +72,9 @@ class GameManager(Listener, EventGenerator):
                 self.player.setMeleeWeapon(lcc)
             elif lcc.getType() == "RANGED WEAPON":
                 self.player.setRangedWeapon(lcc)
+            store = self.map.getStores()[self.player.getCoords()[0]]
+            store.removeCardByValue(lcc)
+            
 
         if "mode" in keys:
             mode = coll["mode"]

@@ -25,6 +25,9 @@ class Store:
 
     def removeCard(self, index):
         return self.cards.pop(index)
+    
+    def removeCardByValue(self, val):
+        return self.cards.remove(val)
 
     def getNoiseColour(self):
         return self.noiseColour
