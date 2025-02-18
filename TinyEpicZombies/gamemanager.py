@@ -42,7 +42,7 @@ class GameManager(Listener, EventGenerator):
                 pass # check if game is over
             else:
                 self.players[event['ID']].reset()
-        
+
     def setMode(self, mode):
         self.mode = mode
         event = {'type':'MODE CHANGE', 'mode':mode}
@@ -73,17 +73,18 @@ class GameManager(Listener, EventGenerator):
             elif lcc.getType() == "RANGED WEAPON":
                 self.player.setRangedWeapon(lcc)
 
-
         if "mode" in keys:
             mode = coll["mode"]
             self.setMode(mode)
 
         if "type" in keys:
             if coll['type'] == 'END TURN':
-                print("end turn gm")
                 self.playerSearchStore()
                 self.zombieTurn()
                 self.nextTurn()
+            
+            if coll['type'] == 'EXIT MENU':
+                self.exitMenu()
             
             if coll['type'] == 'PICKUP STORE CARDS':
                 self.pickupStoreCards()
@@ -96,7 +97,6 @@ class GameManager(Listener, EventGenerator):
 
     def onKeyPress(self, key):
         pass
-
         
     def pickupStoreCards(self):
         player = self.player
@@ -114,8 +114,10 @@ class GameManager(Listener, EventGenerator):
         # add store's revealed cards to player inventory. 
 
     def exitMenu(self):
-        event = {'type':'EXIT MENU'}
-        self.send_event(event)
+        player = self.player
+        store = self.map.getStores()[player.getCoords()[0]]
+        store.setCards([])
+
 
 
     def zombieTurn(self):
@@ -148,7 +150,7 @@ class GameManager(Listener, EventGenerator):
 
             for coord in spawnLocations:
                 if coord == (4,2):
-                    print("deplete barricade") # deplete the barricade
+                    pass # deplete the barricade
                 else:
                     self.map.addZombie(coord)
                 if coord != self.getPlayer(self.turn).getCoords(): # if the zombie spawns on a player
@@ -234,11 +236,10 @@ class GameManager(Listener, EventGenerator):
         self.renderer.addPlayer(player)
         self.updateMovementOptions(player)
 
-    def playerSearchStore(self):
+    def playerSearchStore(self): # this is the player drawing a card and putting it face up next to the store they ended their turn in
         player = self.player
         coords = player.getCoords()
         card = self.dm.drawSearch()
-        # print(self.map.getStores()[coords[0]].getID())
         self.map.getStores()[coords[0]].addCard(card)
         self.noise = card.getColour()
         event = {"type":"NOISE","colour":card.getColour(), "ID":player.getID(), "coords":coords, "card":card.getID()}
@@ -259,7 +260,7 @@ class GameManager(Listener, EventGenerator):
             self.send_event(event)
 
         else:
-            print("Invalid move")
+            return "invalid move"
 
     def playerMelee(self, player):
         room = self.map.getRoom(player.getCoords())
@@ -270,7 +271,7 @@ class GameManager(Listener, EventGenerator):
             self.send_event(event)
             self.mode = "move"
         else:
-            print("Attack failed: No available target")
+            return "Attack failed: No available target"
     
     def playerRanged(self, player, coords):
         room = self.map.getRoom(coords)
@@ -281,7 +282,7 @@ class GameManager(Listener, EventGenerator):
             self.send_event(event)
             self.mode = "move"
         else:
-            print("Attack failed: Ranged")
+            return "Attack failed: Ranged"
 
 
     def renderGameScreen(self):

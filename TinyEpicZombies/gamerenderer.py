@@ -70,31 +70,12 @@ class GameRenderer(Listener):
                     self.mode = None
             case 'SHOW CARDS':
                 self.shownPickupCards = event['store']
-                self.shownPickupCards = None
             case 'EXIT MENU':
                 self.pickupWeaponChoice = False
-
-        # if event['type'] == 'MODE CHANGE':
-        #     self.mode = event['mode']
-        # elif event['type'] == 'TURN CHANGE':
-        #     self.nextTurn(event['turn'])
-        # elif event['type'] == 'PLAYER RANGED' or event['type'] == 'PLAYER MELEE':
-        # if event['moves'] != 0:
-        #     self.mode = "move"
-        # elif event['type'] == 'OPEN CARD':
-        #     self.playerCardShown = True
-        # elif event['type'] == 'CLOSE CARD':
-        #     self.playerCardShown = False
-        # elif event['type'] == 'PLAYER MOVED':
-        #     if event['moves'] == 0:
-        #         self.mode = None
-        # elif event['type'] == 'SHOW CARDS':
-        #     self.shownPickupCards = event['store']
-        # elif event['type'] == 'PICKUP STORE CARDS':
-        #     self.pickupWeaponChoice = True
-        #     self.shownPickupCards = None
-        # elif event['type'] == 'EXIT MENU':
-        #     self.pickupWeaponChoice = False
+                self.shownPickupCards = None
+            case 'PICKUP STORE CARDS':
+                self.pickupWeaponChoice = True
+                self.shownPickupCards = None
 
     def renderGameBoard(self):
         DISPLAY.blit(self.gameboardImg)
@@ -114,15 +95,20 @@ class GameRenderer(Listener):
             self.__renderAttackMode(self.turn)
     
     def __renderPlayers(self):
+        lst = []
+        adj = 0
         for player in self.players:
             coord = player.getCoords()
-            tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in. 
+            adj += (lst.count(coord))*0.008
+            lst.append(coord)
+            tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in
+            tl = (tl[0] + adj*WIDTH, tl[1])
             img = player.getImg()
             
             DISPLAY.blit(img, tl)
 
 
-    def __renderPickupCards(self): # Game breaks when the deck runs out of cards currently. 
+    def __renderPickupCards(self): # Game breaks when the deck runs out of cards currently
 
         if self.shownPickupCards == None:
             return
@@ -164,6 +150,12 @@ class GameRenderer(Listener):
         store = self.map.getStores()[self.player.getCoords()[0]]
         width, height = 0.17, 0.4
         cardCount = len(store.getCards())
+
+        button = self.buttons[5] # rerendering the exit menu button over the menu shadow. 
+        img = button.getImg()
+        tl = button.getPos()
+        DISPLAY.blit(img, (tl[0]*WIDTH, tl[1]*HEIGHT))
+
         for i in range(cardCount):
             card = store.getCards()[i]
             img = card.getImg()

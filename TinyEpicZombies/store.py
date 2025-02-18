@@ -29,6 +29,9 @@ class Store:
     def getNoiseColour(self):
         return self.noiseColour
 
+    def setCards(self, value):
+        self.cards = value
+
     def getID(self):
         return self.ID
     
