@@ -12,17 +12,17 @@ class DeckManager:
         
         self.supplyDeck.append(Crowbar("BLUE"))
         self.supplyDeck.append(Crowbar("RED"))
-        self.supplyDeck.append(Crowbar("GREEN"))
-        self.supplyDeck.append(golfClub("ORANGE"))
-        self.supplyDeck.append(golfClub("BLUE"))
-        self.supplyDeck.append(golfClub("GREEN"))
+        self.supplyDeck.append(GolfClub("ORANGE"))
+        self.supplyDeck.append(GolfClub("GREEN"))
+        self.supplyDeck.append(Revolver("BLUE"))
+        self.supplyDeck.append(Revolver("GREEN"))
         
         self.searchDeck.append(Crowbar("BLUE"))
         self.searchDeck.append(Crowbar("RED"))
-        self.searchDeck.append(Crowbar("GREEN"))
-        self.searchDeck.append(golfClub("ORANGE"))
-        self.searchDeck.append(golfClub("BLUE"))
-        self.searchDeck.append(golfClub("GREEN"))
+        self.searchDeck.append(GolfClub("ORANGE"))
+        self.searchDeck.append(GolfClub("GREEN"))
+        self.searchDeck.append(Revolver("GREEN"))
+        self.searchDeck.append(Revolver("BLUE"))
 
     def serialize(self):
         dict = {

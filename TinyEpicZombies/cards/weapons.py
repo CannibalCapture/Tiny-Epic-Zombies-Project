@@ -21,7 +21,7 @@ class Crowbar(Card):
         return False
     
 
-class golfClub(Card):
+class GolfClub(Card):
     def __init__(self, colour):
         super().__init__(colour, "MELEE WEAPON", "golfClub")
         self.load_image()
@@ -31,4 +31,14 @@ class golfClub(Card):
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", "golfClub.jpg"))
         img = pygame.transform.scale(img, (width*WIDTH, height*HEIGHT))
         self.img = img
-# Add a ranged weapon
+
+class Revolver(Card):
+    def __init__(self, colour):
+        super().__init__(colour, "RANGED WEAPON", "revolver")
+        self.load_image()
+    
+    def load_image(self):
+        width, height = 0.17, 0.4
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "cards", "revolver.jpg"))
+        img = pygame.transform.scale(img, (width*WIDTH, height*HEIGHT))
+        self.img = img
