@@ -26,6 +26,18 @@ class Store:
     def removeCard(self, index):
         return self.cards.pop(index)
     
+    def removeBackpackCards(self):
+        bpLst = []
+        weaponsLst = []
+        for card in self.cards:
+            if card.getType() == "BACKPACK ITEM":
+                bpLst.append(card)
+            else:
+                weaponsLst.append(card)
+        self.cards = weaponsLst
+        return bpLst
+        
+
     def removeCardByValue(self, val):
         return self.cards.remove(val)
 

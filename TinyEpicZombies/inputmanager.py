@@ -7,7 +7,9 @@ class InputManager(Listener):
     def __init__(self):
         self.lastClickedRoom = None
         self.buttons = []
+        self.tanks = []
         self.player = None
+        self.map = None
         self.mode = "NORMAL"
 
     def on_event(self, event):
@@ -21,8 +23,8 @@ class InputManager(Listener):
     def collisions(self, pos):
         dict = {}
         if self.mode == "NORMAL":
-            buttonReturn, lcr = self.buttonCollisions(pos), self.roomCollisions(pos)
-            dict = dict | lcr | buttonReturn
+            buttonReturn, lcr, tankCollisions = self.buttonCollisions(pos), self.roomCollisions(pos), self.tankCollisions(pos)
+            dict = dict | lcr | buttonReturn | tankCollisions
         elif self.mode == "PICKUP":
             buttonReturn, cardColl = self.buttonCollisions(pos), self.cardCollisions(pos)
             dict = buttonReturn | cardColl
@@ -49,21 +51,34 @@ class InputManager(Listener):
                     return mode
         return {}
     
+    def tankCollisions(self, pos):
+        output = {}
+        for tank in self.tanks:
+            if tank.getRect().collidepoint(pos):
+                output = tank.onClick()
+                print("collided", tank.getID())
+        
+        return output
+    
     def cardCollisions(self, pos):
         store = self.map.getStores()[self.player.getCoords()[0]]
         cardCount = len(store.getCards())
+        cards = store.getCards()
         out = {}
         for i in range(cardCount):
-            card = store.getCards()[i]
+            card = cards[i]
             if card.getRect().collidepoint(pos):
                 out["lastClickedCard"] = card
         return out
-    
+
     def getLastClickedRoom(self):
         return self.lastClickedRoom
     
     def addButton(self, button):
         self.buttons.append(button)
+
+    def addTank(self, tank):
+        self.tanks.append(tank)
 
     def addMap(self, value:Map):
         self.map = value

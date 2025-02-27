@@ -2,10 +2,11 @@ import os
 import json
 
 class Room:
-    def __init__(self, roomID, coords, players=[], zombie=False, ammoRoom=False, playersThisTurn=set()):
+    def __init__(self, roomID, coords, players=[], zombie=False, ammoRoom=False, playersThisTurn=set(), tank=False):
         self.roomID = roomID
         self.players = players
         self.zombie = zombie
+        self.tank = tank
         self.ammoRoom = ammoRoom
         self.coords = coords
         self.playersThisTurn = playersThisTurn
@@ -61,3 +62,9 @@ class Room:
     
     def getCoords(self):
         return self.coords
+    
+    def setTank(self, value):
+        self.tank = value
+
+    def getTank(self):
+        return self.tank

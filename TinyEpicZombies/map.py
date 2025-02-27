@@ -15,6 +15,8 @@ class Map: # map will manage the rooms
         self.addEdges()
         self.addZEdges()
         self.zombieRooms = set()
+        # self.tankRooms = set()
+        # self.addTanks()
 
     def serialize(self):
         dict = {
@@ -45,7 +47,20 @@ class Map: # map will manage the rooms
         self.createCentreStore(4) # This is here because the centre room has 5 rooms instead of 3. 
         for j in range(5,9):
             self.createStore(j)
-        
+
+    # def addTanks(self):
+    #     rooms = [(0,0),(2,0),(6,0),(8,0)]
+    #     for coord in rooms:
+    #         self.setTank(coord, True)
+            
+    # def setTank(self, coord, value):
+    #     room = self.getRoom(coord)
+    #     room.setTank(value)
+    #     if value == True:
+    #         self.tankRooms.add(coord)
+    #     elif value == False:
+    #         self.tankRooms.remove(coord)
+    #     print(room.getTank())
 
     def addEdges(self): # Adds edges (left to right, top to bottom on the image)
         self.al.addEdge((0,0), [(0,1), (0,2)])
@@ -138,6 +153,9 @@ class Map: # map will manage the rooms
     
     def getZombieRooms(self):
         return self.zombieRooms
+    
+    def getTankRooms(self):
+        return self.tankRooms
     
     def getStores(self):
         return self.stores

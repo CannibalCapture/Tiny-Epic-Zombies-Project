@@ -118,7 +118,7 @@ class MoveButton(Button):
             return self.enabled_img
         else:
             return self.disabled_img
-    def onClick(self): # toggling on / off states could go in parent class
+    def onClick(self):
         if not self.enabled:
             return
         else:

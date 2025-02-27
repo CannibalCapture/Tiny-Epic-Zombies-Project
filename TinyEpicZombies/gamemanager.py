@@ -7,6 +7,7 @@ from .inputmanager import InputManager
 from .gamerenderer import GameRenderer
 from .helperfunctions.deserialisers import deserializeGame
 from .button import AttackButton, MoveButton, OpenCardButton, EndTurnButton, StoreCardsButton, PickupStoreCardsButton, ExitMenuButton, TestButton, InventoryButton
+from .tank import Tank
 
 class GameManager(Listener, EventGenerator):
 
@@ -27,6 +28,8 @@ class GameManager(Listener, EventGenerator):
         self.turnEnded = False
         self.movesRemaining = 0
         self.noise = None
+        self.tanks = []
+        self.selectedTank = None
         self.mode = "move"
         self.map = Map()
         self.dm = DeckManager()
@@ -50,10 +53,18 @@ class GameManager(Listener, EventGenerator):
 
     def onClick(self, pos):
         coll = self.im.collisions(pos)
+        print(coll)
         try:
             keys = [*coll]
         except:
             keys = []
+
+        if "mode" in keys:
+            mode = coll["mode"]
+            self.setMode(mode)
+            if self.mode == "move tank":
+                self.selectedTank = coll["tank"]
+                self.renderer.setSelectedTank(coll["tank"])
 
         # if they clicked on a room
         if "lastClickedRoom" in keys:
@@ -63,8 +74,10 @@ class GameManager(Listener, EventGenerator):
                     self.playerMelee(self.player)
                 else:
                     self.playerRanged(self.player, lcr)
-            else:
+            elif self.mode == "move":
                 self.movePlayer(self.player, lcr)
+            elif self.mode == "move tank":
+                self.moveTank(lcr)
         
         if "lastClickedCard" in keys:
             lcc = coll['lastClickedCard']
@@ -74,11 +87,7 @@ class GameManager(Listener, EventGenerator):
                 self.player.setRangedWeapon(lcc)
             store = self.map.getStores()[self.player.getCoords()[0]]
             store.removeCardByValue(lcc)
-            
 
-        if "mode" in keys:
-            mode = coll["mode"]
-            self.setMode(mode)
 
         if "type" in keys:
             if coll['type'] == 'END TURN':
@@ -96,8 +105,11 @@ class GameManager(Listener, EventGenerator):
                 pass
             
             if coll['type'] == 'TEST BUTTON': ###########################################################################
-                print(self.player.getMeleeWeapon(), self.player.getRangedWeapon())
-                print(self.player.getInventory())
+                # print(self.player.getMeleeWeapon(), self.player.getRangedWeapon())
+                # print(self.player.getInventory())
+                print(self.im.tanks[0].setCoords((4,0)))
+                for tank in self.im.tanks:
+                    print(tank.getRect())
             
             self.send_event(coll)
         
@@ -108,26 +120,13 @@ class GameManager(Listener, EventGenerator):
     def pickupStoreCards(self):
         player = self.player
         store = self.map.getStores()[player.getCoords()[0]]
-        cards = store.getCards().copy()
-        print(cards)
-        for card in cards:
-            if card.getType() == "MELEE WEAPON" or card.getType() == "RANGED WEAPON":
-                pass
-            elif card.getType() == "BACKPACK ITEM":
-                player.addCard(card)
-                store.removeCardByValue(card)
-            else:
-                print("else?") # event cards
-                # ask if they would like to replace their current weapon with the new one. 
-        # add store's revealed cards to player inventory. 
+        # cards = store.getCards()
+        bpCards = store.removeBackpackCards()
+        for card in bpCards:
+            player.addCard(card)
 
     def exitMenu(self):
         pass
-        # player = self.player
-        # store = self.map.getStores()[player.getCoords()[0]]
-        # store.setCards([])
-
-
 
     def zombieTurn(self):
         zombies = 1 # zombies is the number of zombies added to each store which matches the type of noise the player made
@@ -202,6 +201,16 @@ class GameManager(Listener, EventGenerator):
         self.addButtons()
         self.renderer.addMap(self.map)
         self.im.addMap(self.map)
+        self._initTanks()
+
+    def _initTanks(self):
+        tankSpawns = [(0,0), (2,2), (6,2), (8,0)]
+        for i in range(4):
+            tank = Tank(i, tankSpawns[i])
+            self.renderer.addTank(tank)
+            self.im.addTank(tank)
+            self.updateMovementOptions(tank)
+            self.tanks.append(tank)
 
     def addButton(self, button, store=None):
         if button == "attack":
@@ -273,6 +282,16 @@ class GameManager(Listener, EventGenerator):
 
         else:
             return "invalid move"
+    
+    def moveTank(self, newCoords):
+        tank = self.tanks[self.selectedTank]
+        if self.map.al.validatePlayerMove(tank, newCoords) and self.movesRemaining != 0:
+            tank.setCoords(newCoords)
+            self.updateMovementOptions(tank)
+        
+            self.movesRemaining -= 1
+            event = {"type":"TANK MOVED", "ID":tank.getID(), "coords":tank.getCoords(), "moves":self.movesRemaining}
+            self.send_event(event)
 
     def playerMelee(self, player):
         room = self.map.getRoom(player.getCoords())

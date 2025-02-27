@@ -15,12 +15,14 @@ class GameRenderer(Listener):
         self.roomRects = genRoomRects()
         self.buttons = []
         self.players = []
+        self.tanks = []
         self.mode = "move"
         self.turn = 0
         self.opacity = 88
         self.player = None
         self.map = None
         self.shownPickupCards = False # contains the store which we will render the pickup cards for
+        self.selectedTank = 0
         self.playerCardShown = True
         self.pickupWeaponChoice = False
         self.inventoryShown = False
@@ -36,6 +38,12 @@ class GameRenderer(Listener):
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "icons", "health.png"))
         img = pygame.transform.scale(img, (0.02*WIDTH, 0.03*HEIGHT))
         self.health = img
+        img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "zombie.png"))
+        img = pygame.transform.scale(img, (0.03*WIDTH, 0.04*HEIGHT))
+        self.zombie = img
+        # img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "tank.png"))
+        # img = pygame.transform.scale(img, (0.03*WIDTH, 0.08*HEIGHT))
+        # self.tank = img
 
     def __genStoreSurfaces(self): #  returns a list of store surfaces
         storeSurfaces = []
@@ -65,7 +73,7 @@ class GameRenderer(Listener):
                 self.playerCardShown = True
             case 'CLOSE CARD':
                 self.playerCardShown = False
-            case 'PLAYER MOVED':
+            case 'PLAYER MOVED' | 'TANK MOVED':
                 moves = event['moves']
                 if moves == 0:
                     self.mode = None
@@ -75,6 +83,7 @@ class GameRenderer(Listener):
                 self.pickupWeaponChoice = False
                 self.shownPickupCards = None
                 self.inventoryShown = False
+                self.iCards = []
             case 'PICKUP STORE CARDS':
                 self.pickupWeaponChoice = True
                 self.shownPickupCards = None
@@ -85,6 +94,7 @@ class GameRenderer(Listener):
         DISPLAY.blit(self.gameboardImg)
         self.__renderStores()
         self.__renderZombies()
+        self.__renderTanks()
         self.__renderPlayers()
         self.__renderPlayerCards()
         self.__renderPickupCards()
@@ -94,16 +104,17 @@ class GameRenderer(Listener):
         self.__renderInventory()
 
     def renderOverlay(self):
-        if self.mode == "move":
+        if self.mode == "move" or self.mode == "move tank":
             self.__renderMovementOptions(self.turn)
         if self.mode == "attack":
             self.__renderAttackMode(self.turn)
+
+    def addiCard(self, val):
+        self.iCards.append(val)
         
     def __renderInventory(self):
         if not self.inventoryShown:
             return
-
-        shown = []
         
         self.__renderMenuShadow()
         self.__renderExitMenuButton()
@@ -186,11 +197,13 @@ class GameRenderer(Listener):
         store = self.map.getStores()[self.player.getCoords()[0]]
         width, height = 0.17, 0.4
         cardCount = len(store.getCards())
+        # cardCount = len(self.iCards)
 
         self.__renderExitMenuButton()
 
         for i in range(cardCount):
             card = store.getCards()[i]
+            # card = self.iCards[i]
             img = card.getImg()
 
             width = 0.2
@@ -204,10 +217,14 @@ class GameRenderer(Listener):
         zombieRooms = self.map.getZombieRooms()
         for coord in zombieRooms:
             tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in. 
-            img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "zombie.png"))
-            img = pygame.transform.scale(img, (0.03*WIDTH, 0.04*HEIGHT))
-            DISPLAY.blit(img, tl)
+            DISPLAY.blit(self.zombie, tl)
 
+    def __renderTanks(self):
+        for tank in self.tanks:
+            coord = tank.getCoords()
+            # print(tank.getID(), tank.getRect())
+            tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in. 
+            DISPLAY.blit(tank.getImg(), tl)
 
     def __renderAttackMode(self, turn):
         zombieRooms = self.map.getZombieRooms()
@@ -232,14 +249,22 @@ class GameRenderer(Listener):
             DISPLAY.blit(self.storeSurfaces[store], self.tlCoords[store])
 
     def __renderMovementOptions(self, turn): # coordsLst are the coordinates available for moving to
-        coordsLst = self.players[turn].getMovementOptions()
+        opacity = 80
+
+        if self.mode == "move tank":
+            colour = (0,255,0, opacity)
+            selectedEntity = self.tanks[self.selectedTank]
+        elif self.mode == "move":
+            colour = (0,0,255, opacity)
+            selectedEntity = self.players[turn]
+
+        coordsLst = selectedEntity.getMovementOptions()
         for coord in coordsLst:
-            opacity = 80
             rect = self.roomRects[coord[0]][coord[1]]
 
             surface = pygame.Surface((30,30), pygame.SRCALPHA)
 
-            surface.fill((0,0,255, opacity))
+            surface.fill(colour)
             DISPLAY.blit(surface, rect)
 
     def addButton(self, button):
@@ -247,6 +272,9 @@ class GameRenderer(Listener):
 
     def addPlayer(self, player):
         self.players.append(player)
+
+    def setSelectedTank(self, tank):
+        self.selectedTank = tank
 
     def nextTurn(self, turn):
         self.turn = turn
@@ -256,3 +284,6 @@ class GameRenderer(Listener):
 
     def addMap(self, value:Map):
         self.map = value
+
+    def addTank(self, tank):
+        self.tanks.append(tank)

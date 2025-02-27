@@ -1,4 +1,5 @@
 import pygame, os
+from .helperfunctions.roomrects import genRoomRects
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
@@ -18,3 +19,5 @@ COLOURS = {
     "GREEN":(0,255,0),
     "BLACK":(0,0,0)
 }
+
+roomrects = genRoomRects()

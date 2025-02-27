@@ -21,7 +21,7 @@ class AdjList: # The graph is represented by an adjacency list.
                 pass
         
     def validatePlayerMove(self, player, coords):
-        if coords in self.adjList[player.coords]:
+        if coords in self.adjList[player.getCoords()]:
             return True
         return False
     
