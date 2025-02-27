@@ -24,6 +24,7 @@ class GameManager(Listener, EventGenerator):
         self.players = players # players is a dictionary with key=player ID, value=playerObject
         self.respawns = respawns
         self.turn = 0 # player ID representing which player's turn it is currently
+        self.runGame = True
         self.player = None
         self.turnEnded = False
         self.movesRemaining = 0
@@ -52,8 +53,9 @@ class GameManager(Listener, EventGenerator):
         self.send_event(event)
 
     def onClick(self, pos):
+        if not self.runGame:
+            return
         coll = self.im.collisions(pos)
-        print(coll)
         try:
             keys = [*coll]
         except:
@@ -103,19 +105,21 @@ class GameManager(Listener, EventGenerator):
 
             if coll['type'] == 'OPEN INVENTORY':
                 pass
+
+            if coll['type'] == 'GAME OVER':
+                pass
             
             if coll['type'] == 'TEST BUTTON': ###########################################################################
-                # print(self.player.getMeleeWeapon(), self.player.getRangedWeapon())
-                # print(self.player.getInventory())
-                print(self.im.tanks[0].setCoords((4,0)))
-                for tank in self.im.tanks:
-                    print(tank.getRect())
+                self.setRunGame(False)
             
             self.send_event(coll)
         
 
     def onKeyPress(self, key):
         pass
+
+    def gameOver(self):
+        self.runGame = False
         
     def pickupStoreCards(self):
         player = self.player
@@ -261,6 +265,11 @@ class GameManager(Listener, EventGenerator):
         player = self.player
         coords = player.getCoords()
         card = self.dm.drawSearch()
+        if card == 0:
+            event = {'type':'GAME OVER'}
+            self.send_event(event)
+            self.gameOver()
+            return
         self.map.getStores()[coords[0]].addCard(card)
         self.noise = card.getColour()
         event = {"type":"NOISE","colour":card.getColour(), "ID":player.getID(), "coords":coords, "card":card.getID()}
@@ -317,7 +326,8 @@ class GameManager(Listener, EventGenerator):
 
 
     def renderGameScreen(self):
-        self.renderer.renderGameBoard()
+        if self.runGame:
+            self.renderer.renderGameBoard()
 
     def playerCoords(self):
         coords = [player.getCoords() for player in self.players]
@@ -348,6 +358,12 @@ class GameManager(Listener, EventGenerator):
     
     def setMap(self, map):
         self.map = map
+
+    def setRunGame(self, val):
+        self.runGame = val
+
+    def getRunGame(self):
+        return self.runGame
     
     def setDM(self, dm):
         self.dm = dm

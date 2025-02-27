@@ -28,13 +28,16 @@ class Tank(Button):
         else:
             return {"mode":"move tank", "tank":self.ID}
 
+    def setPos(self, pos):
+        pos = list(pos)
+        pos[1] -= 0.04*HEIGHT
+        pos = tuple(pos)
+        self.pos = pos
+        self.rect.topleft = (self.pos[0], self.pos[1])
+
     def setCoords(self, coords):
         self.coords = coords
         self.setPos(roomrects[coords[0]][coords[1]])
-
-    def setPos(self, pos):
-        self.pos = pos
-        self.rect.topleft = (self.pos[0], self.pos[1])
 
     def getMovementOptions(self):
         return self.movementOptions

@@ -38,11 +38,18 @@ class DeckManager:
 
     def deserialize(dict):
         return DeckManager([card.deserialize() for card in dict["supplyDeck"]], [card.deserialize() for card in dict["searchDeck"]])
-    
+
     def drawSupply(self):
-        card = randint(0, len(self.supplyDeck)-1)
-        return self.supplyDeck.pop(card) # Both returns and removes the drawn card from the list. 
+        if len(self.supplyDeck) != 0:
+            card = randint(0, len(self.supplyDeck)-1)
+            return self.supplyDeck.pop(card) # Both returns and removes the drawn card from the list. 
+        else:
+            pass
     
     def drawSearch(self):
-        card = randint(0, len(self.searchDeck)-1)
-        return self.searchDeck.pop(card)
+        if len(self.searchDeck) != 0:
+            card = randint(0, len(self.searchDeck)-1)
+            out = self.searchDeck.pop(card)
+        else:
+            out = 0 # end game after 1 more turn
+        return out

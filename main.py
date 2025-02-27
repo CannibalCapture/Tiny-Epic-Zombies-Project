@@ -90,6 +90,8 @@ while run:
     DISPLAY.fill((0, 0, 0))
 
     if manager == gameboard:
+        if not gm.getRunGame():
+            manager = mainMenu
         gm.renderGameScreen()
 
     for event in pygame.event.get():

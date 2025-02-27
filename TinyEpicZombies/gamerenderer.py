@@ -136,10 +136,10 @@ class GameRenderer(Listener):
         adj = 0
         for player in self.players:
             coord = player.getCoords()
-            adj += (lst.count(coord))*0.008
+            adj += (lst.count(coord))
             lst.append(coord)
             tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in
-            tl = (tl[0] + adj*WIDTH, tl[1])
+            tl = (tl[0] + adj*0.008*WIDTH, tl[1])
             img = player.getImg()
             
             DISPLAY.blit(img, tl)
@@ -223,7 +223,7 @@ class GameRenderer(Listener):
         for tank in self.tanks:
             coord = tank.getCoords()
             # print(tank.getID(), tank.getRect())
-            tl = self.roomRects[coord[0]][coord[1]].topleft # pulls the top left coordinate of the room the player is in. 
+            tl = list(self.roomRects[coord[0]][coord[1]].topleft) # pulls the top left coordinate of the room the player is in.
             DISPLAY.blit(tank.getImg(), tl)
 
     def __renderAttackMode(self, turn):
