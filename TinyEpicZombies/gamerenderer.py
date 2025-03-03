@@ -221,9 +221,9 @@ class GameRenderer(Listener):
 
     def __renderTanks(self):
         for tank in self.tanks:
-            coord = tank.getCoords()
+            coord = tank.getPos()
             # print(tank.getID(), tank.getRect())
-            tl = list(self.roomRects[coord[0]][coord[1]].topleft) # pulls the top left coordinate of the room the player is in.
+            tl = (coord[0], coord[1]) # pulls the top left coordinate of the room the player is in.
             DISPLAY.blit(tank.getImg(), tl)
 
     def __renderAttackMode(self, turn):
@@ -266,6 +266,12 @@ class GameRenderer(Listener):
 
             surface.fill(colour)
             DISPLAY.blit(surface, rect)
+    
+    def updateBarricade(self, val):
+        offset = 0
+        for i in range(val):
+            pass
+            
 
     def addButton(self, button):
         self.buttons.append(button)

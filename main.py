@@ -2,7 +2,7 @@ import pygame, pygame_gui, bcrypt, sqlite3
 from pygame.locals import *
 import pygame_gui.elements.ui_image
 from TinyEpicZombies.constants import WIDTH, HEIGHT, DISPLAY
-from TinyEpicZombies.gamerenderer import GameRenderer
+from TinyEpicZombies.   gamerenderer import GameRenderer
 from TinyEpicZombies.gamemanager import GameManager
 
 def createNewUser(username, password):

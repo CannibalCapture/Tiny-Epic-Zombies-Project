@@ -28,6 +28,8 @@ class GameManager(Listener, EventGenerator):
         self.player = None
         self.turnEnded = False
         self.movesRemaining = 0
+        self.barricade = 0
+        self.tanksRemaining = 4
         self.noise = None
         self.tanks = []
         self.selectedTank = None
@@ -110,7 +112,10 @@ class GameManager(Listener, EventGenerator):
                 pass
             
             if coll['type'] == 'TEST BUTTON': ###########################################################################
-                self.setRunGame(False)
+                for tank in self.tanks:
+                    print(tank.getPos())
+                    print(tank.getRect())
+                    print(self.tanksRemaining)
             
             self.send_event(coll)
         
@@ -118,7 +123,12 @@ class GameManager(Listener, EventGenerator):
     def onKeyPress(self, key):
         pass
 
-    def gameOver(self):
+    def gameOver(self, wl):
+        if wl:
+            print("PLAYERS WIN")
+        else:
+            print("ZOMBIES WIN")
+
         self.runGame = False
         
     def pickupStoreCards(self):
@@ -162,11 +172,12 @@ class GameManager(Listener, EventGenerator):
 
             for coord in spawnLocations:
                 if coord == (4,2):
-                    pass # deplete the barricade
+                    self.barricade -= 1
+                    self.renderer.updateBarricade(self.barricade)
                 else:
                     self.map.addZombie(coord)
                 if coord != self.getPlayer(self.turn).getCoords(): # if the zombie spawns on a player
-                    pass # overrun
+                    self.player.takeDamage(1)
         return
 
     def nextTurn(self):
@@ -301,6 +312,11 @@ class GameManager(Listener, EventGenerator):
             self.movesRemaining -= 1
             event = {"type":"TANK MOVED", "ID":tank.getID(), "coords":tank.getCoords(), "moves":self.movesRemaining}
             self.send_event(event)
+
+            if newCoords == (4,2):
+                self.tanksRemaining -= 1
+                if self.tanksRemaining == 0:
+                    self.gameOver(1)
 
     def playerMelee(self, player):
         room = self.map.getRoom(player.getCoords())

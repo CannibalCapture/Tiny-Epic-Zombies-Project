@@ -1,6 +1,6 @@
 import pygame, os
 from .button import Button
-from .constants import WIDTH, HEIGHT, roomrects
+from .constants import WIDTH, HEIGHT, roomrects, OFFSETS
 
 class Tank(Button):
     def __init__(self, ID, startCoords):
@@ -28,16 +28,28 @@ class Tank(Button):
         else:
             return {"mode":"move tank", "tank":self.ID}
 
-    def setPos(self, pos):
+    def setPos(self, pos, offset=[0,0]):
         pos = list(pos)
+        print(offset)
         pos[1] -= 0.04*HEIGHT
+        pos[0] += offset[0]*WIDTH
+        pos[1] += offset[1]*HEIGHT
         pos = tuple(pos)
         self.pos = pos
         self.rect.topleft = (self.pos[0], self.pos[1])
+        # self.rect.topleft = (self.pos[0] + offset[0]*WIDTH, self.pos[1] + offset[1]*HEIGHT)
+
+    def getPos(self):
+        return self.rect.topleft
 
     def setCoords(self, coords):
         self.coords = coords
-        self.setPos(roomrects[coords[0]][coords[1]])
+        ofs = (0,0)
+        for offset in OFFSETS:
+            if coords in OFFSETS[offset]:
+                ofs = offset
+        self.setPos(roomrects[coords[0]][coords[1]], list(ofs))
+
 
     def getMovementOptions(self):
         return self.movementOptions

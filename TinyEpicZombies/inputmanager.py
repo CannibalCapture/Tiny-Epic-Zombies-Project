@@ -56,7 +56,6 @@ class InputManager(Listener):
         for tank in self.tanks:
             if tank.getRect().collidepoint(pos):
                 output = tank.onClick()
-                print("collided", tank.getID())
         
         return output
     
