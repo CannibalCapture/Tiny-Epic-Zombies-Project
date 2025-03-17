@@ -1,5 +1,5 @@
 from ..constants import WIDTH, HEIGHT
-import pygame, os
+import pygame
 
 class Card:
     def __init__(self, colour, type, ID, player=None):

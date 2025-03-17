@@ -54,7 +54,7 @@ startLoginButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH
 startSignupButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2 + 20, HEIGHT/2 - 20), (100, 25)), text="Signup", manager=loggedOut)
 titleLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2-65, 0), (200, 60)), text="Tiny Epic Zombies", manager=loggedOut)
 
-# logged in screen elements
+# login screen elements
 login_page = pygame_gui.UIManager((WIDTH, HEIGHT))
 usernameInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 50), (100, 30)), manager=login_page)
 passwordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager=login_page)
@@ -80,7 +80,7 @@ playersNumberLabel = pygame_gui.elements.UILabel(pygame.Rect((20, 115), (200, 10
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
 exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Exit game", manager=gameboard)
 
-manager = gameboard
+manager = mainMenu
 renderer = GameRenderer()
 gm = GameManager()
 

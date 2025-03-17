@@ -24,7 +24,7 @@ class AdjList: # The graph is represented by an adjacency list.
         if coords in self.adjList[player.getCoords()]:
             return True
         return False
-    
+
     def getMoves(self, coords):
         return self.adjList[coords]
 

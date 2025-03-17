@@ -6,7 +6,6 @@ from .helperfunctions.deserialisers import deserializeStore
 # To access the room at coordinates (a,b): map.stores[a].rooms[b]
 
 class Map: # map will manage the rooms
-
     def __init__(self, stores=[]):
         self.stores = stores
         self._initStores()
@@ -15,8 +14,6 @@ class Map: # map will manage the rooms
         self.addEdges()
         self.addZEdges()
         self.zombieRooms = set()
-        # self.tankRooms = set()
-        # self.addTanks()
 
     def serialize(self):
         dict = {

@@ -200,7 +200,11 @@ class GameManager(Listener, EventGenerator):
         self.add_listener(self.im)
 
     def _initGame(self):
-        # players = int(input("How many players? [2/3/4]\n"))
+        self.addButtons()
+        self.renderer.addMap(self.map)
+        self.im.addMap(self.map)
+        self._initTanks()
+        players = int(input("How many players? [2/3/4]\n"))
         chars = ["teenager", "doctor"]
         players = 2
         for i in range(players):
@@ -213,10 +217,6 @@ class GameManager(Listener, EventGenerator):
         
         self.player = self.players[0]
         self.nextTurn()
-        self.addButtons()
-        self.renderer.addMap(self.map)
-        self.im.addMap(self.map)
-        self._initTanks()
 
     def _initTanks(self):
         tankSpawns = [(0,0), (2,2), (6,2), (8,0)]
