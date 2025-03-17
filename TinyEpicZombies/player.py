@@ -1,7 +1,7 @@
 from random import choice
 import pygame, os
 from .listener import Listener
-from .eventgenerator import EventGenerator
+from .eventGenerator import EventGenerator
 from .cards.card import Card
 from .constants import CW, CH, WIDTH, HEIGHT
 

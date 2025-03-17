@@ -6,7 +6,7 @@ class EventGenerator:
         self.listeners.append(listener)
     
     def send_event(self, event):
-        print(event)
+        # print(event)
         for listener in self.listeners:
             listener.on_event(event)
             

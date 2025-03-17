@@ -1,4 +1,4 @@
-from .adjlist import AdjList
+from .adjList import AdjList
 from .store import Store
 from .room import Room
 from .helperfunctions.deserialisers import deserializeStore

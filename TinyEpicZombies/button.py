@@ -1,7 +1,7 @@
 import pygame, os
 from .helperfunctions.deserialisers import deserializeStore
 from .constants import WIDTH, HEIGHT
-from .eventgenerator import EventGenerator
+from .eventGenerator import EventGenerator
 from .listener import Listener
 
 class Button(EventGenerator, Listener):

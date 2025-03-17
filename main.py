@@ -59,28 +59,30 @@ login_page = pygame_gui.UIManager((WIDTH, HEIGHT))
 usernameInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 50), (100, 30)), manager=login_page)
 passwordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager=login_page)
 loginButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50, 150), (100, 25)), text="Login", manager=login_page)
+returnToLoggedOutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=login_page)
 
 # signup page elements
 signup_page = pygame_gui.UIManager((WIDTH, HEIGHT))
 signupUsernameInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 50), (100, 30)), manager = signup_page)
 signupPasswordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager = signup_page)
 signupButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50, 150), (100, 25)), text="Signup", manager=signup_page)
+returnToLoggedOutButton1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=signup_page)
 
 # main menu elements
 mainMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
 welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)),text="Welcome", manager=mainMenu)
 logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Logout", manager=mainMenu)
 startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2), (100, 25)), text="Start Game", manager=mainMenu)
-gameName = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 100), (100, 30)), manager=mainMenu)
-gameNameLabel = pygame_gui.elements.UILabel(pygame.Rect((0, 70), (200, 100)),text="Game Name", manager=mainMenu)
-playersNumber = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 150), (20, 30)), manager=mainMenu)
-playersNumberLabel = pygame_gui.elements.UILabel(pygame.Rect((20, 115), (200, 100)),text="Players", manager=mainMenu)
+# gameName = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 100), (100, 30)), manager=mainMenu)
+# gameNameLabel = pygame_gui.elements.UILabel(pygame.Rect((0, 70), (200, 100)),text="Game Name", manager=mainMenu)
+# playersNumber = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 150), (20, 30)), manager=mainMenu)
+# playersNumberLabel = pygame_gui.elements.UILabel(pygame.Rect((20, 115), (200, 100)),text="Players", manager=mainMenu)
 
 # in game gui
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
 exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Exit game", manager=gameboard)
 
-manager = mainMenu
+manager = loggedOut
 renderer = GameRenderer()
 gm = GameManager()
 
@@ -116,6 +118,8 @@ while run:
                 manager = login_page
 
             elif event.ui_element == logoutButton: # returns to login screen
+                manager = loggedOut
+            elif event.ui_element == returnToLoggedOutButton or event.ui_element == returnToLoggedOutButton1:
                 manager = loggedOut
             elif event.ui_element == startGameButton: # proceed to game board screen
                 manager = gameboard

@@ -30,7 +30,6 @@ class Tank(Button):
 
     def setPos(self, pos, offset=[0,0]):
         pos = list(pos)
-        print(offset)
         pos[1] -= 0.04*HEIGHT
         pos[0] += offset[0]*WIDTH
         pos[1] += offset[1]*HEIGHT

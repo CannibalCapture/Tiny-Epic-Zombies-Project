@@ -1,6 +1,6 @@
 from .player import Player
 from .listener import Listener
-from .eventgenerator import EventGenerator
+from .eventGenerator import EventGenerator
 from .map import Map
 from .deckmanager import DeckManager
 from .inputmanager import InputManager
@@ -204,7 +204,7 @@ class GameManager(Listener, EventGenerator):
         self.renderer.addMap(self.map)
         self.im.addMap(self.map)
         self._initTanks()
-        players = int(input("How many players? [2/3/4]\n"))
+        # players = int(input("How many players? [2/3/4]\n"))
         chars = ["teenager", "doctor"]
         players = 2
         for i in range(players):

@@ -222,7 +222,6 @@ class GameRenderer(Listener):
     def __renderTanks(self):
         for tank in self.tanks:
             coord = tank.getPos()
-            # print(tank.getID(), tank.getRect())
             tl = (coord[0], coord[1]) # pulls the top left coordinate of the room the player is in.
             DISPLAY.blit(tank.getImg(), tl)
 
