@@ -56,8 +56,8 @@ titleLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2-65, 0), (200, 60))
 
 # login screen elements
 login_page = pygame_gui.UIManager((WIDTH, HEIGHT))
-usernameInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 50), (100, 30)), manager=login_page)
-passwordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager=login_page)
+loginUsernameInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 50), (100, 30)), manager=login_page)
+loginPasswordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager=login_page)
 loginButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50, 150), (100, 25)), text="Login", manager=login_page)
 returnToLoggedOutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=login_page)
 
@@ -110,7 +110,7 @@ while run:
 
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == loginButton: # calls the login process
-                id = loginUser(usernameInput.text, passwordInput.text)
+                id = loginUser(loginUsernameInput.text, loginPasswordInput.text)
                 if id > -1:
                     manager = mainMenu
             if event.ui_element == signupButton: # calls the add new user process
@@ -118,8 +118,12 @@ while run:
                 manager = login_page
 
             elif event.ui_element == logoutButton: # returns to login screen
+                loginPasswordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager=login_page)
+                signupPasswordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager = signup_page)
                 manager = loggedOut
             elif event.ui_element == returnToLoggedOutButton or event.ui_element == returnToLoggedOutButton1:
+                loginPasswordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager=login_page)
+                signupPasswordInput = pygame_gui.elements.UITextEntryLine(pygame.Rect((50, 100), (100, 30)), manager = signup_page)
                 manager = loggedOut
             elif event.ui_element == startGameButton: # proceed to game board screen
                 manager = gameboard
