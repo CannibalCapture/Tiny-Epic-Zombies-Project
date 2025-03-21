@@ -1,8 +1,8 @@
 import pygame, pygame_gui, bcrypt, sqlite3
 from pygame.locals import *
-import pygame_gui.elements.ui_image
+import pygame_gui.elements.ui_image, pygame_gui.elements.ui_text_box
 from TinyEpicZombies.constants import WIDTH, HEIGHT, DISPLAY
-from TinyEpicZombies.   gamerenderer import GameRenderer
+from TinyEpicZombies.gamerenderer import GameRenderer
 from TinyEpicZombies.gamemanager import GameManager
 
 def createNewUser(username, password):
@@ -11,9 +11,9 @@ def createNewUser(username, password):
     password = hash(password, salt)
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
-    SQL = "INSERT INTO Users(username, password, salt) VALUES(?,?,?)"
+    SQL = "INSERT INTO Users(Username, Password, Salt, Wins, Losses) VALUES(?,?,?,?,?)"
     try:
-        cursor.execute(SQL, (username, password, salt))
+        cursor.execute(SQL, (username, password, salt, 0, 0))
         connection.commit()
     except:
         flag = False
@@ -26,6 +26,14 @@ def hash(data, salt):
     hashedData = bcrypt.hashpw(bytes, salt)
     return hashedData
 
+def fetchStatistics(userID):
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    SQL = "SELECT Wins, Losses FROM Users WHERE ID = ?"
+    stats = cursor.execute(SQL, (userID,)).fetchone()
+    connection.close()
+    return(stats)
+
 def loginUser(username, password):
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
@@ -36,7 +44,6 @@ def loginUser(username, password):
         SQL = "SELECT ID FROM Users WHERE username = ? and password = ?" # performs a comparison between the stored username / hashed password and the given username / hashed password.
         result = cursor.execute(SQL, (username, password)).fetchone() # executes the above
     except:
-        print("Invalid username or password")
         result = None
     connection.close()
     if result: # if there is a value in result, it will be the user ID of the user associated with the entered username (and password). 
@@ -75,10 +82,18 @@ mainMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
 welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)),text="Welcome", manager=mainMenu)
 logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Logout", manager=mainMenu)
 startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2), (100, 25)), text="Start Game", manager=mainMenu)
+statsButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH-120, 20), (100, 25)), text="Stats", manager=mainMenu)
 # gameName = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 100), (100, 30)), manager=mainMenu)
 # gameNameLabel = pygame_gui.elements.UILabel(pygame.Rect((0, 70), (200, 100)),text="Game Name", manager=mainMenu)
 # playersNumber = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 150), (20, 30)), manager=mainMenu)
 # playersNumberLabel = pygame_gui.elements.UILabel(pygame.Rect((20, 115), (200, 100)),text="Players", manager=mainMenu)
+
+# stats gui
+statsPage = pygame_gui.UIManager((WIDTH, HEIGHT))
+statsLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)),text="Statistics", manager=statsPage)
+returnToMainMenu = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=statsPage)
+playerWins = pygame_gui.elements.UITextBox("test str", pygame.Rect((200, 200),(100, 50)), manager=statsPage)
+
 
 # in game gui
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -112,14 +127,25 @@ while run:
 
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == loginButton: # calls the login process
-                user, passw = (loginUsernameInput.text, loginPasswordInput.text)
+                username, passw = (loginUsernameInput.text, loginPasswordInput.text)
                 loginPasswordInput.clear()
-                id = loginUser(user, passw)
+                id = loginUser(username, passw)
+                print(id)
                 if id > -1:
                     manager = mainMenu
+                else:
+                    print("Incorrect username or password")
             if event.ui_element == signupButton: # calls the add new user process
-                createNewUser(signupUsernameInput.text, signupPasswordInput.text)
-                manager = login_page
+                username, passw = (signupUsernameInput.text, signupPasswordInput.text)
+                if len(passw) < 8 or passw.isalnum():
+                    print("Error - Password must be 8 or more characters and include a special character")
+                elif len(username) <= 0:
+                    print("Error - Username required")
+                else:
+                    createNewUser(username, passw)
+                    manager = login_page
+                signupPasswordInput.clear()
+                signupUsernameInput.clear()
 
             elif event.ui_element == logoutButton: # returns to login screen
                 manager = loggedOut
@@ -127,13 +153,16 @@ while run:
                 manager = loggedOut
             elif event.ui_element == startGameButton: # proceed to game board screen
                 manager = gameboard
-            elif event.ui_element == exitGameButton: # exit game to main menu
+            elif event.ui_element == exitGameButton or event.ui_element == returnToMainMenu: # exit game to main menu
                 manager = mainMenu
             elif event.ui_element == startLoginButton: # proceed to login page
                 manager = login_page
             elif event.ui_element == startSignupButton: # proceed to signup page
                 manager = signup_page
-        
+            elif event.ui_element == statsButton:
+                wins = fetchStatistics(id)[0]
+                playerWins.set_text(f"Wins: {wins}")
+                manager = statsPage
         manager.process_events(event)
     
     manager.update(time_delta)
