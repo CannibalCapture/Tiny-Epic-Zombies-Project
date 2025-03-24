@@ -36,8 +36,8 @@ class Player(Listener, EventGenerator):
             "character":self.character,
             "rangedweapon": "None" if self.rangedWeapon == None else self.rangedWeapon.serialize(),
             "meleeweapon": "None" if self.meleeWeapon == None else self.meleeWeapon.serialize(),
-            "health":self.health,
-            "ammo":self.ammo,
+            "health":self.healthMissing,
+            "ammo":self.ammoMissing,
             "moves":self.moves,
             "ID":self.ID,
         }

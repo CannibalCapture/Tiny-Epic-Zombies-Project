@@ -32,8 +32,8 @@ class DeckManager:
 
     def serialize(self):
         dict = {
-            "supplyDeck": self.supplyDeck,
-            "searchDeck": self.searchDeck
+            "supplyDeck": [item.getID() for item in self.supplyDeck],
+            "searchDeck": [item.getID() for item in self.searchDeck]
         }
         return dict
 

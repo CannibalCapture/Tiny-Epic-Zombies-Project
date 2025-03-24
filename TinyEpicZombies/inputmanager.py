@@ -12,6 +12,12 @@ class InputManager(Listener):
         self.map = None
         self.mode = "NORMAL"
 
+    def serialize(self):
+        pass
+
+    def deserialize():
+        pass
+
     def on_event(self, event):
         if event['type'] == 'PICKUP STORE CARDS':
             self.mode = "PICKUP"

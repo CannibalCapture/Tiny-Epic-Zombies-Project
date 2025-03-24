@@ -1,4 +1,4 @@
-import pygame, pygame_gui, bcrypt, sqlite3, os
+import pygame, pygame_gui, bcrypt, sqlite3, os, json, pprint
 from pygame.locals import *
 import pygame_gui.elements.ui_image, pygame_gui.elements.ui_text_box
 from TinyEpicZombies.constants import WIDTH, HEIGHT, DISPLAY
@@ -141,7 +141,14 @@ selectCharButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
 exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Exit game", manager=gameboard)
 
-manager = loggedOut
+def saveGame(slot):
+    f = open(f'TinyEpicZombies/jsonfiles/saves/save{slot}.json', 'w')
+    saveData = gm.serialize()
+    print(saveData)
+    print(type(saveData))
+    json.dump(saveData, f)
+
+manager = charSelectMenu
 renderer = GameRenderer()
 gm = GameManager()
 
@@ -159,7 +166,8 @@ while run:
     for event in pygame.event.get():
 
         if event.type == QUIT:
-            # serialize game
+            saveGame(1)
+            print("Game Saved")
             run = False
 
         elif event.type == pygame.KEYUP:

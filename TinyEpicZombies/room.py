@@ -10,16 +10,15 @@ class Room:
         self.ammoRoom = ammoRoom
         self.coords = coords
         self.playersThisTurn = playersThisTurn
-        self.position = (0,0)
 
     def serialize(self):
         dict = {
             "roomID": self.roomID,
-            "players": self.players,
+            "players": [player.getID() for player in self.players],
             "zombie": self.zombie,
             "ammoRoom": self.ammoRoom,
             "coords": list(self.coords),
-            "playersThisTurn": self.playersThisTurn
+            "playersThisTurn": [player.getID() for player in self.playersThisTurn]
         }
         return dict
     

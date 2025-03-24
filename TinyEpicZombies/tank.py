@@ -10,6 +10,17 @@ class Tank(Button):
         self.setCoords(self.coords)
         self.movementOptions = []
 
+    def serialize(self):
+        dict = {
+            "ID": self.ID,
+            "coords": self.coords,
+            "movementOptions": self.movementOptions
+        }
+        return dict
+
+    def deserialize():
+        pass
+
     def load_images(self):
         self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "tank.png"))
         self.enabled_img = pygame.transform.scale(self.enabled_img, (0.03*WIDTH, 0.08*HEIGHT))

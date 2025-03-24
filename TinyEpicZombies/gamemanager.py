@@ -49,6 +49,7 @@ class GameManager(Listener, EventGenerator):
         gameManager.setMap(Map.deserialize())
         gameManager.setDM(DeckManager.deserialize())
         gameManager.setRenderer(GameRenderer.deserialize())
+        gameManager.setIm(InputManager.deserialize())
 
         gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]} )
 
@@ -59,7 +60,11 @@ class GameManager(Listener, EventGenerator):
             "respawns": self.respawns,
             "movesRemaining": self.movesRemaining,
             "noise": self.noise,
-            "tanks": self.tanks,
+            "tanks": [tank.serialize() for tank in self.tanks],
+            "map": self.map.serialize(),
+            "renderer": self.renderer.serialize(),
+            "deckManager": self.dm.serialize(),
+            "inputManager": self.im.serialize()
         }
         return dict
     
@@ -368,6 +373,9 @@ class GameManager(Listener, EventGenerator):
 
     def getMap(self):
         return self.map
+    
+    def setIM(self, im):
+        self.im = im
 
     def setPlayers(self, playersDict):
         self.players = playersDict
