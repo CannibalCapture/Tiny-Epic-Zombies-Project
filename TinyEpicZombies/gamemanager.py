@@ -39,7 +39,10 @@ class GameManager(Listener, EventGenerator):
         self.im = InputManager()
         self.renderer = GameRenderer()
         self._initListeners()
-        self._initGame()
+        self.addButtons()
+        self.renderer.addMap(self.map)
+        self.im.addMap(self.map)
+        self._initTanks()
     
     def on_event(self, event):
         if event['type'] == 'PLAYER DIE':
@@ -91,7 +94,6 @@ class GameManager(Listener, EventGenerator):
                 self.player.setRangedWeapon(lcc)
             store = self.map.getStores()[self.player.getCoords()[0]]
             store.removeCardByValue(lcc)
-
 
         if "type" in keys:
             if coll['type'] == 'END TURN':
@@ -199,16 +201,9 @@ class GameManager(Listener, EventGenerator):
         self.add_listener(self.renderer)
         self.add_listener(self.im)
 
-    def _initGame(self):
-        self.addButtons()
-        self.renderer.addMap(self.map)
-        self.im.addMap(self.map)
-        self._initTanks()
-        # players = int(input("How many players? [2/3/4]\n"))
+    def initGame(self, players):
         chars = ["teenager", "doctor"]
-        players = 2
         for i in range(players):
-            # name = input(f"What is player {i}'s name?\n")
             name = f"Toby{i}"
             char = chars[i]
             self.createPlayer(name, i, "PURPLE", char, tuple(deserializeGame()["constants"]["spawn"]))

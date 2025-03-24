@@ -72,6 +72,8 @@ loginButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50, 150), 
 returnToLoggedOutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=login_page)
 loginPasswordInput.set_text_hidden(True)
 loginPasswordInput.hidden_text_char="*"
+loginPasswordInput.set_text("password123*")
+loginUsernameInput.set_text("Toby")
 
 # signup page elements
 signup_page = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -93,17 +95,20 @@ newGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-
 loadGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-15, HEIGHT-335), (280, 85)), text="Load Game", manager=mainMenu)
 
 # select save slot menu
-saveSlotMenuNew = pygame_gui.UIManager((WIDTH, HEIGHT))
-returnToMainMenu1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=saveSlotMenuNew)
-saveSlot1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 250), (280, 85)), text="Save Slot 1", manager=saveSlotMenuNew)
-saveSlot2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 360), (280, 85)), text="Save Slot 2", manager=saveSlotMenuNew)
+saveSlotMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
+returnToMainMenu1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=saveSlotMenu)
+saveSlot1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 150), (280, 85)), text="Save Slot 1", manager=saveSlotMenu)
+saveSlot2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 260), (280, 85)), text="Save Slot 2", manager=saveSlotMenu)
+saveSlot3 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 370), (280, 85)), text="Save Slot 3", manager=saveSlotMenu)
+saveSlot4 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 480), (280, 85)), text="Save Slot 4", manager=saveSlotMenu)
 
-# gameName = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 100), (100, 30)), manager=mainMenu)
-# gameNameLabel = pygame_gui.elements.UILabel(pygame.Rect((0, 70), (200, 100)),text="Game Name", manager=mainMenu)
-# playersNumber = pygame_gui.elements.UITextEntryLine(pygame.Rect((150, 150), (20, 30)), manager=mainMenu)
-# playersNumberLabel = pygame_gui.elements.UILabel(pygame.Rect((20, 115), (200, 100)),text="Players", manager=mainMenu)
-
-
+# load slot menu
+loadSlotMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
+returnToMainMenu2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=loadSlotMenu)
+loadSlot1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 250), (280, 85)), text="Load Slot 1", manager=loadSlotMenu)
+loadSlot2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 360), (280, 85)), text="Load Slot 2", manager=loadSlotMenu)
+loadSlot3 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 470), (280, 85)), text="Load Slot 3", manager=loadSlotMenu)
+loadSlot4 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-115, 580), (280, 85)), text="Load Slot 4", manager=loadSlotMenu)
 
 # stats gui
 statsPage = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -111,6 +116,22 @@ statsLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2 - 200, 50), (200, 
 returnToMainMenu = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=statsPage)
 playerWins = pygame_gui.elements.UITextBox("test str", pygame.Rect((200, 200),(100, 40)), manager=statsPage)
 playerLosses = pygame_gui.elements.UITextBox("test str", pygame.Rect((200, 260),(100, 40)), manager=statsPage)
+
+# game variables menu
+gameVarMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
+returnToLoadSlotMenu = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=gameVarMenu)
+playersNumber = pygame_gui.elements.UIDropDownMenu(["2","3","4"], "2", pygame.Rect((150, 150), (100, 50)), manager=gameVarMenu)
+players = 2
+playersNumberLabel = pygame_gui.elements.UILabel(pygame.Rect((20, 115), (200, 100)),text="Players", manager=gameVarMenu)
+startGameButton1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2-100), (100, 25)), text="Start Game", manager=gameVarMenu)
+
+# character select menu
+charSelectMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
+returnToGameVariablesMenu = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=charSelectMenu)
+characters = pygame_gui.elements.UIDropDownMenu(["teenager", "doctor", "popstar", "athlete"], "teenager", pygame.Rect((150, 150), (100, 50)), manager=charSelectMenu)
+startGameButton2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2-100), (100, 25)), text="Start Game", manager=charSelectMenu)
+scImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters", "teenagerCard.jpg"))
+charCard = pygame_gui.elements.UIImage(pygame.Rect((WIDTH/2,120), (600, 400)), scImg, manager=charSelectMenu)
 
 # in game gui
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -141,7 +162,16 @@ while run:
 
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            gm.onClick(pos)
+            if manager == gameboard:
+                gm.onClick(pos)
+
+        elif event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
+                if event.ui_element == playersNumber:
+                    players = int(event.text)
+                elif event.ui_element == characters :
+                    char = event.text
+                    scImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters", f"{char}Card.jpg"))
+                    charCard = pygame_gui.elements.UIImage(pygame.Rect((WIDTH/2,120), (600, 400)), scImg, manager=charSelectMenu)
 
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == loginButton: # calls the login process
@@ -163,21 +193,30 @@ while run:
                     manager = login_page
                 signupPasswordInput.clear()
                 signupUsernameInput.clear()
+            
+
 
             elif event.ui_element == logoutButton: # returns to login screen
                 manager = loggedOut
             elif event.ui_element == returnToLoggedOutButton or event.ui_element == returnToLoggedOutButton1:
                 manager = loggedOut
-            elif event.ui_element == startGameButton: # proceed to game board screen
+            elif event.ui_element == startGameButton or event.ui_element == startGameButton2: # proceed to game board screen
+                gm.initGame(players)
                 manager = gameboard
-            elif event.ui_element == exitGameButton or event.ui_element == returnToMainMenu or event.ui_element == returnToMainMenu1: # exit game to main menu
+            elif event.ui_element == exitGameButton or event.ui_element == returnToMainMenu or event.ui_element == returnToMainMenu1 or event.ui_element == returnToMainMenu2: # exit game to main menu
                 manager = mainMenu
             elif event.ui_element == startLoginButton: # proceed to login page
                 manager = login_page
             elif event.ui_element == startSignupButton: # proceed to signup page
                 manager = signup_page
             elif event.ui_element == newGameButton:
-                manager = saveSlotMenuNew
+                manager = saveSlotMenu
+            elif event.ui_element == loadGameButton or event.ui_element == returnToLoadSlotMenu:
+                manager = loadSlotMenu
+            elif event.ui_element == saveSlot1 or event.ui_element == returnToGameVariablesMenu:
+                manager = gameVarMenu
+            elif event.ui_element == startGameButton1:
+                manager = charSelectMenu
             elif event.ui_element == statsButton:
                 stats = fetchStatistics(id)
                 wins = stats[0]
