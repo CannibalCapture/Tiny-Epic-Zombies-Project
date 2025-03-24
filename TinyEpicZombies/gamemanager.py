@@ -43,6 +43,17 @@ class GameManager(Listener, EventGenerator):
         self.renderer.addMap(self.map)
         self.im.addMap(self.map)
         self._initTanks()
+
+    def serialize(self):
+        dict = {
+            "players": { id: player.serialize() for id, player in self.players.items() },
+            "turn": self.turn,
+            "respawns": self.respawns,
+            "movesRemaining": self.movesRemaining,
+            "noise": self.noise,
+            "tanks": self.tanks,
+        }
+        return dict
     
     def on_event(self, event):
         if event['type'] == 'PLAYER DIE':
@@ -201,11 +212,10 @@ class GameManager(Listener, EventGenerator):
         self.add_listener(self.renderer)
         self.add_listener(self.im)
 
-    def initGame(self, players):
-        chars = ["teenager", "doctor"]
-        for i in range(players):
-            name = f"Toby{i}"
-            char = chars[i]
+    def initGame(self, selectedChars):
+        for i in range(len(selectedChars)):
+            name = f"Player {i}"
+            char = selectedChars[i]
             self.createPlayer(name, i, "PURPLE", char, tuple(deserializeGame()["constants"]["spawn"]))
         
         self.setMode("move")
@@ -378,14 +388,6 @@ class GameManager(Listener, EventGenerator):
     
     def setDM(self, dm):
         self.dm = dm
-
-    def serialize(self):
-        dict = {
-            "players": { id: player.serialize() for id, player in self.players.items() },
-            "playerTurn": self.turn,
-            "respawns": self.respawns
-        }
-        return dict
 
     def deserialize(dict):
         gameManager = GameManager.getInstance()

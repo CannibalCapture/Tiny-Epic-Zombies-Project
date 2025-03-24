@@ -89,7 +89,6 @@ mmBgImg = pygame.transform.scale(mmBgImg, (WIDTH, HEIGHT))
 mmBg = pygame_gui.elements.UIImage(pygame.Rect((0,0), (WIDTH, HEIGHT)), mmBgImg, manager=mainMenu)
 welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)),text="Welcome", manager=mainMenu)
 logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Logout", manager=mainMenu)
-startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2-100), (100, 25)), text="Start Game", manager=mainMenu)
 statsButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-165, HEIGHT-250), (280, 85)), text="Stats", manager=mainMenu)
 newGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-300, HEIGHT-335), (280, 85)), text="New Game", manager=mainMenu)
 loadGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-15, HEIGHT-335), (280, 85)), text="Load Game", manager=mainMenu)
@@ -128,10 +127,15 @@ startGameButton1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH
 # character select menu
 charSelectMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
 returnToGameVariablesMenu = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=charSelectMenu)
-characters = pygame_gui.elements.UIDropDownMenu(["teenager", "doctor", "popstar", "athlete"], "teenager", pygame.Rect((150, 150), (100, 50)), manager=charSelectMenu)
-startGameButton2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2-100), (100, 25)), text="Start Game", manager=charSelectMenu)
+charsRemaining = ["teenager", "doctor", "popstar", "athlete"]
+char = "teenager"
+selectedChars = []
+characters = pygame_gui.elements.UIDropDownMenu(charsRemaining, "teenager", pygame.Rect((150, 150), (100, 50)), manager=charSelectMenu)
+# startGameButton2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2-100), (100, 25)), text="Start Game", manager=charSelectMenu)
 scImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters", "teenagerCard.jpg"))
 charCard = pygame_gui.elements.UIImage(pygame.Rect((WIDTH/2,120), (600, 400)), scImg, manager=charSelectMenu)
+startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-50, HEIGHT-100), (100, 25)), text="Start Game", manager=charSelectMenu)
+selectCharButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-50, HEIGHT-50), (100, 25)), text="Select Character", manager=charSelectMenu)
 
 # in game gui
 gameboard = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -170,6 +174,7 @@ while run:
                     players = int(event.text)
                 elif event.ui_element == characters :
                     char = event.text
+                    charCard.kill()
                     scImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters", f"{char}Card.jpg"))
                     charCard = pygame_gui.elements.UIImage(pygame.Rect((WIDTH/2,120), (600, 400)), scImg, manager=charSelectMenu)
 
@@ -200,8 +205,8 @@ while run:
                 manager = loggedOut
             elif event.ui_element == returnToLoggedOutButton or event.ui_element == returnToLoggedOutButton1:
                 manager = loggedOut
-            elif event.ui_element == startGameButton or event.ui_element == startGameButton2: # proceed to game board screen
-                gm.initGame(players)
+            elif event.ui_element == startGameButton:# or event.ui_element == startGameButton2: # proceed to game board screen
+                gm.initGame(selectedChars)
                 manager = gameboard
             elif event.ui_element == exitGameButton or event.ui_element == returnToMainMenu or event.ui_element == returnToMainMenu1 or event.ui_element == returnToMainMenu2: # exit game to main menu
                 manager = mainMenu
@@ -224,6 +229,18 @@ while run:
                 playerWins.set_text(f"Wins: {wins}")
                 playerLosses.set_text(f"Losses: {losses}")
                 manager = statsPage
+            elif event.ui_element == selectCharButton:
+                charsRemaining.remove(char)
+                selectedChars.append(char)
+                characters.kill()
+                charCard.kill()
+                if len(charsRemaining) == 4-players:
+                    selectCharButton.disable()
+                else:
+                    characters = pygame_gui.elements.UIDropDownMenu(charsRemaining, charsRemaining[0], pygame.Rect((150, 150), (100, 50)), manager=charSelectMenu)
+                    char = charsRemaining[0]
+                    scImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters", f"{charsRemaining[0]}Card.jpg"))
+                    charCard = pygame_gui.elements.UIImage(pygame.Rect((WIDTH/2,120), (600, 400)), scImg, manager=charSelectMenu)
 
         manager.process_events(event)
     
