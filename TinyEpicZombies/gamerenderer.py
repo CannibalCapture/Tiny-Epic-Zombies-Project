@@ -28,6 +28,12 @@ class GameRenderer(Listener):
         self.inventoryShown = False
         self.flag = True
 
+    def serialize(self):
+        pass
+
+    def deserialize():
+        return GameRenderer()
+
     def load_images(self):
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "woodBackground.jpg")).convert()
         img = pygame.transform.scale(img, (WIDTH, HEIGHT))

@@ -6,7 +6,8 @@ class DeckManager:
     def __init__(self, supplyDeck=[], searchDeck=[]):
         self.supplyDeck = supplyDeck
         self.searchDeck = searchDeck
-        self.createDecks()
+        if self.supplyDeck == [] and self.searchDeck == []:
+            self.createDecks()
 
     def createDecks(self): # Decks are not currently randomised - random.shuffle(list) - will do it,
         # but drawing is already randomised. 

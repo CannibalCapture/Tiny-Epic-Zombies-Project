@@ -118,7 +118,7 @@ playerLosses = pygame_gui.elements.UITextBox("test str", pygame.Rect((200, 260),
 
 # game variables menu
 gameVarMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
-returnToLoadSlotMenu = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=gameVarMenu)
+returnToSaveSlotMenu = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=gameVarMenu)
 playersNumber = pygame_gui.elements.UIDropDownMenu(["2","3","4"], "2", pygame.Rect((150, 150), (100, 50)), manager=gameVarMenu)
 players = 2
 playersNumberLabel = pygame_gui.elements.UILabel(pygame.Rect((20, 115), (200, 100)),text="Players", manager=gameVarMenu)
@@ -159,6 +159,7 @@ while run:
     for event in pygame.event.get():
 
         if event.type == QUIT:
+            # serialize game
             run = False
 
         elif event.type == pygame.KEYUP:
@@ -198,8 +199,6 @@ while run:
                     manager = login_page
                 signupPasswordInput.clear()
                 signupUsernameInput.clear()
-            
-
 
             elif event.ui_element == logoutButton: # returns to login screen
                 manager = loggedOut
@@ -214,12 +213,22 @@ while run:
                 manager = login_page
             elif event.ui_element == startSignupButton: # proceed to signup page
                 manager = signup_page
-            elif event.ui_element == newGameButton:
+            elif event.ui_element == newGameButton or event.ui_element == returnToSaveSlotMenu:
                 manager = saveSlotMenu
-            elif event.ui_element == loadGameButton or event.ui_element == returnToLoadSlotMenu:
+            elif event.ui_element == loadGameButton:
                 manager = loadSlotMenu
             elif event.ui_element == saveSlot1 or event.ui_element == returnToGameVariablesMenu:
                 manager = gameVarMenu
+                slot = 1
+            elif event.ui_element == saveSlot2:
+                manager = gameVarMenu
+                slot = 2
+            elif event.ui_element == saveSlot3:
+                manager = gameVarMenu
+                slot = 3
+            elif event.ui_element == saveSlot4:
+                manager = gameVarMenu
+                slot = 4
             elif event.ui_element == startGameButton1:
                 manager = charSelectMenu
             elif event.ui_element == statsButton:

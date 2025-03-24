@@ -44,6 +44,14 @@ class GameManager(Listener, EventGenerator):
         self.im.addMap(self.map)
         self._initTanks()
 
+    def deserialize(dict):
+        gameManager = GameManager.getInstance()
+        gameManager.setMap(Map.deserialize())
+        gameManager.setDM(DeckManager.deserialize())
+        gameManager.setRenderer(GameRenderer.deserialize())
+
+        gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]} )
+
     def serialize(self):
         dict = {
             "players": { id: player.serialize() for id, player in self.players.items() },
@@ -345,28 +353,15 @@ class GameManager(Listener, EventGenerator):
         else:
             return "Attack failed: Ranged"
 
-
     def renderGameScreen(self):
         if self.runGame:
             self.renderer.renderGameBoard()
-
-    def playerCoords(self):
-        coords = [player.getCoords() for player in self.players]
-        out = []
-        for coord in coords:
-            out.append(self.map.getRoom(coord))
 
     def addZombie(self, coords):
         self.map.addZombie(coords)
     
     def updateMovementOptions(self, player):
         player.setMovementOptions(self.map.getMovementOptions(player.getCoords()))
-    
-    def disableButton(self, button):
-        self.buttons[button].disable()
-
-    def givePos(self):
-        pass
 
     def getPlayer(self, ID):
         return self.players[ID]
@@ -379,6 +374,9 @@ class GameManager(Listener, EventGenerator):
     
     def setMap(self, map):
         self.map = map
+    
+    def setRenderer(self, renderer):
+        self.renderer = renderer
 
     def setRunGame(self, val):
         self.runGame = val
@@ -388,10 +386,3 @@ class GameManager(Listener, EventGenerator):
     
     def setDM(self, dm):
         self.dm = dm
-
-    def deserialize(dict):
-        gameManager = GameManager.getInstance()
-        gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]} )
-
-        gameManager.setMap(Map.deserialize())
-        gameManager.setDM(DeckManager.deserialize())
