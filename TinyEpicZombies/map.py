@@ -6,23 +6,24 @@ from .helperfunctions.deserialisers import deserializeStore
 # To access the room at coordinates (a,b): map.stores[a].rooms[b]
 
 class Map: # map will manage the rooms
-    def __init__(self, stores=[]):
+    def __init__(self, stores=[], zombieRooms = set()):
         self.stores = stores
         self._initStores()
         self.al = AdjList(stores)
         self.zAl = AdjList(stores)
         self.addEdges()
         self.addZEdges()
-        self.zombieRooms = set()
+        self.zombieRooms = zombieRooms
 
     def serialize(self):
         dict = {
-            "stores": [store.serialize() for store in self.stores]
+            "stores": [store.serialize() for store in self.stores],
+            "zombieRooms": list(self.zombieRooms)
         }
         return dict
     
     def deserialize(dict):
-        return Map([Store.deserialize(store) for store in dict["stores"]])
+        return Map([Store.deserialize(store) for store in dict["stores"]], dict["zombieRooms"])
 
     def createStore(self, ID): # pass in a list of 3 rooms
         rooms = []

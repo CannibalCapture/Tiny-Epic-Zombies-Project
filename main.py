@@ -154,7 +154,7 @@ def loadGame(slot):
     GameManager.deserialize(saveData)
     gm = GameManager.getInstance()
 
-manager = loadSlotMenu
+manager = loggedOut
 renderer = GameRenderer()
 gm = GameManager()
 

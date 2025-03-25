@@ -60,6 +60,8 @@ class GameManager(Listener, EventGenerator):
         gameManager.renderer.addMap(gameManager.map)
         gameManager.im.addMap(gameManager.map)
         gameManager._initTanks()
+        gameManager.player = gameManager.players[0]
+        gameManager.nextTurn()
 
     def serialize(self):
         dict = {
