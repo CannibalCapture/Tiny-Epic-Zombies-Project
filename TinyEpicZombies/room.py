@@ -16,6 +16,7 @@ class Room:
             "roomID": self.roomID,
             "players": [player.getID() for player in self.players],
             "zombie": self.zombie,
+            "tank": self.tank,
             "ammoRoom": self.ammoRoom,
             "coords": list(self.coords),
             "playersThisTurn": [player.getID() for player in self.playersThisTurn]
@@ -29,13 +30,8 @@ class Room:
             return(data["stores"][f"store{store}"]["rooms"][f"room{room}"])
 
 
-    def deserialize(self, dict={}):
-        store, room = self.coords[0], self.coords[1]
-        with open(os.path.join("TinyEpicZombies","jsonfiles", "roompoints.json")) as file:
-            data = json.loads("".join(file.readlines()))
-            jsonRoom = (data["stores"][f"store{store}"]["rooms"][f"room{room}"])
-
-        # return Room(dict["roomID"], tuple(dict["coords"]), dict["players"], dict["zombie"], dict["ammoRoom"], set(dict["playersThisTurn"]))
+    def deserialize(dict):
+        return Room(dict["roomID"], tuple(dict["coords"]), dict["players"], dict["zombie"], dict["ammoRoom"], set(dict["playersThisTurn"]), dict["tank"])
 
     def addPlayer(self, player):
         self.players.append(player)

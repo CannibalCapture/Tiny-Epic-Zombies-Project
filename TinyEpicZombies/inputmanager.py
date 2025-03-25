@@ -15,8 +15,8 @@ class InputManager(Listener):
     def serialize(self):
         pass
 
-    def deserialize():
-        pass
+    def deserialize(dict):
+        return InputManager()
 
     def on_event(self, event):
         if event['type'] == 'PICKUP STORE CARDS':

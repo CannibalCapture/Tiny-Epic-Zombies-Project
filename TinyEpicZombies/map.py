@@ -22,7 +22,7 @@ class Map: # map will manage the rooms
         return dict
     
     def deserialize(dict):
-        return Map([store.deserialize() for store in dict["stores"]])
+        return Map([Store.deserialize(store) for store in dict["stores"]])
 
     def createStore(self, ID): # pass in a list of 3 rooms
         rooms = []

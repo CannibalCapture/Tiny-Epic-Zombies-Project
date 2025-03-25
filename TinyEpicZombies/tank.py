@@ -3,12 +3,12 @@ from .button import Button
 from .constants import WIDTH, HEIGHT, roomrects, OFFSETS
 
 class Tank(Button):
-    def __init__(self, ID, startCoords):
+    def __init__(self, ID, startCoords, movementOptions=[]):
         super().__init__("tank",  (0,0), True, False)
         self.coords = startCoords
         self.ID = ID
         self.setCoords(self.coords)
-        self.movementOptions = []
+        self.movementOptions = movementOptions
 
     def serialize(self):
         dict = {
@@ -18,8 +18,8 @@ class Tank(Button):
         }
         return dict
 
-    def deserialize():
-        pass
+    def deserialize(dict):
+        return Tank(dict["ID"], dict["coords"], dict["movementOptions"])
 
     def load_images(self):
         self.enabled_img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "tank.png"))

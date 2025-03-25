@@ -6,8 +6,7 @@ class DeckManager:
     def __init__(self, supplyDeck=[], searchDeck=[]):
         self.supplyDeck = supplyDeck
         self.searchDeck = searchDeck
-        if self.supplyDeck == [] and self.searchDeck == []:
-            self.createDecks()
+        self.createDecks()
 
     def createDecks(self): # Decks are not currently randomised - random.shuffle(list) - will do it,
         # but drawing is already randomised. 
@@ -38,7 +37,7 @@ class DeckManager:
         return dict
 
     def deserialize(dict):
-        return DeckManager([card.deserialize() for card in dict["supplyDeck"]], [card.deserialize() for card in dict["searchDeck"]])
+        return DeckManager([Card.deserialize(card) for card in dict["supplyDeck"]], [Card.deserialize(card) for card in dict["searchDeck"]])
 
     def drawSupply(self):
         if len(self.supplyDeck) != 0:

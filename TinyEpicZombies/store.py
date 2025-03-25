@@ -1,3 +1,5 @@
+from .room import Room
+
 class Store:
     def __init__(self, rooms, ID, noiseColour, image, tl):
         self.rooms = rooms
@@ -9,16 +11,16 @@ class Store:
 
     def serialize(self):
         dict = {
+            "ID": self.ID,
             "rooms": [room.serialize() for room in self.rooms],
             "tl": self.tl,
-            "ID": self.ID,
             "image": self.image,
             "noiseColour": self.noiseColour
         }
         return dict
     
     def deserialize(dict):
-        return Store([room.deserialize() for room in dict["rooms"]], dict["ID"], dict["noiseColour"], dict["image"], dict["tl"])
+        return Store([Room.deserialize(room) for room in dict["rooms"]], dict["ID"], dict["noiseColour"], dict["image"], dict["tl"])
     
     def addCard(self, card):
         self.cards.append(card)

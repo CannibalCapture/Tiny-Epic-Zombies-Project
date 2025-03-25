@@ -6,21 +6,21 @@ from .map import Map
 from .constants import WIDTH, HEIGHT, DISPLAY, CW, CH
 
 class GameRenderer(Listener):
-    def __init__(self):
+    def __init__(self, map=None, players=[], buttons=[], tanks=[], turn=0):
         self.cw = CW*WIDTH
         self.ch = CH*HEIGHT
         self.load_images()
         self.storeSurfaces = self.__genStoreSurfaces()
         self.tlCoords = genTlCoords()
         self.roomRects = genRoomRects()
-        self.buttons = []
-        self.players = []
-        self.tanks = []
+        self.buttons = buttons
+        self.players = players
+        self.tanks = tanks
         self.mode = "move"
-        self.turn = 0
+        self.turn = turn
         self.opacity = 88
         self.player = None
-        self.map = None
+        self.map = map
         self.shownPickupCards = False # contains the store which we will render the pickup cards for
         self.selectedTank = 0
         self.playerCardShown = True
@@ -31,7 +31,7 @@ class GameRenderer(Listener):
     def serialize(self):
         pass
 
-    def deserialize():
+    def deserialize(dict):
         return GameRenderer()
 
     def load_images(self):
@@ -164,6 +164,7 @@ class GameRenderer(Listener):
                 DISPLAY.blit(img, (0.01*WIDTH, (0.3+(0.1*i))*HEIGHT))
 
     def __renderPlayerCards(self):
+        # print(self.turn, self.players)
         cWidth = 1.6*CW
 
         if self.playerCardShown:

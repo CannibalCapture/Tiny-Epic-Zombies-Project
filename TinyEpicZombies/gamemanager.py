@@ -46,12 +46,20 @@ class GameManager(Listener, EventGenerator):
 
     def deserialize(dict):
         gameManager = GameManager.getInstance()
-        gameManager.setMap(Map.deserialize())
-        gameManager.setDM(DeckManager.deserialize())
-        gameManager.setRenderer(GameRenderer.deserialize())
-        gameManager.setIm(InputManager.deserialize())
+        gameManager.setMap(Map.deserialize(dict["map"]))
+        gameManager.setDM(DeckManager.deserialize(dict["deckManager"]))
+        gameManager.setRenderer(GameRenderer.deserialize(dict["renderer"]))
+        gameManager.setIM(InputManager.deserialize(dict["inputManager"]))
 
-        gameManager.setPlayers({ id: Player.deserialize(dict["Players"][id]) for id in dict["players"]} )
+        for player in dict["players"]:
+            p = dict["players"][player]
+            gameManager.createPlayer(p["name"], p["ID"], p["colour"], p["character"], tuple(p["coords"]))
+        gameManager.setTanks([Tank.deserialize(tank) for tank in dict["tanks"]])
+        gameManager._initListeners()
+        gameManager.addButtons()
+        gameManager.renderer.addMap(gameManager.map)
+        gameManager.im.addMap(gameManager.map)
+        gameManager._initTanks()
 
     def serialize(self):
         dict = {
@@ -160,7 +168,6 @@ class GameManager(Listener, EventGenerator):
     def pickupStoreCards(self):
         player = self.player
         store = self.map.getStores()[player.getCoords()[0]]
-        # cards = store.getCards()
         bpCards = store.removeBackpackCards()
         for card in bpCards:
             player.addCard(card)
@@ -373,6 +380,9 @@ class GameManager(Listener, EventGenerator):
 
     def getMap(self):
         return self.map
+    
+    def setTanks(self, lstVal):
+        self.tanks = lstVal
     
     def setIM(self, im):
         self.im = im

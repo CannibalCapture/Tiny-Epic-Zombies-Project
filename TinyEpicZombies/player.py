@@ -36,19 +36,16 @@ class Player(Listener, EventGenerator):
             "character":self.character,
             "rangedweapon": "None" if self.rangedWeapon == None else self.rangedWeapon.serialize(),
             "meleeweapon": "None" if self.meleeWeapon == None else self.meleeWeapon.serialize(),
-            "health":self.healthMissing,
-            "ammo":self.ammoMissing,
+            "healthMissing":self.healthMissing,
+            "ammoMissing":self.ammoMissing,
             "moves":self.moves,
             "ID":self.ID,
         }
 
         return dict
 
-    # def deserialize(dict):
-    #     return Player(dict["name"], dict["ID"], dict["colour"], dict["character"], tuple(dict["coords"]), 
-    #                   None if  dict["meleeweapon"] == "None" else MeleeWeapon.deserialize(dict["meleeweapon"]),
-    #                   None if  dict["rangedweapon"] == "None" else RangedWeapon.deserialize(dict["rangedweapon"]),
-    #                   dict["health"], dict["ammo"], dict["moves"])
+    def deserialize(dict):
+        return Player(dict["name"], dict["ID"], dict["colour"], dict["character"], tuple(dict["coords"]),None, None, dict["healthMissing"], dict["ammoMissing"], dict["moves"])
 
     def move(self, coords):
         self.coords = coords
