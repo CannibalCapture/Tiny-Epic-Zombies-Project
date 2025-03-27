@@ -19,8 +19,8 @@ class Store:
         }
         return dict
     
-    def deserialize(dict):
-        return Store([Room.deserialize(room) for room in dict["rooms"]], dict["ID"], dict["noiseColour"], dict["image"], dict["tl"])
+    def deserialize(dict, gm):
+        return Store([Room.deserialize(room, gm) for room in dict["rooms"]], dict["ID"], dict["noiseColour"], dict["image"], dict["tl"])
     
     def addCard(self, card):
         self.cards.append(card)

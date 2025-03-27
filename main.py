@@ -144,7 +144,7 @@ exitGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20)
 def saveGame(slot):
     f = open(f'TinyEpicZombies/jsonfiles/saves/save{slot}.json', 'w')
     saveData = gm.serialize()
-    json.dump(saveData, f)
+    json.dump(saveData, f, indent=4)
 
 def loadGame(slot):
     f = open(f'TinyEpicZombies/jsonfiles/saves/save{slot}.json', 'r')
@@ -154,7 +154,7 @@ def loadGame(slot):
     GameManager.deserialize(saveData)
     gm = GameManager.getInstance()
 
-manager = loggedOut
+manager = mainMenu
 renderer = GameRenderer()
 gm = GameManager()
 

@@ -1,6 +1,7 @@
 from .cards.weapons import *
 from .cards.backpackitems import *
 from random import randint
+from .cards.cardfactory import CardFactory
 
 class DeckManager:
     def __init__(self, supplyDeck=[], searchDeck=[]):
@@ -31,13 +32,13 @@ class DeckManager:
 
     def serialize(self):
         dict = {
-            "supplyDeck": [item.getID() for item in self.supplyDeck],
-            "searchDeck": [item.getID() for item in self.searchDeck]
+            "supplyDeck": [{"type":item.getID(), "colour":item.getColour()} for item in self.supplyDeck],
+            "searchDeck": [{"type":item.getID(), "colour":item.getColour()} for item in self.searchDeck]
         }
         return dict
 
     def deserialize(dict):
-        return DeckManager([Card.deserialize(card) for card in dict["supplyDeck"]], [Card.deserialize(card) for card in dict["searchDeck"]])
+        return DeckManager([CardFactory.createCard(card["type"], card["colour"]) for card in dict["supplyDeck"]], [CardFactory.createCard(card["type"], card["colour"]) for card in dict["searchDeck"]])
 
     def drawSupply(self):
         if len(self.supplyDeck) != 0:

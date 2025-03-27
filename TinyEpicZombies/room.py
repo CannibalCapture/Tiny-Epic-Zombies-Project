@@ -22,6 +22,12 @@ class Room:
             "playersThisTurn": [player.getID() for player in self.playersThisTurn]
         }
         return dict
+
+    def deserialize(dict, gm):
+        playersLst = [gm.getPlayer(playerID) for playerID in dict["players"]]
+        pttLst = [gm.getPlayer(playerID) for playerID in dict["playersThisTurn"]]
+        return Room(dict["roomID"], tuple(dict["coords"]), playersLst, dict["zombie"], dict["ammoRoom"], set(pttLst), dict["tank"])
+   
     
     def deserializeRoom(coords):
         store, room = coords[0], coords[1]
@@ -29,9 +35,6 @@ class Room:
             data = json.loads("".join(file.readlines()))
             return(data["stores"][f"store{store}"]["rooms"][f"room{room}"])
 
-
-    def deserialize(dict):
-        return Room(dict["roomID"], tuple(dict["coords"]), dict["players"], dict["zombie"], dict["ammoRoom"], set(dict["playersThisTurn"]), dict["tank"])
 
     def addPlayer(self, player):
         self.players.append(player)
@@ -43,8 +46,11 @@ class Room:
         self.playersThisTurn.clear()
 
     def removePlayer(self, player):
+        # print(f"removing {player.getID()} from room")
+        # print(f"room contains {', '.join([str(p.getID()) for p in self.players])}")
         if player in self.players:
             self.players.remove(player)
+        # print(f"room now contains {', '.join([str(p.getID()) for p in self.players])}")
 
     def returnPlayers(self):
         return [player.name for player in self.players]

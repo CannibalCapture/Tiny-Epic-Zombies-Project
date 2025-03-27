@@ -46,14 +46,16 @@ class GameManager(Listener, EventGenerator):
 
     def deserialize(dict):
         gameManager = GameManager.getInstance()
-        gameManager.setMap(Map.deserialize(dict["map"]))
-        gameManager.setDM(DeckManager.deserialize(dict["deckManager"]))
         gameManager.setRenderer(GameRenderer.deserialize(dict["renderer"]))
-        gameManager.setIM(InputManager.deserialize(dict["inputManager"]))
 
         for player in dict["players"]:
             p = dict["players"][player]
             gameManager.createPlayer(p["name"], p["ID"], p["colour"], p["character"], tuple(p["coords"]))
+
+        gameManager.setMap(Map.deserialize(dict["map"], gameManager))
+        gameManager.setDM(DeckManager.deserialize(dict["deckManager"]))
+        gameManager.setIM(InputManager.deserialize(dict["inputManager"]))
+
         gameManager.setTanks([Tank.deserialize(tank) for tank in dict["tanks"]])
         gameManager._initListeners()
         gameManager.addButtons()

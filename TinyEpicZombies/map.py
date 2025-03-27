@@ -22,8 +22,8 @@ class Map: # map will manage the rooms
         }
         return dict
     
-    def deserialize(dict):
-        return Map([Store.deserialize(store) for store in dict["stores"]], dict["zombieRooms"])
+    def deserialize(dict, gm):
+        return Map([Store.deserialize(store, gm) for store in dict["stores"]], dict["zombieRooms"])
 
     def createStore(self, ID): # pass in a list of 3 rooms
         rooms = []
