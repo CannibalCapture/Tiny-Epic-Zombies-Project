@@ -1,39 +1,8 @@
 {
-    "players": {
-        "0": {
-            "coords": [
-                4,
-                2
-            ],
-            "name": "Player 0",
-            "colour": "PURPLE",
-            "character": "teenager",
-            "rangedweapon": "None",
-            "meleeweapon": "None",
-            "healthMissing": 0,
-            "ammoMissing": 0,
-            "moves": 3,
-            "ID": 0
-        },
-        "1": {
-            "coords": [
-                3,
-                2
-            ],
-            "name": "Player 1",
-            "colour": "PURPLE",
-            "character": "doctor",
-            "rangedweapon": "None",
-            "meleeweapon": "None",
-            "healthMissing": 0,
-            "ammoMissing": 0,
-            "moves": 3,
-            "ID": 1
-        }
-    },
-    "turn": 1,
+    "players": {},
+    "turn": 0,
     "respawns": 3,
-    "movesRemaining": 1,
+    "movesRemaining": 0,
     "noise": null,
     "tanks": [
         {
@@ -120,9 +89,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -130,15 +97,11 @@
                             0,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -146,15 +109,11 @@
                             0,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -162,9 +121,7 @@
                             0,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [
@@ -179,9 +136,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -189,15 +144,11 @@
                             1,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -205,15 +156,11 @@
                             1,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -221,9 +168,7 @@
                             1,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [
@@ -238,9 +183,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -248,15 +191,11 @@
                             2,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -264,15 +203,11 @@
                             2,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -280,9 +215,7 @@
                             2,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [
@@ -297,9 +230,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -307,15 +238,11 @@
                             3,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -323,15 +250,11 @@
                             3,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -339,9 +262,7 @@
                             3,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [
@@ -356,9 +277,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -366,15 +285,11 @@
                             4,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -382,15 +297,11 @@
                             4,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -398,15 +309,11 @@
                             4,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 3,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -414,15 +321,11 @@
                             4,
                             3
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 4,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -430,9 +333,7 @@
                             4,
                             4
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [
@@ -447,9 +348,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -457,15 +356,11 @@
                             5,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -473,15 +368,11 @@
                             5,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -489,9 +380,7 @@
                             5,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [
@@ -506,9 +395,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -516,15 +403,11 @@
                             6,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -532,15 +415,11 @@
                             6,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -548,9 +427,7 @@
                             6,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [
@@ -565,9 +442,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -575,15 +450,11 @@
                             7,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -591,15 +462,11 @@
                             7,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -607,9 +474,7 @@
                             7,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [
@@ -624,9 +489,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -634,15 +497,11 @@
                             8,
                             0
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -650,15 +509,11 @@
                             8,
                             1
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -666,9 +521,7 @@
                             8,
                             2
                         ],
-                        "playersThisTurn": [
-                            1
-                        ]
+                        "playersThisTurn": []
                     }
                 ],
                 "tl": [

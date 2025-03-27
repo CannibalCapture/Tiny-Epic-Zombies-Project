@@ -17,9 +17,25 @@ def createNewUser(username, password):
         connection.commit()
     except:
         flag = False
-
-    connection.close()
     return flag
+
+def addWin(userID):
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    SQL = "UPDATE Users SET Wins = Wins + 1 WHERE ID = ?"
+    cursor.execute(SQL, (userID,))
+    connection.commit()
+    connection.close()
+    return
+
+def addLoss(userID):
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    SQL = "UPDATE Users SET Losses = Losses + 1 WHERE ID = ?"
+    cursor.execute(SQL, (userID,))
+    connection.commit()
+    connection.close()
+    return
 
 def hash(data, salt):
     bytes = data.encode('utf-8')
@@ -92,6 +108,7 @@ logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), 
 statsButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-165, HEIGHT-250), (280, 85)), text="Stats", manager=mainMenu)
 newGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-300, HEIGHT-335), (280, 85)), text="New Game", manager=mainMenu)
 loadGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-15, HEIGHT-335), (280, 85)), text="Load Game", manager=mainMenu)
+# testButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 50)), text="TEST", manager=mainMenu)
 
 # select save slot menu
 saveSlotMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -131,7 +148,6 @@ charsRemaining = ["teenager", "doctor", "popstar", "athlete"]
 char = "teenager"
 selectedChars = []
 characters = pygame_gui.elements.UIDropDownMenu(charsRemaining, "teenager", pygame.Rect((150, 150), (100, 50)), manager=charSelectMenu)
-# startGameButton2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, HEIGHT/2-100), (100, 25)), text="Start Game", manager=charSelectMenu)
 scImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "characters", "teenagerCard.jpg"))
 charCard = pygame_gui.elements.UIImage(pygame.Rect((WIDTH/2,120), (600, 400)), scImg, manager=charSelectMenu)
 startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-50, HEIGHT-100), (100, 25)), text="Start Game", manager=charSelectMenu)
@@ -154,7 +170,7 @@ def loadGame(slot):
     GameManager.deserialize(saveData)
     gm = GameManager.getInstance()
 
-manager = mainMenu
+manager = loggedOut
 renderer = GameRenderer()
 gm = GameManager()
 
@@ -214,6 +230,9 @@ while run:
                 signupPasswordInput.clear()
                 signupUsernameInput.clear()
 
+            # elif event.ui_element == testButton:
+            #     print(id)
+            #     addWin(id)
             elif event.ui_element == logoutButton: # returns to login screen
                 manager = loggedOut
             elif event.ui_element == returnToLoggedOutButton or event.ui_element == returnToLoggedOutButton1:
