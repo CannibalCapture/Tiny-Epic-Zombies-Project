@@ -103,7 +103,6 @@ mainMenu = pygame_gui.UIManager((WIDTH, HEIGHT))
 mmBgImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "mmBgImg.png"))
 mmBgImg = pygame.transform.scale(mmBgImg, (WIDTH, HEIGHT))
 mmBg = pygame_gui.elements.UIImage(pygame.Rect((0,0), (WIDTH, HEIGHT)), mmBgImg, manager=mainMenu)
-welcomeLabel = pygame_gui.elements.UILabel(pygame.Rect((WIDTH/2, 50), (200, 100)),text="Welcome", manager=mainMenu)
 logoutButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Logout", manager=mainMenu)
 statsButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-165, HEIGHT-250), (280, 85)), text="Stats", manager=mainMenu)
 newGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2-300, HEIGHT-335), (280, 85)), text="New Game", manager=mainMenu)
@@ -170,6 +169,26 @@ def loadGame(slot):
     GameManager.deserialize(saveData)
     gm = GameManager.getInstance()
 
+# win screen
+winScreen = pygame_gui.UIManager((WIDTH, HEIGHT))
+winBgImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "winScreen.jpg"))
+winBgImg = pygame.transform.scale(winBgImg, (WIDTH, HEIGHT))
+winBg = pygame_gui.elements.UIImage(pygame.Rect((0,0), (WIDTH, HEIGHT)), winBgImg, manager=winScreen)
+pwImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "text", "playersWin.png"))
+pwImg = pygame.transform.scale(pwImg, (400, 200))
+pwText = pygame_gui.elements.UIImage(pygame.Rect((WIDTH/2 - 300, 80), (700, 200)), pwImg, manager=winScreen)
+returnToMainMenu4 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=winScreen)
+
+# lose screen
+loseScreen = pygame_gui.UIManager((WIDTH, HEIGHT))
+loseBgImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "loseScreen.jpg"))
+loseBgImg = pygame.transform.scale(loseBgImg, (WIDTH, HEIGHT))
+loseBg = pygame_gui.elements.UIImage(pygame.Rect((0,0), (WIDTH, HEIGHT)), loseBgImg, manager=loseScreen)
+plImg = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "text", "zombiesWin.png"))
+plImg = pygame.transform.scale(plImg, (400, 200))
+plText = pygame_gui.elements.UIImage(pygame.Rect((WIDTH/2 - 300, 80), (700, 200)), plImg, manager=loseScreen)
+returnToMainMenu3 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((20, 20), (100, 25)), text="Back", manager=loseScreen)
+
 manager = loggedOut
 renderer = GameRenderer()
 gm = GameManager()
@@ -182,8 +201,14 @@ while run:
 
     if manager == gameboard:
         if not gm.getRunGame():
-            manager = mainMenu
-        gm.renderGameScreen()
+            if gm.getWin() == True:
+                addWin(id)
+                manager = winScreen
+            elif gm.getWin() == False:
+                addLoss(id)
+                manager = loseScreen
+        else:
+            gm.renderGameScreen()
 
     for event in pygame.event.get():
 
@@ -232,7 +257,7 @@ while run:
 
             # elif event.ui_element == testButton:
             #     print(id)
-            #     addWin(id)
+            #     addLoss(id)
             elif event.ui_element == logoutButton: # returns to login screen
                 manager = loggedOut
             elif event.ui_element == returnToLoggedOutButton or event.ui_element == returnToLoggedOutButton1:
@@ -240,7 +265,7 @@ while run:
             elif event.ui_element == startGameButton:# or event.ui_element == startGameButton2: # proceed to game board screen
                 gm.initGame(selectedChars)
                 manager = gameboard
-            elif event.ui_element == exitGameButton or event.ui_element == returnToMainMenu or event.ui_element == returnToMainMenu1 or event.ui_element == returnToMainMenu2: # exit game to main menu
+            elif event.ui_element == exitGameButton or event.ui_element == returnToMainMenu or event.ui_element == returnToMainMenu1 or event.ui_element == returnToMainMenu2 or event.ui_element == returnToMainMenu3 or event.ui_element == returnToMainMenu4: # exit game to main menu
                 manager = mainMenu
             elif event.ui_element == startLoginButton: # proceed to login page
                 manager = login_page
