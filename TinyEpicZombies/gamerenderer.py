@@ -68,7 +68,7 @@ class GameRenderer(Listener):
             case 'MODE CHANGE':
                 self.mode = event['mode']
             case 'TURN CHANGE':
-                self.nextTurn(event['turn'])
+                self.nextTurn(event['turn'], event['player'])
                 self.mode = "move"
             case 'PLAYER RANGED' | 'PLAYER MELEE':
                 if event['moves'] != 0:
@@ -204,13 +204,11 @@ class GameRenderer(Listener):
         store = self.map.getStores()[self.player.getCoords()[0]]
         width, height = 0.17, 0.4
         cardCount = len(store.getCards())
-        # cardCount = len(self.iCards)
 
         self.__renderExitMenuButton()
 
         for i in range(cardCount):
             card = store.getCards()[i]
-            # card = self.iCards[i]
             img = card.getImg()
 
             width = 0.2
@@ -288,9 +286,9 @@ class GameRenderer(Listener):
     def setSelectedTank(self, tank):
         self.selectedTank = tank
 
-    def nextTurn(self, turn):
+    def nextTurn(self, turn, player):
         self.turn = turn
-        self.player = self.players[turn]
+        self.player = player
         self.mode = "move"
         self.shownPickupCards = self.player.getCoords()[0]
 

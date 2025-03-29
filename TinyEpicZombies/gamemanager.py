@@ -18,12 +18,13 @@ class GameManager(Listener, EventGenerator):
             GameManager.instance = GameManager()
         return GameManager.instance
 
-    def __init__(self, respawns=3, players=dict()):
+    def __init__(self, players=dict()):
         Listener.__init__(self)
         EventGenerator.__init__(self)
         self.players = players # players is a dictionary with key=player ID, value=playerObject
-        self.respawns = respawns
+        self.respawns = 3
         self.turn = 0 # player ID representing which player's turn it is currently
+        self.winner = None
         self.runGame = True
         self.player = None
         self.turnEnded = False
@@ -150,10 +151,7 @@ class GameManager(Listener, EventGenerator):
                 pass
             
             if coll['type'] == 'TEST BUTTON': ###########################################################################
-                for tank in self.tanks:
-                    print(tank.getPos())
-                    print(tank.getRect())
-                    print(self.tanksRemaining)
+                self.player.takeDamage(1)
             
             self.send_event(coll)
         
@@ -163,8 +161,10 @@ class GameManager(Listener, EventGenerator):
 
     def gameOver(self, wl):
         if wl:
+            self.winner = True
             print("PLAYERS WIN")
         else:
+            self.winner = False
             print("ZOMBIES WIN")
 
         self.runGame = False
@@ -215,19 +215,25 @@ class GameManager(Listener, EventGenerator):
                     self.map.addZombie(coord)
                 if coord != self.getPlayer(self.turn).getCoords(): # if the zombie spawns on a player
                     self.player.takeDamage(1)
+        self.cpd()
         return
 
     def nextTurn(self):
-        self.movesRemaining = self.player.getMoves()
-        if self.turn == len(self.players) - 1:
-            self.turn = 0
-        else:
-            self.turn += 1
+        current = self.turn
+        iterP = iter(self.players)
+        for key in iterP:
+            if key == current:
+                try:
+                    nk = next(iterP)
+                except StopIteration:
+                    nk = list(self.players.keys())[0]
+        self.turn = nk
         self.player = self.getPlayer(self.turn)
         event = {'type':'TURN CHANGE', 'turn':self.turn, 'player':self.player}
         self.send_event(event)
         self.mode = "move"
         self.turnEnded = False
+        self.movesRemaining = self.player.getMoves()
 
     def revealCard(self):
         pass
@@ -308,7 +314,8 @@ class GameManager(Listener, EventGenerator):
         if card == 0:
             event = {'type':'GAME OVER'}
             self.send_event(event)
-            self.gameOver()
+            print("no cards left")
+            self.gameOver(0)
             return
         self.map.getStores()[coords[0]].addCard(card)
         self.noise = card.getColour()
@@ -356,7 +363,8 @@ class GameManager(Listener, EventGenerator):
             self.send_event(event)
             self.mode = "move"
         else:
-            return "Attack failed: No available target"
+            print("Attack failed: No available target")
+        self.cpd()
     
     def playerRanged(self, player, coords):
         room = self.map.getRoom(coords)
@@ -367,11 +375,30 @@ class GameManager(Listener, EventGenerator):
             self.send_event(event)
             self.mode = "move"
         else:
-            return "Attack failed: Ranged"
+            print("Attack failed: Ranged")
+        self.cpd()
 
     def renderGameScreen(self):
         if self.runGame:
             self.renderer.renderGameBoard()
+
+    def cpd(self):
+        p = list(self.players.keys())
+        for i in p:
+            player = self.players[i]
+            if not player.getAlive():
+                if self.respawns > 0:
+                    if player == self.player:
+                        self.nextTurn()
+                    self.respawns -= 1
+                    player.reset()
+                    self.updateMovementOptions(player)
+                else:
+                    print(f"removed player {i}")
+                    self.players.pop(i)
+                    if len(self.players) == 0:
+                        print("all players dead")
+                        self.gameOver(0)
 
     def addZombie(self, coords):
         self.map.addZombie(coords)
@@ -384,6 +411,9 @@ class GameManager(Listener, EventGenerator):
 
     def getMap(self):
         return self.map
+    
+    def getWin(self):
+        return self.winner
     
     def setTanks(self, lstVal):
         self.tanks = lstVal

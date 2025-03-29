@@ -21,6 +21,7 @@ class Player(Listener, EventGenerator):
         self.movementOptions = None
         self.ID = ID
         self.character = character
+        self.alive = True
         img = pygame.image.load(os.path.join("TinyEpicZombies", "assets", "avatars",f"{self.character}.png"))
         img = pygame.transform.scale(img, (0.04*WIDTH, 0.06*HEIGHT))
         self.img = img
@@ -67,8 +68,9 @@ class Player(Listener, EventGenerator):
     def takeDamage(self, value):
         self.healthMissing += value
         if not self.isAlive():
-            event = {'type': 'PLAYER DIE', 'ID': self.ID}
-            self.send_event(event)
+            self.alive = False
+            print("player died", self.character, self.ID)
+
     
     def isAlive(self):
         if self.ammoMissing + self.healthMissing > 8:
@@ -77,16 +79,26 @@ class Player(Listener, EventGenerator):
     
     def reset(self):
         self.move((4,2)) # move to spawn room
-        self.ammo = 9
-        self.health = 9
+        self.ammoMissing = 0
+        self.healthMissing = 0
         self.meleeWeapon = None
         self.rangedWeapon = None
+        self.alive = True
 
     def rangedAttack(self):
         self.changeAmmo(1)
 
     def changeAmmo(self, value):
         self.ammoMissing += value
+        if not self.isAlive():
+            self.alive = False
+            print("player died", self.character, self.ID)
+    
+    def on_event(self, event):
+        if event['type'] == 'PLAYER MELEE':
+            pass
+        elif event['type'] == 'PLAYER RANGED':
+            pass
 
     def setMeleeWeapon(self, newWeapon):
         self.meleeWeapon = newWeapon
@@ -106,6 +118,9 @@ class Player(Listener, EventGenerator):
     def getInventory(self):
         return self.inventory
     
+    def getAlive(self):
+        return self.alive
+
     def getCoords(self):
         return self.coords
     
@@ -135,9 +150,6 @@ class Player(Listener, EventGenerator):
 
     def setMovementOptions(self, lstValue):
         self.movementOptions = lstValue
-    
-    def on_event(self, event):
-        if event['type'] == 'PLAYER MELEE':
-            print(f"{self.name} kills a zombie at {self.coords}")
-        elif event['type'] == 'PLAYER RANGED':
-            print(f"{self.name} kills a zombie from range")
+
+    def setAlive(self, val):
+        self.alive = val

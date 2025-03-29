@@ -29,6 +29,16 @@ class DeckManager:
         self.searchDeck.append(Adrenaline("GREEN"))
         self.searchDeck.append(Adrenaline("BLUE"))
         self.searchDeck.append(Adrenaline("PURPLE"))
+        self.searchDeck.append(Crowbar("BLUE"))
+        self.searchDeck.append(Crowbar("RED"))
+        self.searchDeck.append(GolfClub("ORANGE"))
+        self.searchDeck.append(GolfClub("GREEN"))
+        self.searchDeck.append(Revolver("GREEN"))
+        self.searchDeck.append(Revolver("BLUE"))
+        self.searchDeck.append(Adrenaline("ORANGE"))
+        self.searchDeck.append(Adrenaline("GREEN"))
+        self.searchDeck.append(Adrenaline("BLUE"))
+        self.searchDeck.append(Adrenaline("PURPLE"))
 
     def serialize(self):
         dict = {
