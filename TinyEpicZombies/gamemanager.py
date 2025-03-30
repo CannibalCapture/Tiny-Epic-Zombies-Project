@@ -215,7 +215,6 @@ class GameManager(Listener, EventGenerator):
                     self.map.addZombie(coord)
                 if coord != self.getPlayer(self.turn).getCoords(): # if the zombie spawns on a player
                     self.player.takeDamage(1)
-        self.cpd()
         return
 
     def nextTurn(self):

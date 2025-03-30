@@ -1,40 +1,9 @@
 {
-    "players": {
-        "0": {
-            "coords": [
-                4,
-                2
-            ],
-            "name": "Player 0",
-            "colour": "PURPLE",
-            "character": "teenager",
-            "rangedweapon": "None",
-            "meleeweapon": "None",
-            "healthMissing": 0,
-            "ammoMissing": 0,
-            "moves": 3,
-            "ID": 0
-        },
-        "1": {
-            "coords": [
-                4,
-                2
-            ],
-            "name": "Player 1",
-            "colour": "PURPLE",
-            "character": "doctor",
-            "rangedweapon": "None",
-            "meleeweapon": "None",
-            "healthMissing": 0,
-            "ammoMissing": 0,
-            "moves": 3,
-            "ID": 1
-        }
-    },
-    "turn": 1,
-    "respawns": 2,
-    "movesRemaining": 3,
-    "noise": "GREEN",
+    "players": {},
+    "turn": 0,
+    "respawns": 3,
+    "movesRemaining": 0,
+    "noise": null,
     "tanks": [
         {
             "ID": 0,
@@ -136,9 +105,7 @@
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -152,9 +119,7 @@
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -179,9 +144,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -313,9 +276,7 @@
                     },
                     {
                         "roomID": 1,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -329,9 +290,7 @@
                     },
                     {
                         "roomID": 2,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -356,9 +315,7 @@
                 "rooms": [
                     {
                         "roomID": 0,
-                        "players": [
-                            1
-                        ],
+                        "players": [],
                         "zombie": false,
                         "tank": false,
                         "ammoRoom": false,
@@ -679,16 +636,7 @@
                 "noiseColour": "ORANGE"
             }
         ],
-        "zombieRooms": [
-            [
-                3,
-                0
-            ],
-            [
-                0,
-                0
-            ]
-        ]
+        "zombieRooms": []
     },
     "renderer": null,
     "deckManager": {
@@ -760,8 +708,24 @@
                 "colour": "ORANGE"
             },
             {
-                "type": "golfClub",
+                "type": "revolver",
                 "colour": "GREEN"
+            },
+            {
+                "type": "adrenaline",
+                "colour": "BLUE"
+            },
+            {
+                "type": "adrenaline",
+                "colour": "PURPLE"
+            },
+            {
+                "type": "crowbar",
+                "colour": "BLUE"
+            },
+            {
+                "type": "crowbar",
+                "colour": "RED"
             },
             {
                 "type": "revolver",
@@ -777,15 +741,7 @@
             },
             {
                 "type": "adrenaline",
-                "colour": "GREEN"
-            },
-            {
-                "type": "adrenaline",
                 "colour": "BLUE"
-            },
-            {
-                "type": "adrenaline",
-                "colour": "PURPLE"
             }
         ]
     },
