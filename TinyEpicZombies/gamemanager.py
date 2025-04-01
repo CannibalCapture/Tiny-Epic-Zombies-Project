@@ -213,9 +213,8 @@ class GameManager(Listener, EventGenerator):
                     self.renderer.updateBarricade(self.barricade)
                 else:
                     self.map.addZombie(coord)
-                    if coord == self.getPlayer(self.turn).getCoords(): # if the zombie spawns on a player
-                        self.player.takeDamage(1)
-        self.cpd()
+                if coord != self.getPlayer(self.turn).getCoords(): # if the zombie spawns on a player
+                    self.player.takeDamage(1)
         return
 
     def nextTurn(self):

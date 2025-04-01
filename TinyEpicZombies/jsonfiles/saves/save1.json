@@ -17,24 +17,24 @@
         },
         "1": {
             "coords": [
-                4,
-                2
+                3,
+                1
             ],
             "name": "Player 1",
             "colour": "PURPLE",
             "character": "doctor",
             "rangedweapon": "None",
             "meleeweapon": "None",
-            "healthMissing": 0,
+            "healthMissing": 1,
             "ammoMissing": 0,
             "moves": 3,
             "ID": 1
         }
     },
-    "turn": 0,
+    "turn": 1,
     "respawns": 3,
     "movesRemaining": 3,
-    "noise": "BLUE",
+    "noise": "PURPLE",
     "tanks": [
         {
             "ID": 0,
@@ -594,6 +594,34 @@
             }
         ],
         "searchDeck": [
+            {
+                "type": "crowbar",
+                "colour": "BLUE"
+            },
+            {
+                "type": "crowbar",
+                "colour": "RED"
+            },
+            {
+                "type": "golfClub",
+                "colour": "ORANGE"
+            },
+            {
+                "type": "revolver",
+                "colour": "BLUE"
+            },
+            {
+                "type": "adrenaline",
+                "colour": "ORANGE"
+            },
+            {
+                "type": "adrenaline",
+                "colour": "GREEN"
+            },
+            {
+                "type": "adrenaline",
+                "colour": "PURPLE"
+            },
             {
                 "type": "crowbar",
                 "colour": "BLUE"
